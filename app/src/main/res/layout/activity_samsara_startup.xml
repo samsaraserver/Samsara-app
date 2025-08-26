@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1E1E1E">
+
+    <LinearLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SamsaraServer"
+            android:textSize="32sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_marginBottom="48dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alpine Linux Server Environment"
+            android:textSize="16sp"
+            android:textColor="#CCCCCC"
+            android:layout_marginBottom="64dp" />
+
+        <Button
+            android:id="@+id/start_server_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Samsara Server"
+            android:textSize="18sp"
+            android:padding="16dp"
+            android:minWidth="200dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/loading_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#1E1E1E"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:indeterminateTint="#FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Setting up Alpine Linux..."
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This may take a moment on first launch"
+            android:textSize="14sp"
+            android:textColor="#CCCCCC" />
+
+    </LinearLayout>
+
+</FrameLayout>
