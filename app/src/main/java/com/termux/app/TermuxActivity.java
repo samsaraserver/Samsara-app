@@ -1018,14 +1018,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 "sed -i \"s/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/\" /etc/sudoers; " +
                 "printf \"notroot\\nnotroot\\n\" | passwd samsara >/dev/null 2>&1; " +
             "'; " +
-            "proot-distro login alpine --user samsara -- /bin/bash -lc \"clear; " +
-                "echo 'Welcome to Samsara Server'; " +
-                "echo 'User: '$(whoami); " +
-                "echo 'Date: '$(date '+%Y-%m-%d %H:%M:%S'); " +
-                "echo 'Kernel: '$(uname -srmo); " +
-                "echo 'Home: '$HOME; " +
-                "PS1='\\[\\e[0;32m\\]\\u\\[\\e[0m\\]@\\[\\e[0;37m\\]samsara\\[\\e[0m\\]:\\[\\e[0;37m\\]\\w\\[\\e[0m\\]\\$ '; " +
-                "exec bash -i\"";
+            "clear && echo 'SamsaraServer Alpine Linux Ready (user: samsara)' && proot-distro login alpine --user samsara";
         
         String workingDirectory = getProperties().getDefaultWorkingDirectory();
         String[] arguments = {"-c", setupScript};
