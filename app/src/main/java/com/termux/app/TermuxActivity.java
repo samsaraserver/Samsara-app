@@ -613,6 +613,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 getDrawer().closeDrawers();
             });
         }
+
+    // Removed emergency buttons
     }
 
 
@@ -1018,24 +1020,29 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 "sed -i \"s/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/\" /etc/sudoers; " +
                 "printf \"rootserver\\nrootserver\\n\" | passwd samsara >/dev/null 2>&1; " +
                 "printf \"rootserver\\nrootserver\\n\" | passwd root >/dev/null 2>&1 || true; " +
-                "apk add --no-cache openssh iproute2 >/dev/null 2>&1 || true; " +
+                "apk add --no-cache openssh openrc iproute2 >/dev/null 2>&1 || true; " +
                 "CFG=/etc/ssh/sshd_config; TMP=$(mktemp); if [ -f \"$CFG\" ]; then cp \"$CFG\" \"$TMP\"; else : > \"$TMP\"; fi; " +
-                "grep -q \"^Port \" \"$TMP\" && sed -i \"s/^Port .*/Port 2222/\" \"$TMP\" || echo \"Port 2222\" >> \"$TMP\"; " +
+                "# Ensure our ports are set explicitly (2222 and 8022)\n" +
+                "sed -i \"/^Port /d\" \"$TMP\"; echo \"Port 2222\" >> \"$TMP\"; echo \"Port 8022\" >> \"$TMP\"; " +
                 "grep -q \"^PasswordAuthentication \" \"$TMP\" && sed -i \"s/^PasswordAuthentication .*/PasswordAuthentication yes/\" \"$TMP\" || echo \"PasswordAuthentication yes\" >> \"$TMP\"; " +
                 "grep -q \"^PermitRootLogin \" \"$TMP\" && sed -i \"s/^PermitRootLogin .*/PermitRootLogin no/\" \"$TMP\" || echo \"PermitRootLogin no\" >> \"$TMP\"; " +
                 "sed -i \"/^UsePAM /d\" \"$TMP\"; " +
                 "mv \"$TMP\" \"$CFG\"; " +
-                "ssh-keygen -A >/dev/null 2>&1 || true; " +
+                "if [ -d /etc/ssh/sshd_config.d ]; then sed -i \"/^UsePAM /d\" /etc/ssh/sshd_config.d/*.conf 2>/dev/null || true; fi; " +
+                "mkdir -p /var/empty && chmod 0755 /var/empty || true; " +
                 "pgrep -x sshd >/dev/null 2>&1 && pkill -x sshd || true; " +
-                "/usr/sbin/sshd -f \"$CFG\" -p 2222; " +
+                "mkdir -p /run/sshd && chmod 0755 /run/sshd; " +
+                "/usr/sbin/sshd -t -f \"$CFG\" 2>&1 | while IFS= read -r line; do echo [sshd-test] \"$line\"; done; " +
+                "if command -v nc >/dev/null 2>&1 && nc -z -w1 127.0.0.1 2222 || command -v nc >/dev/null 2>&1 && nc -z -w1 127.0.0.1 8022 || ss -ltn 2>/dev/null | grep -E -q \":(2222|8022)\" || netstat -ltn 2>/dev/null | grep -E -q \":(2222|8022)\" || pgrep -x sshd >/dev/null 2>&1; then printf \"[*] sshd appears already running on 0.0.0.0:2222,8022\\n\"; else /usr/sbin/sshd -f \"$CFG\" -o ListenAddress=0.0.0.0 -o AddressFamily=inet -o LogLevel=VERBOSE -E /var/log/sshd.log; RC=$?; fi; " +
+                "sleep 1; if command -v nc >/dev/null 2>&1 && nc -z -w1 127.0.0.1 2222 || command -v nc >/dev/null 2>&1 && nc -z -w1 127.0.0.1 8022 || ss -ltn 2>/dev/null | grep -E -q \":(2222|8022)\" || netstat -ltn 2>/dev/null | grep -E -q \":(2222|8022)\"; then printf \"[*] sshd listening on 0.0.0.0:2222,8022\\n\"; elif grep -q \"Address in use\" /var/log/sshd.log 2>/dev/null; then printf \"[*] sshd appears already running on 0.0.0.0:2222,8022\\n\"; else printf \"[!] sshd not listening; showing recent log:\\\n\"; tail -n 50 /var/log/sshd.log 2>/dev/null | while IFS= read -r line; do echo [sshd] \"$line\"; done; fi; printf \"[*] sshd bootstrap done\\n\"; " +
             "'; " +
             "PHONE_IP=\"\"; if command -v ip >/dev/null 2>&1; then PHONE_IP=$(ip -4 route get 1.1.1.1 2>/dev/null | sed -n \"s/.* src \\([0-9.]*\\).*/\\1/p\"); fi; " +
             "if [ -z \"$PHONE_IP\" ] && command -v ip >/dev/null 2>&1; then IFACE=$(ip route 2>/dev/null | sed -n \"s/^default .* dev \\([^ ]*\\).*/\\1/p\" | head -n1); if [ -n \"$IFACE\" ]; then PHONE_IP=$(ip -o -4 addr show dev \"$IFACE\" scope global 2>/dev/null | sed -n \"s/.* inet \\([0-9.]*\\)\\/.*/\\1/p\" | head -n1); fi; fi; " +
             "case \"$PHONE_IP\" in 127.*|0.0.0.0|\"\") PHONE_IP=\"\";; esac; " +
             "if [ -z \"$PHONE_IP\" ] && command -v ifconfig >/dev/null 2>&1; then PHONE_IP=$(ifconfig 2>/dev/null | sed -n \"s/.*inet \\([0-9.]*\\).*/\\1/p\" | grep -v 127.0.0.1 | head -n1); fi; " +
             "if command -v getprop >/dev/null 2>&1 && [ -z \"$PHONE_IP\" ]; then PHONE_IP=$(getprop dhcp.wlan0.ipaddress 2>/dev/null); [ -z \"$PHONE_IP\" ] && PHONE_IP=$(getprop dhcp.rmnet0.ipaddress 2>/dev/null); fi; " +
-            "if [ -n \"$PHONE_IP\" ]; then echo \"[*] Device LAN IP: $PHONE_IP\"; echo \"[*] SSH ready: ssh samsara@$PHONE_IP -p 2222\"; else echo \"[*] SSH ready: ssh samsara@<phone-ip> -p 2222\"; fi; " +
-            "echo 'SamsaraServer Alpine Linux Ready (user: samsara)' && proot-distro login alpine --user samsara";
+            "if [ -n \"$PHONE_IP\" ]; then echo \"[*] Device LAN IP: $PHONE_IP\"; echo \"[*] If sshd is listening, connect with: ssh samsara@$PHONE_IP -p 2222 (or -p 8022)\"; else echo \"[*] If sshd is listening, connect with: ssh samsara@<phone-ip> -p 2222 (or -p 8022)\"; fi; " +
+            "echo \"SamsaraServer Alpine Linux Ready (user: samsara)\" && proot-distro login alpine --user samsara";
         
         String workingDirectory = getProperties().getDefaultWorkingDirectory();
         String[] arguments = {"-c", setupScript};
