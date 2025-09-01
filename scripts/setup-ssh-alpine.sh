@@ -22,7 +22,7 @@ if ! id -u samsara >/dev/null 2>&1; then
 fi
 
 echo "[*] Setting password for samsara"
-printf "server\nserver\n" | passwd samsara >/dev/null 2>&1 || true
+printf "rootserver\nrootserver\n" | passwd samsara >/dev/null 2>&1 || true
 
 CFG=/etc/ssh/sshd_config
 TMP=$(mktemp)
@@ -36,7 +36,7 @@ fi
 grep -q "^Port " "$TMP" && sed -i "s/^Port .*/Port 2222/" "$TMP" || echo "Port 2222" >> "$TMP"
 grep -q "^PasswordAuthentication " "$TMP" && sed -i "s/^PasswordAuthentication .*/PasswordAuthentication yes/" "$TMP" || echo "PasswordAuthentication yes" >> "$TMP"
 grep -q "^PermitRootLogin " "$TMP" && sed -i "s/^PermitRootLogin .*/PermitRootLogin no/" "$TMP" || echo "PermitRootLogin no" >> "$TMP"
-grep -q "^UsePAM " "$TMP" && sed -i "s/^UsePAM .*/UsePAM no/" "$TMP" || echo "UsePAM no" >> "$TMP"
+sed -i "/^UsePAM /d" "$TMP"
 
 mv "$TMP" "$CFG"
 
@@ -54,20 +54,21 @@ echo "[*] Starting sshd on port 2222"
 echo "[*] SSH ready on port 2222"
 IP=""
 if command -v ip >/dev/null 2>&1; then
-  IP=$(ip -4 route get 1.1.1.1 2>/dev/null | awk '/src/ {for(i=1;i<=NF;i++){if($i=="src"){print $(i+1); exit}}}')
+  IP=$(ip -4 route get 1.1.1.1 2>/dev/null | sed -n 's/.* src \([0-9.]*\).*/\1/p')
   if [ -z "$IP" ]; then
-    IP=$(ip -o -4 addr show scope global up 2>/dev/null | awk '{print $4}' | cut -d/ -f1 | head -n1)
+    IFACE=$(ip route 2>/dev/null | sed -n 's/^default .* dev \([^ ]*\).*/\1/p' | head -n1)
+    if [ -n "$IFACE" ]; then
+      IP=$(ip -o -4 addr show dev "$IFACE" scope global 2>/dev/null | sed -n 's/.* inet \([0-9.]*\)\/.*/\1/p' | head -n1)
+    fi
   fi
 fi
-if [ -z "$IP" ] && command -v hostname >/dev/null 2>&1; then
-  IP=$(hostname -I 2>/dev/null | awk '{print $1}')
-fi
+case "$IP" in 127.*|0.0.0.0|"") IP="";; esac
 if [ -z "$IP" ] && command -v ifconfig >/dev/null 2>&1; then
-  IP=$(ifconfig 2>/dev/null | awk '/inet / && $2!="127.0.0.1"{print $2; exit}')
+  IP=$(ifconfig 2>/dev/null | sed -n 's/.*inet \([0-9.]*\).*/\1/p' | grep -v '^127\.' | head -n1)
 fi
 if [ -n "$IP" ]; then
-  echo "[*] Device LAN IP: $IP"
+  echo "[*] Device LAN IP (host): $IP"
   echo "[*] Login with: ssh samsara@$IP -p 2222"
 else
-  echo "[*] Login with: ssh samsara@127.0.0.1 -p 2222"
+  echo "[*] Login with: ssh samsara@<phone-ip> -p 2222"
 fi

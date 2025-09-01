@@ -1016,9 +1016,26 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 "addgroup -S wheel >/dev/null 2>&1 || true; " +
                 "addgroup samsara wheel >/dev/null 2>&1 || true; " +
                 "sed -i \"s/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/\" /etc/sudoers; " +
-                "printf \"notroot\\nnotroot\\n\" | passwd samsara >/dev/null 2>&1; " +
+                "printf \"rootserver\\nrootserver\\n\" | passwd samsara >/dev/null 2>&1; " +
+                "printf \"rootserver\\nrootserver\\n\" | passwd root >/dev/null 2>&1 || true; " +
+                "apk add --no-cache openssh iproute2 >/dev/null 2>&1 || true; " +
+                "CFG=/etc/ssh/sshd_config; TMP=$(mktemp); if [ -f \"$CFG\" ]; then cp \"$CFG\" \"$TMP\"; else : > \"$TMP\"; fi; " +
+                "grep -q \"^Port \" \"$TMP\" && sed -i \"s/^Port .*/Port 2222/\" \"$TMP\" || echo \"Port 2222\" >> \"$TMP\"; " +
+                "grep -q \"^PasswordAuthentication \" \"$TMP\" && sed -i \"s/^PasswordAuthentication .*/PasswordAuthentication yes/\" \"$TMP\" || echo \"PasswordAuthentication yes\" >> \"$TMP\"; " +
+                "grep -q \"^PermitRootLogin \" \"$TMP\" && sed -i \"s/^PermitRootLogin .*/PermitRootLogin no/\" \"$TMP\" || echo \"PermitRootLogin no\" >> \"$TMP\"; " +
+                "sed -i \"/^UsePAM /d\" \"$TMP\"; " +
+                "mv \"$TMP\" \"$CFG\"; " +
+                "ssh-keygen -A >/dev/null 2>&1 || true; " +
+                "pgrep -x sshd >/dev/null 2>&1 && pkill -x sshd || true; " +
+                "/usr/sbin/sshd -f \"$CFG\" -p 2222; " +
             "'; " +
-            "clear && echo 'SamsaraServer Alpine Linux Ready (user: samsara)' && proot-distro login alpine --user samsara";
+            "PHONE_IP=\"\"; if command -v ip >/dev/null 2>&1; then PHONE_IP=$(ip -4 route get 1.1.1.1 2>/dev/null | sed -n \"s/.* src \\([0-9.]*\\).*/\\1/p\"); fi; " +
+            "if [ -z \"$PHONE_IP\" ] && command -v ip >/dev/null 2>&1; then IFACE=$(ip route 2>/dev/null | sed -n \"s/^default .* dev \\([^ ]*\\).*/\\1/p\" | head -n1); if [ -n \"$IFACE\" ]; then PHONE_IP=$(ip -o -4 addr show dev \"$IFACE\" scope global 2>/dev/null | sed -n \"s/.* inet \\([0-9.]*\\)\\/.*/\\1/p\" | head -n1); fi; fi; " +
+            "case \"$PHONE_IP\" in 127.*|0.0.0.0|\"\") PHONE_IP=\"\";; esac; " +
+            "if [ -z \"$PHONE_IP\" ] && command -v ifconfig >/dev/null 2>&1; then PHONE_IP=$(ifconfig 2>/dev/null | sed -n \"s/.*inet \\([0-9.]*\\).*/\\1/p\" | grep -v 127.0.0.1 | head -n1); fi; " +
+            "if command -v getprop >/dev/null 2>&1 && [ -z \"$PHONE_IP\" ]; then PHONE_IP=$(getprop dhcp.wlan0.ipaddress 2>/dev/null); [ -z \"$PHONE_IP\" ] && PHONE_IP=$(getprop dhcp.rmnet0.ipaddress 2>/dev/null); fi; " +
+            "if [ -n \"$PHONE_IP\" ]; then echo \"[*] Device LAN IP: $PHONE_IP\"; echo \"[*] SSH ready: ssh samsara@$PHONE_IP -p 2222\"; else echo \"[*] SSH ready: ssh samsara@<phone-ip> -p 2222\"; fi; " +
+            "echo 'SamsaraServer Alpine Linux Ready (user: samsara)' && proot-distro login alpine --user samsara";
         
         String workingDirectory = getProperties().getDefaultWorkingDirectory();
         String[] arguments = {"-c", setupScript};
