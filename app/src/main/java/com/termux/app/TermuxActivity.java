@@ -1007,34 +1007,37 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (service == null) return;
 
         String setupScript =
-            "pkg install -y proot-distro > /dev/null 2>&1; " +
+            "echo '[*] Updating Termux package repositories...'; " +
+            "pkg update -y; " +
+            "echo '[*] Upgrading existing packages (auto-accepting config updates)...'; " +
+            "DEBIAN_FRONTEND=noninteractive pkg upgrade -y -o Dpkg::Options::=\"--force-confnew\"; " +
+            "echo '[*] Installing/upgrading proot-distro...'; " +
+            "pkg install -y proot-distro; " +
+            "echo '[*] Checking proot-distro version:'; " +
+            "pkg show proot-distro | grep Version || echo 'Version check failed'; " +
             "if [ ! -d \"$PREFIX/var/lib/proot-distro/installed-rootfs/alpine\" ]; then " +
+                "echo '[*] Installing Alpine Linux (first time setup)...'; " +
                 "proot-distro install alpine; " +
+            "else " +
+                "echo '[*] Alpine Linux already installed, updating packages...'; " +
+                "proot-distro login alpine -- sh -c 'echo \"Updating Alpine package index...\"; apk update; echo \"Upgrading Alpine packages...\"; apk upgrade'; " +
             "fi; " +
-            "echo '[*] Minimal Alpine setup'; " +
-            "proot-distro login alpine -- /bin/sh -lc '" +
-                "echo \"[*] Installing basic packages...\"; " +
-                "apk update >/dev/null 2>&1 || true; " +
-                "apk add --no-cache openssh bash sudo >/dev/null 2>&1 || true; " +
-                "echo \"[*] Packages installed\"; " +
-                "echo \"[*] Ready for manual SSH setup\"; " +
-                "echo \"====================================\"; " +
-                "echo \"Manual SSH Setup Commands:\"; " +
-                "echo \"1. adduser -s /bin/bash samsara\"; " +
-                "echo \"2. passwd root\"; " +
-                "echo \"3. passwd samsara\"; " +
-                "echo \"4. addgroup samsara wheel\"; " +
-                "echo \"5. ssh-keygen -A\"; " +
-                "echo \"6. /usr/sbin/sshd -D -p 2222\"; " +
-                "echo \"====================================\"; " +
-            "'; " +
-            "PHONE_IP=\"\"; if command -v ip >/dev/null 2>&1; then PHONE_IP=$(ip -4 route get 1.1.1.1 2>/dev/null | sed -n \"s/.* src \\([0-9.]*\\).*/\\1/p\"); fi; " +
-            "if [ -z \"$PHONE_IP\" ] && command -v ip >/dev/null 2>&1; then IFACE=$(ip route 2>/dev/null | sed -n \"s/^default .* dev \\([^ ]*\\).*/\\1/p\" | head -n1); if [ -n \"$IFACE\" ]; then PHONE_IP=$(ip -o -4 addr show dev \"$IFACE\" scope global 2>/dev/null | sed -n \"s/.* inet \\([0-9.]*\\)\\/.*/\\1/p\" | head -n1); fi; fi; " +
-            "case \"$PHONE_IP\" in 127.*|0.0.0.0|\"\") PHONE_IP=\"\";; esac; " +
-            "if [ -z \"$PHONE_IP\" ] && command -v ifconfig >/dev/null 2>&1; then PHONE_IP=$(ifconfig 2>/dev/null | sed -n \"s/.*inet \\([0-9.]*\\).*/\\1/p\" | grep -v 127.0.0.1 | head -n1); fi; " +
-            "if command -v getprop >/dev/null 2>&1 && [ -z \"$PHONE_IP\" ]; then PHONE_IP=$(getprop dhcp.wlan0.ipaddress 2>/dev/null); [ -z \"$PHONE_IP\" ] && PHONE_IP=$(getprop dhcp.rmnet0.ipaddress 2>/dev/null); fi; " +
-            "if [ -n \"$PHONE_IP\" ]; then echo \"[*] Device LAN IP: $PHONE_IP\"; echo \"[*] Connect with: ssh samsara@$PHONE_IP -p 2222\"; else echo \"[*] Connect with: ssh samsara@<phone-ip> -p 2222\"; fi; " +
-            "echo \"SamsaraServer Alpine Linux Ready (user: samsara)\" && proot-distro login alpine --user samsara";
+            "echo '[*] Preparing scripts for manual SSH setup inside Alpine'; " +
+            "mkdir -p \"$HOME/scripts\"; " +
+            extractAssetsScript("scripts/setup_alpine_ssh.sh") +
+            // Copy script into Alpine root's scripts directory
+            "echo '[*] Copying setup_alpine_ssh.sh into Alpine /root/scripts' ; " +
+            "cat \"$HOME/scripts/setup_alpine_ssh.sh\" | proot-distro login alpine -- sh -lc 'mkdir -p /root/scripts; cat > /root/scripts/setup_alpine_ssh.sh; chmod +x /root/scripts/setup_alpine_ssh.sh' ; " +
+            // Open an interactive Alpine shell and instruct the user to run the script.
+            // Avoid using '-l' to prevent '/bin/sh: illegal option -P' issues on some builds.
+            "proot-distro login alpine -- /bin/sh -c '" +
+                "echo \"=============================================\"; " +
+                "echo \"Manual SSH setup requested.\"; " +
+                "echo \"Run:  sh /root/scripts/setup_alpine_ssh.sh\"; " +
+                "echo \"Then start: /usr/sbin/sshd -D -e -p 2222 -o StrictModes=no -o PasswordAuthentication=yes\"; " +
+                "echo \"=============================================\"; " +
+                "exec /bin/sh" +
+            "'";
         
         String workingDirectory = getProperties().getDefaultWorkingDirectory();
         String[] arguments = {"-c", setupScript};
