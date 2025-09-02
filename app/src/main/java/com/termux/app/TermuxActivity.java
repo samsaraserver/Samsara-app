@@ -1011,37 +1011,29 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             "if [ ! -d \"$PREFIX/var/lib/proot-distro/installed-rootfs/alpine\" ]; then " +
                 "proot-distro install alpine; " +
             "fi; " +
+            "echo '[*] Minimal Alpine setup'; " +
             "proot-distro login alpine -- /bin/sh -lc '" +
+                "echo \"[*] Installing basic packages...\"; " +
                 "apk update >/dev/null 2>&1 || true; " +
-                "apk add --no-cache bash sudo >/dev/null 2>&1 || true; " +
-                "id -u samsara >/dev/null 2>&1 || adduser -D -s /bin/bash samsara; " +
-                "addgroup -S wheel >/dev/null 2>&1 || true; " +
-                "addgroup samsara wheel >/dev/null 2>&1 || true; " +
-                "sed -i \"s/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/\" /etc/sudoers; " +
-                "printf \"rootserver\\nrootserver\\n\" | passwd samsara >/dev/null 2>&1; " +
-                "printf \"rootserver\\nrootserver\\n\" | passwd root >/dev/null 2>&1 || true; " +
-                "apk add --no-cache openssh openrc iproute2 >/dev/null 2>&1 || true; " +
-                "CFG=/etc/ssh/sshd_config; TMP=$(mktemp); if [ -f \"$CFG\" ]; then cp \"$CFG\" \"$TMP\"; else : > \"$TMP\"; fi; " +
-                "# Ensure our ports are set explicitly (2222 and 8022)\n" +
-                "sed -i \"/^Port /d\" \"$TMP\"; echo \"Port 2222\" >> \"$TMP\"; echo \"Port 8022\" >> \"$TMP\"; " +
-                "grep -q \"^PasswordAuthentication \" \"$TMP\" && sed -i \"s/^PasswordAuthentication .*/PasswordAuthentication yes/\" \"$TMP\" || echo \"PasswordAuthentication yes\" >> \"$TMP\"; " +
-                "grep -q \"^PermitRootLogin \" \"$TMP\" && sed -i \"s/^PermitRootLogin .*/PermitRootLogin no/\" \"$TMP\" || echo \"PermitRootLogin no\" >> \"$TMP\"; " +
-                "sed -i \"/^UsePAM /d\" \"$TMP\"; " +
-                "mv \"$TMP\" \"$CFG\"; " +
-                "if [ -d /etc/ssh/sshd_config.d ]; then sed -i \"/^UsePAM /d\" /etc/ssh/sshd_config.d/*.conf 2>/dev/null || true; fi; " +
-                "mkdir -p /var/empty && chmod 0755 /var/empty || true; " +
-                "pgrep -x sshd >/dev/null 2>&1 && pkill -x sshd || true; " +
-                "mkdir -p /run/sshd && chmod 0755 /run/sshd; " +
-                "/usr/sbin/sshd -t -f \"$CFG\" 2>&1 | while IFS= read -r line; do echo [sshd-test] \"$line\"; done; " +
-                "if command -v nc >/dev/null 2>&1 && nc -z -w1 127.0.0.1 2222 || command -v nc >/dev/null 2>&1 && nc -z -w1 127.0.0.1 8022 || ss -ltn 2>/dev/null | grep -E -q \":(2222|8022)\" || netstat -ltn 2>/dev/null | grep -E -q \":(2222|8022)\" || pgrep -x sshd >/dev/null 2>&1; then printf \"[*] sshd appears already running on 0.0.0.0:2222,8022\\n\"; else /usr/sbin/sshd -f \"$CFG\" -o ListenAddress=0.0.0.0 -o AddressFamily=inet -o LogLevel=VERBOSE -E /var/log/sshd.log; RC=$?; fi; " +
-                "sleep 1; if command -v nc >/dev/null 2>&1 && nc -z -w1 127.0.0.1 2222 || command -v nc >/dev/null 2>&1 && nc -z -w1 127.0.0.1 8022 || ss -ltn 2>/dev/null | grep -E -q \":(2222|8022)\" || netstat -ltn 2>/dev/null | grep -E -q \":(2222|8022)\"; then printf \"[*] sshd listening on 0.0.0.0:2222,8022\\n\"; elif grep -q \"Address in use\" /var/log/sshd.log 2>/dev/null; then printf \"[*] sshd appears already running on 0.0.0.0:2222,8022\\n\"; else printf \"[!] sshd not listening; showing recent log:\\\n\"; tail -n 50 /var/log/sshd.log 2>/dev/null | while IFS= read -r line; do echo [sshd] \"$line\"; done; fi; printf \"[*] sshd bootstrap done\\n\"; " +
+                "apk add --no-cache openssh bash sudo >/dev/null 2>&1 || true; " +
+                "echo \"[*] Packages installed\"; " +
+                "echo \"[*] Ready for manual SSH setup\"; " +
+                "echo \"====================================\"; " +
+                "echo \"Manual SSH Setup Commands:\"; " +
+                "echo \"1. adduser -s /bin/bash samsara\"; " +
+                "echo \"2. passwd root\"; " +
+                "echo \"3. passwd samsara\"; " +
+                "echo \"4. addgroup samsara wheel\"; " +
+                "echo \"5. ssh-keygen -A\"; " +
+                "echo \"6. /usr/sbin/sshd -D -p 2222\"; " +
+                "echo \"====================================\"; " +
             "'; " +
             "PHONE_IP=\"\"; if command -v ip >/dev/null 2>&1; then PHONE_IP=$(ip -4 route get 1.1.1.1 2>/dev/null | sed -n \"s/.* src \\([0-9.]*\\).*/\\1/p\"); fi; " +
             "if [ -z \"$PHONE_IP\" ] && command -v ip >/dev/null 2>&1; then IFACE=$(ip route 2>/dev/null | sed -n \"s/^default .* dev \\([^ ]*\\).*/\\1/p\" | head -n1); if [ -n \"$IFACE\" ]; then PHONE_IP=$(ip -o -4 addr show dev \"$IFACE\" scope global 2>/dev/null | sed -n \"s/.* inet \\([0-9.]*\\)\\/.*/\\1/p\" | head -n1); fi; fi; " +
             "case \"$PHONE_IP\" in 127.*|0.0.0.0|\"\") PHONE_IP=\"\";; esac; " +
             "if [ -z \"$PHONE_IP\" ] && command -v ifconfig >/dev/null 2>&1; then PHONE_IP=$(ifconfig 2>/dev/null | sed -n \"s/.*inet \\([0-9.]*\\).*/\\1/p\" | grep -v 127.0.0.1 | head -n1); fi; " +
             "if command -v getprop >/dev/null 2>&1 && [ -z \"$PHONE_IP\" ]; then PHONE_IP=$(getprop dhcp.wlan0.ipaddress 2>/dev/null); [ -z \"$PHONE_IP\" ] && PHONE_IP=$(getprop dhcp.rmnet0.ipaddress 2>/dev/null); fi; " +
-            "if [ -n \"$PHONE_IP\" ]; then echo \"[*] Device LAN IP: $PHONE_IP\"; echo \"[*] If sshd is listening, connect with: ssh samsara@$PHONE_IP -p 2222 (or -p 8022)\"; else echo \"[*] If sshd is listening, connect with: ssh samsara@<phone-ip> -p 2222 (or -p 8022)\"; fi; " +
+            "if [ -n \"$PHONE_IP\" ]; then echo \"[*] Device LAN IP: $PHONE_IP\"; echo \"[*] Connect with: ssh samsara@$PHONE_IP -p 2222\"; else echo \"[*] Connect with: ssh samsara@<phone-ip> -p 2222\"; fi; " +
             "echo \"SamsaraServer Alpine Linux Ready (user: samsara)\" && proot-distro login alpine --user samsara";
         
         String workingDirectory = getProperties().getDefaultWorkingDirectory();
@@ -1053,6 +1045,30 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
         mTermuxTerminalSessionActivityClient.setCurrentSession(newTerminalSession);
         getDrawer().closeDrawers();
+    }
+
+    private String extractAssetsScript(String assetPath) {
+        try {
+            java.io.InputStream inputStream = getAssets().open(assetPath);
+            java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, length);
+            }
+            inputStream.close();
+            String scriptContent = outputStream.toString("UTF-8");
+            outputStream.close();
+            
+            String fileName = assetPath.substring(assetPath.lastIndexOf('/') + 1);
+            String base64Content = android.util.Base64.encodeToString(scriptContent.getBytes("UTF-8"), android.util.Base64.NO_WRAP);
+            
+            return "echo '" + base64Content + "' | base64 -d > \"$HOME/scripts/" + fileName + "\"; " +
+                   "chmod +x \"$HOME/scripts/" + fileName + "\"; ";
+        } catch (Exception e) {
+            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to extract script from assets: " + assetPath, e);
+            return "echo '[!] Failed to extract script: " + assetPath + "'; ";
+        }
     }
 
     public static void startTermuxActivity(@NonNull final Context context) {

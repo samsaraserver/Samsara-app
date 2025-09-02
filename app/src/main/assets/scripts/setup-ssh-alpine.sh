@@ -3,6 +3,9 @@ set -e
 
 echo "[*] SSH setup starting"
 
+echo "[*] Installing required packages for SSH"
+apk add --no-cache psmisc >/dev/null 2>&1 || true
+
 if ! apk info -e openssh >/dev/null 2>&1; then
   echo "[*] Installing openssh"
   apk update >/dev/null 2>&1 || true
@@ -21,41 +24,52 @@ if ! command -v ip >/dev/null 2>&1; then
   apk add --no-cache iproute2 >/dev/null 2>&1 || true
 fi
 
+echo "[*] Creating and configuring samsara user FIRST"
 if ! id -u samsara >/dev/null 2>&1; then
   echo "[*] Creating user samsara"
   adduser -D -s /bin/sh samsara
+else
+  echo "[*] User samsara already exists"
 fi
 
 echo "[*] Setting password for samsara"
-printf "rootserver\nrootserver\n" | passwd samsara >/dev/null 2>&1 || true
+echo "samsara:server" | chpasswd || printf "server\nserver\n" | passwd samsara >/dev/null 2>&1 || true
+
+echo "[*] Ensuring samsara user home directory exists and has correct permissions"
+mkdir -p /home/samsara
+chown samsara:samsara /home/samsara
+chmod 755 /home/samsara
+
+echo "[*] Verifying user setup"
+id samsara || echo "[!] User verification failed"
 
 CFG=/etc/ssh/sshd_config
 TMP=$(mktemp)
 
-if [ -f "$CFG" ]; then
-  cp "$CFG" "$TMP"
-else
-  : > "$TMP"
-fi
-
-sed -i '/^Port /d' "$TMP"; echo "Port 2222" >> "$TMP"
-grep -q "^PasswordAuthentication " "$TMP" && sed -i "s/^PasswordAuthentication .*/PasswordAuthentication yes/" "$TMP" || echo "PasswordAuthentication yes" >> "$TMP"
-grep -q "^PermitRootLogin " "$TMP" && sed -i "s/^PermitRootLogin .*/PermitRootLogin no/" "$TMP" || echo "PermitRootLogin no" >> "$TMP"
-grep -q "^PubkeyAuthentication " "$TMP" && sed -i "s/^PubkeyAuthentication .*/PubkeyAuthentication no/" "$TMP" || echo "PubkeyAuthentication no" >> "$TMP"
-grep -q "^AuthorizedKeysFile " "$TMP" && sed -i "s/^AuthorizedKeysFile .*//" "$TMP"
-sed -i "/^UsePAM /d" "$TMP"
+echo "[*] Creating clean SSH config"
+cat > "$TMP" << 'EOF'
+Port 2222
+PasswordAuthentication yes
+PermitRootLogin no
+PubkeyAuthentication no
+ChallengeResponseAuthentication no
+PrintMotd no
+Subsystem sftp /usr/lib/openssh/sftp-server
+EOF
 
 mv "$TMP" "$CFG"
 
-# Remove unsupported UsePAM from any included configs
 if [ -d /etc/ssh/sshd_config.d ]; then
   sed -i '/^UsePAM /Id' /etc/ssh/sshd_config.d/*.conf 2>/dev/null || true
 fi
 
 if pgrep -x sshd >/dev/null 2>&1; then
-  echo "[*] Stopping existing sshd"
+  echo "[*] Stopping existing sshd processes"
   pkill -x sshd || true
-  sleep 2
+  sleep 3
+  echo "[*] Killing any remaining SSH processes on port 2222"
+  fuser -k 2222/tcp 2>/dev/null || true
+  sleep 1
 fi
 
 echo "[*] Ensuring host keys exist"
@@ -74,10 +88,19 @@ mkdir -p /var/empty && chmod 0755 /var/empty || true
 mkdir -p /run/sshd && chmod 0755 /run/sshd || true
 
 echo "[*] Starting sshd daemon"
-/usr/sbin/sshd -f "$CFG" || {
-  echo "[*] Direct sshd failed, trying with explicit options"
-  /usr/sbin/sshd -p 2222 -o PasswordAuthentication=yes -o PermitRootLogin=no -o PidFile=/run/sshd.pid || true
-}
+echo "[*] Final check - killing anything on port 2222"
+fuser -k 2222/tcp 2>/dev/null || true
+sleep 1
+
+if /usr/sbin/sshd -f "$CFG" -D &
+then
+  echo "[*] sshd started in background"
+  sleep 2
+else
+  echo "[*] Background start failed, trying explicit options"
+  /usr/sbin/sshd -p 2222 -o PasswordAuthentication=yes -o PermitRootLogin=no -o UsePAM=no -D &
+  sleep 2
+fi
 
 sleep 2
 echo "[*] Checking if sshd is running"
@@ -88,9 +111,19 @@ if pgrep -x sshd >/dev/null 2>&1; then
     echo "[*] sshd listening on port 2222"
   else
     echo "[!] sshd running but not listening on port 2222"
+    echo "[*] Checking what's using port 2222:"
+    netstat -ltnp 2>/dev/null | grep ":2222" || echo "[*] No process found on port 2222"
   fi
 else
   echo "[!] sshd not running"
+  echo "[*] Checking sshd logs:"
+  if [ -f /var/log/sshd.log ]; then
+    tail -n 10 /var/log/sshd.log | sed 's/^/[sshd-log] /'
+  else
+    echo "[*] No sshd log file found"
+  fi
+  echo "[*] Trying to start sshd in foreground for debugging:"
+  timeout 3 /usr/sbin/sshd -D -p 2222 -o PasswordAuthentication=yes -o PermitRootLogin=no -o LogLevel=DEBUG 2>&1 | sed 's/^/[sshd-debug] /' &
 fi
 
 echo "[*] SSH ready on port 2222"
