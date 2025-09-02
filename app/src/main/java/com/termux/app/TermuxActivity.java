@@ -1007,41 +1007,18 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (service == null) return;
 
         String setupScript =
-            "echo '[*] Updating Termux package repositories...'; " +
-            "pkg update -y; " +
-            "echo '[*] Upgrading existing packages (auto-accepting config updates)...'; " +
-            "DEBIAN_FRONTEND=noninteractive pkg upgrade -y -o Dpkg::Options::=\"--force-confnew\"; " +
-            "echo '[*] Installing/upgrading proot-distro...'; " +
-            "pkg install -y proot-distro; " +
-            "echo '[*] Checking proot-distro version:'; " +
-            "pkg show proot-distro | grep Version || echo 'Version check failed'; " +
-            "if [ ! -d \"$PREFIX/var/lib/proot-distro/installed-rootfs/alpine\" ]; then " +
-                "echo '[*] Installing Alpine Linux (first time setup)...'; " +
-                "proot-distro install alpine; " +
-            "else " +
-                "echo '[*] Alpine Linux already installed, updating packages...'; " +
-                "proot-distro login alpine -- sh -c 'echo \"Updating Alpine package index...\"; apk update; echo \"Upgrading Alpine packages...\"; apk upgrade'; " +
-            "fi; " +
-            "echo '[*] Preparing scripts for manual SSH setup inside Alpine'; " +
+            "echo '[*] Preparing scripts and bootstrapper' ; " +
             "mkdir -p \"$HOME/scripts\"; " +
-            extractAssetsScript("scripts/setup_alpine_users.sh") +
-            extractAssetsScript("scripts/setup_alpine_ssh.sh") +
-            extractAssetsScript("scripts/auto_setup_alpine.sh") +
-            // Copy scripts into Alpine root's scripts directory
-            "echo '[*] Copying scripts into Alpine /root/scripts' ; " +
-            "tar -C \"$HOME/scripts\" -cf - setup_alpine_users.sh setup_alpine_ssh.sh auto_setup_alpine.sh | proot-distro login alpine -- sh -lc 'mkdir -p /root/scripts; tar -C /root/scripts -xpf -; chmod +x /root/scripts/*.sh' ; " +
-            // Run auto-setup inside Alpine, then drop into an interactive shell.
-            // Avoid login shell flags to prevent '/bin/sh: illegal option -P'.
-            "proot-distro login alpine -- /bin/sh -c '" +
-                "sh /root/scripts/auto_setup_alpine.sh || echo \"[!] Auto setup had issues; you can run scripts in /root/scripts manually.\"; " +
-                "echo \"=============================================\"; " +
-                "echo \"Alpine is ready. SSH should be listening on port 2222.\"; " +
-                "echo \"Users: root (server), samsara (server).\"; " +
-                "echo \"=============================================\"; " +
-                "exec /bin/sh" +
-            "'";
+            // Extract in-Alpine scripts from internal subfolder (do not modify behavior)
+            extractAssetsScript("scripts/internal/setup_alpine_users.sh") +
+            extractAssetsScript("scripts/internal/setup_alpine_ssh.sh") +
+            extractAssetsScript("scripts/internal/start-sshd-foreground.sh") +
+            // Extract host bootstrapper with spinner
+            extractAssetsScript("scripts/host_bootstrap.sh") +
+            // Run the host-side bootstrapper which hides noise and copies scripts to Alpine
+            "exec /bin/sh \"$HOME/scripts/host_bootstrap.sh\"";
         
-        String workingDirectory = getProperties().getDefaultWorkingDirectory();
+    String workingDirectory = getProperties().getDefaultWorkingDirectory();
         String[] arguments = {"-c", setupScript};
         
         TermuxSession newTermuxSession = service.createTermuxSession("/system/bin/sh", arguments, null, workingDirectory, false, "Alpine");
