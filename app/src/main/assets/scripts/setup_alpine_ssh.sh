@@ -20,26 +20,32 @@ if [ -f "$CFG.pkg-default" ]; then
   cp -f "$CFG.pkg-default" "$CFG"
 fi
 
-# 1) Comment Include lines in main config to avoid unexpected overrides
-sed -i 's/^\s*Include\b/# &/I' "$CFG" || true
+# 1) Comment Include lines in main config to avoid unexpected overrides (BusyBox sed compatible)
+sed -i 's/^Include\b/# &/' "$CFG" || true
 
 # 2) Neutralize Port directives in snippet dir
 if [ -d /etc/ssh/sshd_config.d ]; then
   for f in /etc/ssh/sshd_config.d/*.conf; do
-    [ -f "$f" ] && sed -i 's/^\s*Port\b/# &/I' "$f"
+  [ -f "$f" ] && sed -i 's/^Port\b/# &/' "$f"
   done
 fi
 
 # 3) Ensure a single Port directive at the end
-sed -i 's/^\s*#\?\s*Port\b.*/# Port overridden by setup_alpine_ssh.sh/I' "$CFG" || true
+sed -i '/^Port\b/d' "$CFG" || true
 printf '\nPort 2222\n' >> "$CFG"
 
 # 4) Remove UsePAM if present (not supported in this Alpine setup)
-sed -i '/^\s*UsePAM\b/I d' "$CFG" || true
+sed -i '/^UsePAM\b/d' "$CFG" || true
+
+# 5) Force password auth and allow root login (explicit)
+sed -i '/^PasswordAuthentication\b/d' "$CFG" || true
+printf 'PasswordAuthentication yes\n' >> "$CFG"
+sed -i '/^PermitRootLogin\b/d' "$CFG" || true
+printf 'PermitRootLogin yes\n' >> "$CFG"
 
 # 5) Ensure Subsystem sftp path is correct on Alpine
-if grep -qi '^\s*Subsystem\s\+sftp' "$CFG"; then
-  sed -i 's#^\s*Subsystem\s\+sftp\b.*#Subsystem sftp /usr/lib/ssh/sftp-server#I' "$CFG" || true
+if grep -q '^Subsystem[[:space:]]\+sftp' "$CFG"; then
+  sed -i 's#^Subsystem[[:space:]]\+sftp\b.*#Subsystem sftp /usr/lib/ssh/sftp-server#' "$CFG" || true
 else
   printf 'Subsystem sftp /usr/lib/ssh/sftp-server\n' >> "$CFG"
 fi

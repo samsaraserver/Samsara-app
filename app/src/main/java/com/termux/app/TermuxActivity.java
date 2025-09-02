@@ -1024,17 +1024,19 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             "fi; " +
             "echo '[*] Preparing scripts for manual SSH setup inside Alpine'; " +
             "mkdir -p \"$HOME/scripts\"; " +
+            extractAssetsScript("scripts/setup_alpine_users.sh") +
             extractAssetsScript("scripts/setup_alpine_ssh.sh") +
-            // Copy script into Alpine root's scripts directory
-            "echo '[*] Copying setup_alpine_ssh.sh into Alpine /root/scripts' ; " +
-            "cat \"$HOME/scripts/setup_alpine_ssh.sh\" | proot-distro login alpine -- sh -lc 'mkdir -p /root/scripts; cat > /root/scripts/setup_alpine_ssh.sh; chmod +x /root/scripts/setup_alpine_ssh.sh' ; " +
-            // Open an interactive Alpine shell and instruct the user to run the script.
-            // Avoid using '-l' to prevent '/bin/sh: illegal option -P' issues on some builds.
+            extractAssetsScript("scripts/auto_setup_alpine.sh") +
+            // Copy scripts into Alpine root's scripts directory
+            "echo '[*] Copying scripts into Alpine /root/scripts' ; " +
+            "tar -C \"$HOME/scripts\" -cf - setup_alpine_users.sh setup_alpine_ssh.sh auto_setup_alpine.sh | proot-distro login alpine -- sh -lc 'mkdir -p /root/scripts; tar -C /root/scripts -xpf -; chmod +x /root/scripts/*.sh' ; " +
+            // Run auto-setup inside Alpine, then drop into an interactive shell.
+            // Avoid login shell flags to prevent '/bin/sh: illegal option -P'.
             "proot-distro login alpine -- /bin/sh -c '" +
+                "sh /root/scripts/auto_setup_alpine.sh || echo \"[!] Auto setup had issues; you can run scripts in /root/scripts manually.\"; " +
                 "echo \"=============================================\"; " +
-                "echo \"Manual SSH setup requested.\"; " +
-                "echo \"Run:  sh /root/scripts/setup_alpine_ssh.sh\"; " +
-                "echo \"Then start: /usr/sbin/sshd -D -e -p 2222 -o StrictModes=no -o PasswordAuthentication=yes\"; " +
+                "echo \"Alpine is ready. SSH should be listening on port 2222.\"; " +
+                "echo \"Users: root (server), samsara (server).\"; " +
                 "echo \"=============================================\"; " +
                 "exec /bin/sh" +
             "'";
