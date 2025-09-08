@@ -51,6 +51,7 @@
         android:theme="@style/Theme.TermuxApp.DayNight.DarkActionBar"
         tools:targetApi="m">
 
+
         <activity
             android:name=".app.SamsaraStartupActivity"
             android:exported="true"
