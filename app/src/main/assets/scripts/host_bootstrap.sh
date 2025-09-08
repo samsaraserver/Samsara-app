@@ -38,13 +38,23 @@ do_bootstrap() {
 		fi
 		echo "[*] Copying scripts into Alpine /root/scripts..."
 		mkdir -p "$HOME/scripts"
-		# Build tar of known script names if present
-		TO_COPY=""
-		for f in setup_alpine_users.sh setup_alpine_ssh.sh start-sshd-foreground.sh; do
-			[ -f "$HOME/scripts/$f" ] && TO_COPY="$TO_COPY $f"
-		done
+			# Copy unified setup script if present
+			TO_COPY=""
+			for f in setup; do
+				[ -f "$HOME/scripts/$f" ] && TO_COPY="$TO_COPY $f"
+			done
 		if [ -n "$TO_COPY" ]; then
-			tar -C "$HOME/scripts" -cf - $TO_COPY | proot-distro login alpine -- sh -lc 'mkdir -p /root/scripts && tar -C /root/scripts -xpf - && chmod +x /root/scripts/*.sh || true'
+			tar -C "$HOME/scripts" -cf - $TO_COPY | proot-distro login alpine -- sh -lc '
+			set -e
+			mkdir -p /root/scripts
+			tar -C /root/scripts -xpf -
+			# Normalize Windows CRLF newlines to LF and ensure executable
+			sed -i "s/\r$//" /root/scripts/setup 2>/dev/null || true
+			chmod 0755 /root/scripts/setup || true
+			# Install globally so `setup` works from anywhere
+			mkdir -p /usr/local/bin
+			cp -f /root/scripts/setup /usr/local/bin/setup || install -m 0755 /root/scripts/setup /usr/local/bin/setup
+		'
 		else
 			echo "[!] No scripts found in $HOME/scripts to copy."
 		fi
@@ -65,14 +75,8 @@ LOGIN_USER=$(proot-distro login alpine -- sh -lc 'id -u samsara >/dev/null 2>&1 
 cat <<'EOM'
 
 Manual steps inside Alpine (run as needed):
-	# Create users (root/samsara passwords: server)
-	sh /root/scripts/setup_alpine_users.sh
-
-	# Configure SSH to listen on port 2222
-	sh /root/scripts/setup_alpine_ssh.sh
-
-	# Start sshd in foreground for debugging
-	sh /root/scripts/start-sshd-foreground.sh
+	# Run unified setup from anywhere (defaults: port 2222, foreground sshd)
+	setup
 
 Connect from another device:
 	ssh samsara@<phone-ip> -p 2222   # password: server

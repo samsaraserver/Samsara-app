@@ -1,0 +1,202 @@
+#!/bin/sh
+# Consolidated Alpine setup for SamsaraServer
+set -e
+
+PORT=2222
+MODE=foreground
+DO_USERS=1
+DO_SSH=1
+DO_START=1
+
+usage() {
+  cat <<EOF
+Usage: setup [options]
+
+Options:
+  --port N           SSH port (default: 2222)
+  --foreground       Start sshd in foreground (default)
+  --background       Start sshd in background (not persistent after proot exit)
+  --no-users         Skip user creation/passwords
+  --no-ssh-config    Skip sshd_config changes
+  --no-start         Do not start sshd
+  -h, --help         Show this help
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --port) PORT="$2"; shift;;
+    --foreground) MODE=foreground;;
+    --background) MODE=background;;
+    --no-users) DO_USERS=0;;
+    --no-ssh-config) DO_SSH=0;;
+    --no-start) DO_START=0;;
+    -h|--help) usage; exit 0;;
+    *) echo "Unknown option: $1" >&2; usage; exit 1;;
+  esac
+  shift
+done
+
+log() { printf '%s\n' "$*"; }
+
+ensure_openssh() {
+  if ! command -v sshd >/dev/null 2>&1; then
+    log "[*] Installing OpenSSH server..."
+    apk update >/dev/null 2>&1 || true
+    apk add --no-progress openssh openssh-server >/dev/null 2>&1 || apk add openssh openssh-server
+  fi
+}
+
+ensure_shadow() {
+  if ! command -v chpasswd >/dev/null 2>&1; then
+    log "[*] Installing shadow utilities for password management..."
+    apk add --no-progress shadow >/dev/null 2>&1 || apk add shadow
+  fi
+}
+
+ensure_shells() {
+  # Make sure allowed shells list contains /bin/sh and /bin/bash (if installed)
+  for s in /bin/sh /bin/bash; do
+    [ -x "$s" ] || [ "$s" = "/bin/bash" ] && {
+      grep -qxF "$s" /etc/shells 2>/dev/null || echo "$s" >> /etc/shells
+    }
+  done
+}
+
+safe_set_shell() {
+  # safe_set_shell <user> <shell>
+  u="$1"; shpath="$2"
+  ensure_shells
+  if command -v chsh >/dev/null 2>&1; then
+    chsh -s "$shpath" "$u" >/dev/null 2>&1 || true
+  fi
+  # Fallback edit /etc/passwd
+  sed -i "s#^\($u:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\).*#\\1$shpath#" /etc/passwd || true
+}
+
+set_password() {
+  # set_password <user> <pass>
+  u="$1"; p="$2"
+  if command -v chpasswd >/dev/null 2>&1; then
+    echo "$u:$p" | chpasswd
+  else
+    # Fallback to passwd via stdin
+    printf "%s\n%s\n" "$p" "$p" | passwd "$u"
+  fi
+  # Unlock if locked
+  passwd -u "$u" >/dev/null 2>&1 || true
+}
+
+setup_users() {
+  log "[*] Configuring users (root/samsara passwords: server)"
+  USER_SHELL="/bin/sh"
+  if command -v bash >/dev/null 2>&1; then USER_SHELL="/bin/bash"; fi
+  if ! id -u samsara >/dev/null 2>&1; then
+    adduser -D -s "$USER_SHELL" samsara
+  fi
+  addgroup -S wheel 2>/dev/null || true
+  addgroup samsara wheel 2>/dev/null || true
+  ensure_shadow
+  set_password root server
+  set_password samsara server
+  # Ensure valid shell for samsara; if /bin/bash missing, use /bin/sh
+  if [ "$USER_SHELL" = "/bin/bash" ] && [ ! -x /bin/bash ]; then USER_SHELL="/bin/sh"; fi
+  safe_set_shell samsara "$USER_SHELL"
+  # Root shell should also exist
+  grep -q '^root:.*:/bin/' /etc/passwd 2>/dev/null || true
+  [ -x /bin/sh ] && safe_set_shell root "/bin/sh"
+  # Remove nologin if present which blocks all users
+  [ -f /etc/nologin ] && rm -f /etc/nologin || true
+}
+
+setup_ssh() {
+  log "[*] Configuring sshd (port $PORT)"
+  CFG=/etc/ssh/sshd_config
+  # Restore default if preserved
+  if [ -f "$CFG.pkg-default" ]; then cp -f "$CFG.pkg-default" "$CFG"; fi
+  # Ensure shadow present for proper auth databases
+  ensure_shadow
+  # Avoid Include overrides
+  sed -i 's/^Include\b/# &/' "$CFG" || true
+  if [ -d /etc/ssh/sshd_config.d ]; then
+    for f in /etc/ssh/sshd_config.d/*.conf; do [ -f "$f" ] && sed -i 's/^Port\b/# &/' "$f"; done
+  fi
+  sed -i '/^Port\b/d' "$CFG" || true
+  printf '\nPort %s\n' "$PORT" >> "$CFG"
+  sed -i '/^UsePAM\b/d' "$CFG" || true
+  sed -i '/^PasswordAuthentication\b/d' "$CFG" || true
+  printf 'PasswordAuthentication yes\n' >> "$CFG"
+  sed -i '/^PermitRootLogin\b/d' "$CFG" || true
+  printf 'PermitRootLogin yes\n' >> "$CFG"
+  # Do not delegate to /bin/login (breaks under proot). Disable lastlog/motd to avoid privileged writes.
+  sed -i '/^UseLogin\b/d' "$CFG" || true
+  printf 'UseLogin no\n' >> "$CFG"
+  sed -i '/^PrintLastLog\b/d' "$CFG" || true
+  printf 'PrintLastLog no\n' >> "$CFG"
+  sed -i '/^PrintMotd\b/d' "$CFG" || true
+  printf 'PrintMotd no\n' >> "$CFG"
+  sed -i '/^PermitEmptyPasswords\b/d' "$CFG" || true
+  printf 'PermitEmptyPasswords no\n' >> "$CFG"
+  sed -i '/^UseDNS\b/d' "$CFG" || true
+  printf 'UseDNS no\n' >> "$CFG"
+  sed -i '/^AuthorizedKeysFile\b/d' "$CFG" || true
+  printf 'AuthorizedKeysFile .ssh/authorized_keys\n' >> "$CFG"
+  if grep -q '^Subsystem[[:space:]]\+sftp' "$CFG"; then
+    sed -i 's#^Subsystem[[:space:]]\+sftp\b.*#Subsystem sftp /usr/lib/ssh/sftp-server#' "$CFG" || true
+  else
+    printf 'Subsystem sftp /usr/lib/ssh/sftp-server\n' >> "$CFG"
+  fi
+  log "[*] Generating host keys (if missing)"
+  ssh-keygen -A >/dev/null 2>&1 || true
+  mkdir -p /var/run/sshd /var/empty /run/sshd
+  chmod 755 /var/run/sshd /var/empty /run/sshd
+  # Prepare utmp/wtmp files to avoid login record errors
+  touch /var/run/utmp /var/log/wtmp 2>/dev/null || true
+  chmod 664 /var/run/utmp /var/log/wtmp 2>/dev/null || true
+  # Older option; harmless if unknown. Avoids extra privilege separation paths.
+  sed -i '/^UsePrivilegeSeparation\b/d' "$CFG" || true
+  printf 'UsePrivilegeSeparation no\n' >> "$CFG"
+  /usr/sbin/sshd -t
+}
+
+start_sshd() {
+  if [ "$MODE" = background ]; then
+    log "[*] Starting sshd on port $PORT in background (will stop when proot session exits)"
+  PROOT_NO_SECCOMP=1 /usr/sbin/sshd -e -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes || true
+  else
+    LOGF=/tmp/sshd-debug.log
+    : > "$LOGF"
+    log "[*] Starting sshd in foreground on port $PORT (logs: $LOGF)"
+  export PROOT_NO_SECCOMP=1
+  exec /usr/sbin/sshd -D -e -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes 2>&1 | tee -a "$LOGF"
+  fi
+}
+
+print_summary() {
+  IP=""
+  if command -v ip >/dev/null 2>&1; then
+    IP=$(ip route get 1.1.1.1 2>/dev/null | sed -n 's/.*src \([0-9.]*\).*/\1/p')
+  fi
+  [ -z "$IP" ] && IP=$(hostname -i 2>/dev/null | awk '{print $1}')
+  case "$IP" in 127.*|0.0.0.0|"") IP="<phone-ip>";; esac
+  echo ""
+  echo "SamsaraServer Alpine Setup"
+  echo "=========================="
+  echo "Port: $PORT"
+  echo "Connect: ssh samsara@$IP -p $PORT (password: server)"
+  echo "          ssh root@$IP -p $PORT (password: server)"
+}
+
+ensure_openssh
+[ "$DO_USERS" = 1 ] && setup_users || true
+[ "$DO_SSH" = 1 ] && setup_ssh || true
+print_summary
+[ "$DO_START" = 1 ] && start_sshd || true
+
+# Quick sanity hints
+log "[i] If password login fails:"
+log "    - Re-run: setup --no-users --no-start && setup --no-ssh-config --foreground"
+log "    - Check: getent shadow root | cut -d: -f2 (should not be ! or *)"
+log "    - Test locally: ssh -p $PORT localhost (from inside Alpine)"
+
+exit 0
