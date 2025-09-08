@@ -69,26 +69,15 @@ wait "$BOOT_PID" || true
 
 echo "[*] Finished. Review logs at: $LOG"
 
-# Determine default Alpine login user: prefer samsara if present
-LOGIN_USER=$(proot-distro login alpine -- sh -lc 'id -u samsara >/dev/null 2>&1 && echo samsara || echo root')
-
 cat <<'EOM'
 
 Manual steps inside Alpine (run as needed):
-	# Run unified setup from anywhere (defaults: port 2222, foreground sshd)
+	# Run root-only setup (defaults: port 2222, background sshd)
 	setup
 
 Connect from another device:
-	ssh samsara@<phone-ip> -p 2222   # password: server
 	ssh root@<phone-ip> -p 2222      # password: server
 EOM
 
-echo "[*] Opening Alpine shell as $LOGIN_USER..."
-# Always enter as root, then switch to samsara with a safe shell if present.
-exec proot-distro login alpine -- /bin/sh -lc '
-	if id -u samsara >/dev/null 2>&1; then
-		exec su -s /bin/sh -l samsara
-	else
-		exec /bin/sh -l
-	fi
-'
+echo "[*] Opening Alpine shell as root..."
+exec proot-distro login alpine -- /bin/sh -l

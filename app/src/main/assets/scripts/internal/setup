@@ -3,8 +3,8 @@
 set -e
 
 PORT=2222
-MODE=foreground
-DO_USERS=1
+MODE=background
+DO_USERS=0
 DO_SSH=1
 DO_START=1
 DO_TTY=1
@@ -80,33 +80,25 @@ safe_set_shell() {
 set_password() {
   # set_password <user> <pass>
   u="$1"; p="$2"
+  # Force unlock first in case account is locked
+  passwd -u "$u" >/dev/null 2>&1 || true
   if command -v chpasswd >/dev/null 2>&1; then
-    echo "$u:$p" | chpasswd
+    echo "$u:$p" | chpasswd 2>/dev/null || {
+      # Fallback to passwd via stdin if chpasswd fails
+      printf "%s\n%s\n" "$p" "$p" | passwd "$u" 2>/dev/null || true
+    }
   else
     # Fallback to passwd via stdin
-    printf "%s\n%s\n" "$p" "$p" | passwd "$u"
+    printf "%s\n%s\n" "$p" "$p" | passwd "$u" 2>/dev/null || true
   fi
-  # Unlock if locked
-  passwd -u "$u" >/dev/null 2>&1 || true
 }
 
 setup_users() {
-  log "[*] Configuring users (root/samsara passwords: server)"
-  USER_SHELL="/bin/sh"
-  if command -v bash >/dev/null 2>&1; then USER_SHELL="/bin/bash"; fi
-  if ! id -u samsara >/dev/null 2>&1; then
-    adduser -D -s "$USER_SHELL" samsara
-  fi
-  addgroup -S wheel 2>/dev/null || true
-  addgroup samsara wheel 2>/dev/null || true
+  log "[*] Configuring root user (password: server)"
   ensure_shadow
+  # Only set root password - no additional users
   set_password root server
-  set_password samsara server
-  # Ensure valid shell for samsara; if /bin/bash missing, use /bin/sh
-  if [ "$USER_SHELL" = "/bin/bash" ] && [ ! -x /bin/bash ]; then USER_SHELL="/bin/sh"; fi
-  safe_set_shell samsara "$USER_SHELL"
-  # Root shell should also exist
-  grep -q '^root:.*:/bin/' /etc/passwd 2>/dev/null || true
+  # Ensure root has a valid shell
   [ -x /bin/sh ] && safe_set_shell root "/bin/sh"
   # Remove nologin if present which blocks all users
   [ -f /etc/nologin ] && rm -f /etc/nologin || true
@@ -125,19 +117,18 @@ setup_ssh() {
     for f in /etc/ssh/sshd_config.d/*.conf; do [ -f "$f" ] && sed -i 's/^Port\b/# &/' "$f"; done
   fi
   sed -i '/^Port\b/d' "$CFG" || true
+  sed -i '/^ListenAddress\b/d' "$CFG" || true
   printf '\nPort %s\n' "$PORT" >> "$CFG"
+  printf 'ListenAddress 0.0.0.0\n' >> "$CFG"
   sed -i '/^UsePAM\b/d' "$CFG" || true
   sed -i '/^PasswordAuthentication\b/d' "$CFG" || true
   printf 'PasswordAuthentication yes\n' >> "$CFG"
   sed -i '/^PermitRootLogin\b/d' "$CFG" || true
   printf 'PermitRootLogin yes\n' >> "$CFG"
-  # Do not delegate to /bin/login (breaks under proot). Disable lastlog/motd to avoid privileged writes.
+  # Remove deprecated options completely - do not re-add them
   sed -i '/^UseLogin\b/d' "$CFG" || true
-  printf 'UseLogin no\n' >> "$CFG"
   sed -i '/^PrintLastLog\b/d' "$CFG" || true
-  printf 'PrintLastLog no\n' >> "$CFG"
   sed -i '/^PrintMotd\b/d' "$CFG" || true
-  printf 'PrintMotd no\n' >> "$CFG"
   sed -i '/^PermitEmptyPasswords\b/d' "$CFG" || true
   printf 'PermitEmptyPasswords no\n' >> "$CFG"
   sed -i '/^UseDNS\b/d' "$CFG" || true
@@ -163,9 +154,8 @@ setup_ssh() {
   # Prepare utmp/wtmp files to avoid login record errors
   touch /var/run/utmp /var/log/wtmp 2>/dev/null || true
   chmod 664 /var/run/utmp /var/log/wtmp 2>/dev/null || true
-  # Older option; harmless if unknown. Avoids extra privilege separation paths.
+  # Remove deprecated UsePrivilegeSeparation completely
   sed -i '/^UsePrivilegeSeparation\b/d' "$CFG" || true
-  printf 'UsePrivilegeSeparation no\n' >> "$CFG"
   /usr/sbin/sshd -t
 }
 
@@ -190,11 +180,10 @@ print_summary() {
   [ -z "$IP" ] && IP=$(hostname -i 2>/dev/null | awk '{print $1}')
   case "$IP" in 127.*|0.0.0.0|"") IP="<phone-ip>";; esac
   echo ""
-  echo "SamsaraServer Alpine Setup"
-  echo "=========================="
+  echo "SamsaraServer Alpine Root-Only Setup"
+  echo "===================================="
   echo "Port: $PORT"
-  echo "Connect: ssh samsara@$IP -p $PORT (password: server)"
-  echo "          ssh root@$IP -p $PORT (password: server)"
+  echo "Connect: ssh root@$IP -p $PORT (password: server)"
 }
 
 ensure_openssh
