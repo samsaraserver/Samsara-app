@@ -13,6 +13,7 @@
         android:name="android.software.leanback"
         android:required="false" />
 
+
     <permission
         android:name="${TERMUX_PACKAGE_NAME}.permission.RUN_COMMAND"
         android:description="@string/permission_run_command_description"
