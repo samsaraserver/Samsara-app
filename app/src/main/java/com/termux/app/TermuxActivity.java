@@ -1009,10 +1009,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         String setupScript =
             "echo '[*] Preparing scripts and bootstrapper' ; " +
             "mkdir -p \"$HOME/scripts\"; " +
-            // Extract in-Alpine scripts from internal subfolder (do not modify behavior)
-            extractAssetsScript("scripts/internal/setup_alpine_users.sh") +
-            extractAssetsScript("scripts/internal/setup_alpine_ssh.sh") +
-            extractAssetsScript("scripts/internal/start-sshd-foreground.sh") +
+            // Extract unified in-Alpine setup script
+            extractAssetsScript("scripts/internal/setup") +
             // Extract host bootstrapper with spinner
             extractAssetsScript("scripts/host_bootstrap.sh") +
             // Run the host-side bootstrapper which hides noise and copies scripts to Alpine
