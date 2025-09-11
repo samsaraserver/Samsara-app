@@ -52,7 +52,6 @@
         android:theme="@style/Theme.TermuxApp.DayNight.DarkActionBar"
         tools:targetApi="m">
 
-
         <activity
             android:name=".app.SamsaraStartupActivity"
             android:exported="true"
@@ -84,6 +83,43 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+
+        <activity
+            android:name=".app.login_page"
+            android:exported="false"
+            android:label="Login"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+        <!-- Navigation and Page Activities -->
+        <activity
+            android:name=".app.navigationbar"
+            android:exported="false"
+            android:label="Navigation"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+        <activity
+            android:name=".app.home_page"
+            android:exported="false"
+            android:label="Home"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+        <activity
+            android:name=".app.configuration_page"
+            android:exported="false"
+            android:label="Configuration"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+        <activity
+            android:name=".app.documents_page"
+            android:exported="false"
+            android:label="Documents"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+        <activity
+            android:name=".app.accounts_page"
+            android:exported="false"
+            android:label="Accounts"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
 
         <activity-alias
             android:name=".HomeActivity"
@@ -179,7 +215,6 @@
             android:exported="true"
             android:grantUriPermissions="true"
             android:permission="${TERMUX_PACKAGE_NAME}.permission.RUN_COMMAND" />
-
 
         <receiver
             android:name=".app.TermuxOpenReceiver"
