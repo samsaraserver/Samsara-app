@@ -180,5 +180,9 @@ install_proot
 setup_alpine
 copy_scripts
 
-printf "Connect: ssh root@<phone-ip> -p 2222 (password: server)\n"
+printf "\nWelcome to SamsaraServer Alpine Environment\n"
+printf "==========================================\n"
+printf "To start SSH server and enable remote access, run:\n"
+printf "  setup\n"
+printf "\nThis will configure SSH on port 2222 with password 'server'\n"
 exec proot-distro login alpine -- /bin/sh -l
