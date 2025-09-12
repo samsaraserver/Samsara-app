@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.termux.R;
 
@@ -37,13 +38,13 @@ public class SamsaraStartupActivity extends Activity {
             }, 800);
 
             setContentView(R.layout.login_page);
-            Button loginStartButton = findViewById(R.id.button);
+            ImageButton loginStartButton = findViewById(R.id.Imagebutton);
             if (loginStartButton != null) {
                 loginStartButton.setOnClickListener(v -> {
                     if (mTerminalLaunchStarted) return;
                     mTerminalLaunchStarted = true;
                     Intent intent = new Intent(SamsaraStartupActivity.this, TermuxActivity.class);
-                    intent.putExtra("samsara_mode", true);
+                    //intent.putExtra("samsara_mode", true);
                     startActivity(intent);
                     finish();
                 });
