@@ -70,15 +70,15 @@ update_packages() {
 	
 	# Fix interrupted dpkg if needed
 	echo "[DEBUG] Checking for interrupted dpkg..."
-	if dpkg --configure -a >>"$LOG" 2>&1; then
+	if timeout 300 dpkg --configure -a >>"$LOG" 2>&1; then
 		echo "[DEBUG] dpkg configuration completed"
 	else
-		echo "[DEBUG] dpkg configuration had issues, continuing anyway..."
+		echo "[DEBUG] dpkg configuration had issues or timed out, continuing anyway..."
 	fi
 	
 	echo "[DEBUG] Internet connection confirmed, running: pkg update -y"
 	echo "[DEBUG] Started update at: $(date)"
-	if pkg update -y >>"$LOG" 2>&1; then
+	if yes '' | pkg update -y >>"$LOG" 2>&1; then
 		echo "[DEBUG] Package update completed successfully at: $(date)"
 		task_success "Package repositories updated"
 	else
@@ -98,14 +98,14 @@ upgrade_packages() {
 	
 	# Fix interrupted dpkg if needed
 	echo "[DEBUG] Checking for interrupted dpkg before upgrade..."
-	if dpkg --configure -a >>"$LOG" 2>&1; then
+	if timeout 300 dpkg --configure -a >>"$LOG" 2>&1; then
 		echo "[DEBUG] dpkg configuration completed"
 	else
-		echo "[DEBUG] dpkg configuration had issues, continuing anyway..."
+		echo "[DEBUG] dpkg configuration had issues or timed out, continuing anyway..."
 	fi
 	
 	echo "[DEBUG] Started upgrade at: $(date)"
-	if pkg upgrade -y >>"$LOG" 2>&1; then
+	if yes '' | pkg upgrade -y >>"$LOG" 2>&1; then
 		echo "[DEBUG] Package upgrade completed successfully at: $(date)"
 		task_success "Packages upgraded"
 	else
@@ -163,7 +163,7 @@ setup_debian() {
 			exit $ERR_DEBIAN_INSTALL
 		fi
 		echo "[DEBUG] Disk space check passed, running: proot-distro install debian"
-		if proot-distro install debian >>"$LOG" 2>&1; then
+		if yes '' | proot-distro install debian >>"$LOG" 2>&1; then
 			if [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/debian" ]; then
 				echo "[DEBUG] Debian installation completed successfully"
 				task_success "Debian Linux installed"
@@ -183,7 +183,7 @@ setup_debian() {
 		start_spinner "Updating Debian packages"
 		echo "[DEBUG] Debian already installed, updating packages"
 		echo "[DEBUG] Running: proot-distro login debian -- sh -lc 'apt update >/dev/null 2>&1 && apt upgrade -y >/dev/null 2>&1'"
-		if proot-distro login debian -- sh -lc 'apt update >/dev/null 2>&1 && apt upgrade -y >/dev/null 2>&1' >>"$LOG" 2>&1; then
+		if yes '' | proot-distro login debian -- sh -lc 'DEBIAN_FRONTEND=noninteractive apt update >/dev/null 2>&1 && DEBIAN_FRONTEND=noninteractive apt upgrade -y >/dev/null 2>&1' >>"$LOG" 2>&1; then
 			echo "[DEBUG] Debian package update completed successfully"
 			task_success "Debian packages updated"
 		else
