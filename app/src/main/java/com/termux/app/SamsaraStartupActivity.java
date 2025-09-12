@@ -30,11 +30,24 @@ public class SamsaraStartupActivity extends Activity {
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 if (mTerminalLaunchStarted) return;
                 mTerminalLaunchStarted = true;
-                Intent intent = new Intent(SamsaraStartupActivity.this,  TermuxActivity.class);
+                Intent intent = new Intent(SamsaraStartupActivity.this, TermuxActivity.class);
+                intent.putExtra("samsara_mode", true);
                 startActivity(intent);
                 finish();
             }, 800);
 
+            setContentView(R.layout.login_page);
+            Button loginStartButton = findViewById(R.id.button);
+            if (loginStartButton != null) {
+                loginStartButton.setOnClickListener(v -> {
+                    if (mTerminalLaunchStarted) return;
+                    mTerminalLaunchStarted = true;
+                    Intent intent = new Intent(SamsaraStartupActivity.this, TermuxActivity.class);
+                    intent.putExtra("samsara_mode", true);
+                    startActivity(intent);
+                    finish();
+                });
+            }
         });
     }
 }
