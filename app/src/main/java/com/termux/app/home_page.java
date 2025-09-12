@@ -7,17 +7,16 @@ import android.widget.ImageButton;
 
 import com.termux.R;
 
-public class SamsaraStartupActivity extends Activity {
-
+public class home_page extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_samsara_startup);
+        setContentView(R.layout.home_page);
 
-        ImageButton startServerButton = findViewById(R.id.imageButton1);
+        ImageButton startServerButton = findViewById(R.id.imageButton9);
 
         startServerButton.setOnClickListener(view -> {
-            Intent intent = new Intent(SamsaraStartupActivity.this, home_page.class);
+            Intent intent = new Intent(home_page.this, TermuxActivity.class);
             startActivity(intent);
             finish();
         });
