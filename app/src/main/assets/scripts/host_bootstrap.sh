@@ -1,5 +1,9 @@
 #!/bin/bash
 set -e
+# Make script completely non-interactive
+export DEBIAN_FRONTEND=noninteractive
+export TERM=dumb
+unset INTERACTIVE
 
 LOG_DIR="$HOME/.samsara"
 LOG="$LOG_DIR/bootstrap.log"
@@ -15,17 +19,8 @@ SPIN_CHARS='-\\|/'
 spinner_pid=0
 
 start_spinner() {
-	printf "\r[*] %s " "$1"
-	(
-		i=0
-		while true; do
-			i=$(( (i + 1) % 4 ))
-			c=$(printf %s "$SPIN_CHARS" | cut -c $((i+1)))
-			printf "\r[*] %s %s" "$1" "$c"
-			sleep 0.1
-		done
-	) &
-	spinner_pid=$!
+	echo "[*] $1 (running in background...)"
+	# No spinner - just show the message and continue
 }
 
 stop_spinner() {
@@ -38,12 +33,12 @@ stop_spinner() {
 
 task_success() {
 	stop_spinner
-	printf "\r[✓] %s\n" "$1"
+	echo "[✓] $1"
 }
 
 task_fail() {
 	stop_spinner
-	printf "\r[!] %s\n" "$1"
+	echo "[!] $1"
 }
 
 check_internet() {
@@ -65,6 +60,9 @@ check_internet() {
 update_packages() {
 	start_spinner "Updating package repositories"
 	echo "[DEBUG] Starting package repository update..."
+	echo "[DEBUG] This can take 2-5 minutes on first run or with many packages"
+	echo "[DEBUG] If it takes too long, you can manually run 'pkg update' in Termux"
+	
 	if ! check_internet; then
 		task_fail "No internet connection"
 		exit $ERR_NO_INTERNET
@@ -79,8 +77,9 @@ update_packages() {
 	fi
 	
 	echo "[DEBUG] Internet connection confirmed, running: pkg update -y"
+	echo "[DEBUG] Started update at: $(date)"
 	if pkg update -y >>"$LOG" 2>&1; then
-		echo "[DEBUG] Package update completed successfully"
+		echo "[DEBUG] Package update completed successfully at: $(date)"
 		task_success "Package repositories updated"
 	else
 		echo "[DEBUG] Package update failed. Check log: $LOG"
@@ -94,6 +93,8 @@ update_packages() {
 upgrade_packages() {
 	start_spinner "Upgrading packages"
 	echo "[DEBUG] Starting package upgrade..."
+	echo "[DEBUG] This can take 5-15 minutes depending on number of packages to upgrade"
+	echo "[DEBUG] If it takes too long, you can manually run 'pkg upgrade' in Termux"
 	
 	# Fix interrupted dpkg if needed
 	echo "[DEBUG] Checking for interrupted dpkg before upgrade..."
@@ -103,8 +104,9 @@ upgrade_packages() {
 		echo "[DEBUG] dpkg configuration had issues, continuing anyway..."
 	fi
 	
+	echo "[DEBUG] Started upgrade at: $(date)"
 	if pkg upgrade -y >>"$LOG" 2>&1; then
-		echo "[DEBUG] Package upgrade completed successfully"
+		echo "[DEBUG] Package upgrade completed successfully at: $(date)"
 		task_success "Packages upgraded"
 	else
 		echo "[DEBUG] Package upgrade failed. Check log: $LOG"
@@ -143,7 +145,7 @@ check_disk_space() {
 		if [ -n "$AVAILABLE_KB" ] && [ "$AVAILABLE_KB" -gt 0 ]; then
 			AVAILABLE_MB=$((AVAILABLE_KB / 1024))
 			[ "$AVAILABLE_MB" -ge "$REQUIRED_MB" ] && return 0
-			printf "Insufficient disk space: %d MB available, %d MB required\n" "$AVAILABLE_MB" "$REQUIRED_MB" >&2
+			echo "Insufficient disk space: $AVAILABLE_MB MB available, $REQUIRED_MB MB required" >&2
 			return 1
 		fi
 	fi
@@ -237,17 +239,31 @@ copy_scripts() {
 	fi
 }
 
-trap 'stop_spinner' EXIT INT TERM
+# trap 'stop_spinner' EXIT INT TERM
+
+echo "[INFO] Starting SamsaraServer Debian setup..."
+echo "[INFO] This process may take several minutes. Please be patient."
 
 update_packages
-upgrade_packages
-install_proot
-setup_debian
-copy_scripts
+echo "[INFO] Package repositories updated successfully"
 
-printf "\nWelcome to SamsaraServer Debian Environment\n"
-printf "==========================================\n"
-printf "To start SSH server and enable remote access, run:\n"
-printf "  setup\n"
-printf "\nThis will configure SSH on port 2222 with password 'server'\n"
+upgrade_packages  
+echo "[INFO] Packages upgraded successfully"
+
+install_proot
+echo "[INFO] proot-distro installed successfully"
+
+setup_debian
+echo "[INFO] Debian environment configured successfully"
+
+copy_scripts
+echo "[INFO] Setup scripts copied successfully"
+
+echo ""
+echo "Welcome to SamsaraServer Debian Environment"
+echo "=========================================="
+echo "To start SSH server and enable remote access, run:"
+echo "  setup"
+echo ""
+echo "This will configure SSH on port 2222 with password 'server'"
 exec proot-distro login debian -- /bin/bash -l
