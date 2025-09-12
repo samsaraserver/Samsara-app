@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Alpine Linux Server Environment"
+            android:text="Debian Linux Server Environment"
             android:textSize="16sp"
             android:textColor="#CCCCCC"
             android:layout_marginBottom="64dp" />
@@ -58,7 +58,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Setting up Alpine Linux..."
+            android:text="Setting up Debian Linux..."
             android:textSize="18sp"
             android:textColor="#FFFFFF"
             android:layout_marginBottom="16dp" />

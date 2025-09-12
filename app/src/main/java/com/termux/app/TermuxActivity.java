@@ -404,7 +404,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                             isSamsaraMode = intent.getExtras().getBoolean("samsara_mode", false);
                         }
                         if (isSamsaraMode) {
-                            createAlpineSession();
+                            createDebianSession();
                         } else {
                             mTermuxTerminalSessionActivityClient.addNewSession(launchFailsafe, null);
                         }
@@ -1002,24 +1002,24 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
 
 
-    private void createAlpineSession() {
+    private void createDebianSession() {
         TermuxService service = getTermuxService();
         if (service == null) return;
 
         String setupScript =
             "echo '[*] Preparing scripts and bootstrapper' ; " +
             "mkdir -p \"$HOME/scripts\"; " +
-            // Extract unified in-Alpine setup script
+            // Extract unified in-Debian setup script
             extractAssetsScript("scripts/internal/setup") +
             // Extract host bootstrapper with spinner
             extractAssetsScript("scripts/host_bootstrap.sh") +
-            // Run the host-side bootstrapper which hides noise and copies scripts to Alpine
+            // Run the host-side bootstrapper which hides noise and copies scripts to Debian
             "exec /bin/sh \"$HOME/scripts/host_bootstrap.sh\"";
         
     String workingDirectory = getProperties().getDefaultWorkingDirectory();
         String[] arguments = {"-c", setupScript};
         
-        TermuxSession newTermuxSession = service.createTermuxSession("/system/bin/sh", arguments, null, workingDirectory, false, "Alpine");
+        TermuxSession newTermuxSession = service.createTermuxSession("/system/bin/sh", arguments, null, workingDirectory, false, "Debian");
         if (newTermuxSession == null) return;
 
         TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
