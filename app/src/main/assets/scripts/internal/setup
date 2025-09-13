@@ -7,7 +7,6 @@ DO_USERS=1
 DO_SSH=1
 DO_START=1
 DO_TTY=1
-DO_CODE_SERVER=0
 
 ERR_INVALID_PORT=1
 ERR_PKG_INSTALL=2
@@ -109,28 +108,10 @@ done
 
 validate_settings
 
-setup_repositories() {
-	REPOS_FILE="/etc/apk/repositories"
-	if [ -f "$REPOS_FILE" ]; then
-		ALPINE_VERSION=$(cat /etc/alpine-release | cut -d. -f1-2)
-		# #COMPLETION_DRIVE: Assuming Alpine version detection works and repositories are accessible
-		# #SUGGEST_VERIFY: Add fallback repository URLs and version validation
-		if ! grep -q "community" "$REPOS_FILE"; then
-			echo "https://dl-cdn.alpinelinux.org/alpine/v${ALPINE_VERSION}/community" >> "$REPOS_FILE"
-		fi
-		if ! grep -q "testing" "$REPOS_FILE"; then
-			echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> "$REPOS_FILE"
-		fi
-		apk update >/dev/null 2>&1 || true
-	fi
-}
-
-
 ensure_openssh() {
 	start_spinner "Installing OpenSSH server"
-	setup_repositories
 	if ! command -v sshd >/dev/null 2>&1; then
-		if apk add --no-progress openssh openssh-server >/dev/null 2>&1; then
+		if apk update >/dev/null 2>&1 && apk add --no-progress openssh openssh-server >/dev/null 2>&1; then
 			task_success "OpenSSH server installed"
 		else
 			task_fail "OpenSSH installation failed"
@@ -262,8 +243,6 @@ setup_ssh() {
 	printf 'PermitRootLogin yes\n' >> "$CFG"
 	sed -i '/^UseLogin\b/d;/^PrintLastLog\b/d;/^PrintMotd\b/d;/^PermitEmptyPasswords\b/d' "$CFG" || true
 	printf 'PermitEmptyPasswords no\nUseDNS no\nAuthorizedKeysFile .ssh/authorized_keys\n' >> "$CFG"
-	sed -i '/^AllowTcpForwarding\b/d' "$CFG" || true
-	printf 'AllowTcpForwarding yes\n' >> "$CFG"
 	sed -i '/^PermitTTY\b/d' "$CFG" || true
 	if [ "$DO_TTY" = 1 ]; then
 		printf 'PermitTTY yes\n' >> "$CFG"
@@ -312,28 +291,7 @@ print_summary() {
 	fi
 	[ -z "$IP" ] && IP=$(hostname -i 2>/dev/null | awk '{print $1}')
 	case "$IP" in 127.*|0.0.0.0|"") IP="<phone-ip>";; esac
-	
-	printf "\n"
-	printf "Services Information:\n"
-	printf "=====================\n"
-	printf "SSH Server: port %s\n" "$PORT"
-	printf "\n"
-	printf "Connection Details:\n"
-	printf "==================\n"
-	printf "SSH: ssh root@%s -p %s (password: server)\n" "$IP" "$PORT"
-	printf "\n"
-	sleep 3
-	clear
-	printf "Welcome to SamsaraServer\n"
-	printf "========================\n"
-	printf "Your Alpine Linux development environment is ready!\n"
-	printf "\n"
-	printf "Active Services:\n"
-	printf "  SSH Server (port %s)\n" "$PORT"
-	printf "\n"
-	printf "Connect from another device:\n"
-	printf "  SSH: ssh root@%s -p %s\n" "$IP" "$PORT"
-	printf "\n"
+	printf "SSH ready on port %s\nConnect: ssh root@%s -p %s (password: server)\n" "$PORT" "$IP" "$PORT"
 }
 
 check_step_status() {
@@ -397,7 +355,6 @@ if [ "$DO_START" = 1 ]; then
 		fi
 	fi
 fi
-
 
 print_summary
 
