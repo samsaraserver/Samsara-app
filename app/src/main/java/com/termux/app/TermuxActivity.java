@@ -1004,25 +1004,52 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     private void createAlpineSession() {
         TermuxService service = getTermuxService();
-        if (service == null) return;
+        if (service == null) {
+            Logger.logError(LOG_TAG, "TermuxService is null, cannot create Alpine session");
+            Toast.makeText(this, "Service not available - restart app", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        // #COMPLETION_DRIVE: Assuming all script extractions succeed before bootstrap execution
+        // #SUGGEST_VERIFY: Add validation that all scripts are successfully extracted
         String setupScript =
+            "set -e ; " +
+            "echo '[*] SamsaraServer Alpine Setup Starting' ; " +
+            "echo '[*] Timestamp: '$(date) ; " +
             "echo '[*] Preparing scripts and bootstrapper' ; " +
-            "mkdir -p \"$HOME/scripts\"; " +
+            "mkdir -p \"$HOME/scripts\" || { echo '[!] Failed to create scripts directory'; exit 1; } ; " +
             // Extract unified in-Alpine setup script
             extractAssetsScript("scripts/internal/setup") +
             // Extract host bootstrapper with spinner
             extractAssetsScript("scripts/host_bootstrap.sh") +
+            // Verify both scripts exist before proceeding
+            "[ -f \"$HOME/scripts/setup\" ] || { echo '[!] Setup script missing'; exit 1; } ; " +
+            "[ -f \"$HOME/scripts/host_bootstrap.sh\" ] || { echo '[!] Bootstrap script missing'; exit 1; } ; " +
+            "echo '[*] All scripts extracted successfully' ; " +
             // Run the host-side bootstrapper which hides noise and copies scripts to Alpine
+            "echo '[*] Starting host bootstrap process' ; " +
             "exec /bin/sh \"$HOME/scripts/host_bootstrap.sh\"";
         
-    String workingDirectory = getProperties().getDefaultWorkingDirectory();
+        String workingDirectory = getProperties().getDefaultWorkingDirectory();
         String[] arguments = {"-c", setupScript};
         
+        Logger.logInfo(LOG_TAG, "Creating Alpine session with working directory: " + workingDirectory);
+        
         TermuxSession newTermuxSession = service.createTermuxSession("/system/bin/sh", arguments, null, workingDirectory, false, "Alpine");
-        if (newTermuxSession == null) return;
+        if (newTermuxSession == null) {
+            Logger.logError(LOG_TAG, "Failed to create TermuxSession for Alpine");
+            Toast.makeText(this, "Failed to start Alpine session", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
+        if (newTerminalSession == null) {
+            Logger.logError(LOG_TAG, "TerminalSession is null from TermuxSession");
+            Toast.makeText(this, "Terminal session failed to initialize", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        Logger.logInfo(LOG_TAG, "Alpine session created successfully");
         mTermuxTerminalSessionActivityClient.setCurrentSession(newTerminalSession);
         getDrawer().closeDrawers();
     }
@@ -1040,14 +1067,31 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             String scriptContent = outputStream.toString("UTF-8");
             outputStream.close();
             
+            // #COMPLETION_DRIVE: Assuming script content is valid UTF-8 and non-empty
+            // #SUGGEST_VERIFY: Add content validation and length checks
+            if (scriptContent == null || scriptContent.trim().isEmpty()) {
+                Logger.logError(LOG_TAG, "Script content is empty for: " + assetPath);
+                return "echo '[!] Script content empty: " + assetPath + "'; exit 1; ";
+            }
+            
             String fileName = assetPath.substring(assetPath.lastIndexOf('/') + 1);
             String base64Content = android.util.Base64.encodeToString(scriptContent.getBytes("UTF-8"), android.util.Base64.NO_WRAP);
             
-            return "echo '" + base64Content + "' | base64 -d > \"$HOME/scripts/" + fileName + "\"; " +
-                   "chmod +x \"$HOME/scripts/" + fileName + "\"; ";
+            // #COMPLETION_DRIVE: Assuming base64 encoding succeeds and shell handles large echo
+            // #SUGGEST_VERIFY: Add base64 validation and use printf for safer output
+            if (base64Content.isEmpty()) {
+                Logger.logError(LOG_TAG, "Base64 encoding failed for: " + assetPath);
+                return "echo '[!] Base64 encoding failed: " + assetPath + "'; exit 1; ";
+            }
+            
+            return "echo '[*] Extracting " + fileName + "' ; " +
+                   "printf '%s' '" + base64Content + "' | base64 -d > \"$HOME/scripts/" + fileName + "\" || { echo '[!] Failed to decode " + fileName + "'; exit 1; } ; " +
+                   "[ -s \"$HOME/scripts/" + fileName + "\" ] || { echo '[!] Empty file after extraction: " + fileName + "'; exit 1; } ; " +
+                   "chmod +x \"$HOME/scripts/" + fileName + "\" || { echo '[!] Failed to set execute permission: " + fileName + "'; exit 1; } ; " +
+                   "echo '[✓] Extracted " + fileName + "' ; ";
         } catch (Exception e) {
             Logger.logStackTraceWithMessage(LOG_TAG, "Failed to extract script from assets: " + assetPath, e);
-            return "echo '[!] Failed to extract script: " + assetPath + "'; ";
+            return "echo '[!] Asset extraction exception: " + assetPath + "'; exit 1; ";
         }
     }
 
