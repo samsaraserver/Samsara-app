@@ -77,6 +77,13 @@
             android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
 
         <activity
+            android:name=".app.configuration_page"
+            android:exported="false"
+            android:label="Home Page"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+
+        <activity
             android:name=".app.TermuxActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|keyboard|keyboardHidden|navigation"
@@ -91,21 +98,17 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <activity-alias
-            android:name=".HomeActivity"
-            android:exported="true"
-            android:targetActivity=".app.TermuxActivity">
+        <activity
+            android:name=".app.documents_page"
+            android:exported="false"
+            android:label="Home Page"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
 
-            <!-- Launch activity automatically on boot on Android Things devices -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.IOT_LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity-alias>
-
-        
+        <activity
+            android:name=".app.accounts_page"
+            android:exported="false"
+            android:label="Home Page"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
 
         <activity
             android:name=".app.activities.SettingsActivity"
