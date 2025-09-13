@@ -17,6 +17,7 @@ public class home_page extends Activity {
 
         startServerButton.setOnClickListener(view -> {
             Intent intent = new Intent(home_page.this, TermuxActivity.class);
+            intent.putExtra("samsara_mode", true);
             startActivity(intent);
             finish();
         });

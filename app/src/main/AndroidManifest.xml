@@ -54,7 +54,7 @@
 
 
         <activity
-            android:name=".app.SamsaraStartupActivity"
+            android:name=".app.WelcomePageActivity"
             android:exported="true"
             android:label="SamsaraServer"
             android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar">
