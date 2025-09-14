@@ -5,10 +5,10 @@ import android.os.Bundle;
 
 import com.termux.R;
 
-public class accounts_page extends Activity {
+public class profile_page extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.monitor_page);
+        setContentView(R.layout.profile_page);
     }
 }

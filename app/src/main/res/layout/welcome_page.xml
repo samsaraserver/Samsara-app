@@ -109,7 +109,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to ssamasara server"
+        android:text="Welcome to samsara server"
         app:layout_constraintBottom_toBottomOf="@+id/imageButton1"
         app:layout_constraintEnd_toEndOf="@+id/imageButton1"
         app:layout_constraintStart_toStartOf="@+id/imageButton1"

@@ -15,11 +15,19 @@ public class home_page extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
+
         ImageButton terminalbutton = findViewById(R.id.imageButton9);
         
         NavbarHelper.setupNavbar(this);
 
-        TextView textView3 = findViewById(R.id.textView3);
+        ImageButton terminalbutton = findViewById(R.id.terminalBtn1);
+        ImageButton homebutton = findViewById(R.id.homeBtn);
+        ImageButton configbutton = findViewById(R.id.configBtn);
+        ImageButton terminalbutton2 = findViewById(R.id.terminalBtn2);
+        ImageButton documentsbutton = findViewById(R.id.docsBtn);
+        ImageButton profilebutton = findViewById(R.id.profileBtn);
+
+        TextView textView3 = findViewById(R.id.tvIP);
 
         textView3.setText(Html.fromHtml(textView3.getText().toString()));
 
@@ -29,6 +37,5 @@ public class home_page extends Activity {
             startActivity(intent);
             finish();
         });
-
     }
 }

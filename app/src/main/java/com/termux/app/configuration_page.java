@@ -9,6 +9,6 @@ public class configuration_page extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.monitor_page);
+        setContentView(R.layout.configuration_page);
     }
 }

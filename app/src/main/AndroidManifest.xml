@@ -77,13 +77,6 @@
             android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
 
         <activity
-            android:name=".app.configuration_page"
-            android:exported="false"
-            android:label="Home Page"
-            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
-
-
-        <activity
             android:name=".app.TermuxActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|keyboard|keyboardHidden|navigation"
@@ -99,13 +92,37 @@
         </activity>
 
         <activity
+            android:name=".app.configuration_page"
+            android:exported="false"
+            android:label="Home Page"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+        <activity
             android:name=".app.documents_page"
             android:exported="false"
             android:label="Home Page"
             android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
 
         <activity
-            android:name=".app.accounts_page"
+            android:name=".app.profile_page"
+            android:exported="false"
+            android:label="Home Page"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+        <activity
+            android:name=".app.monitor_page"
+            android:exported="false"
+            android:label="Home Page"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+        <activity
+            android:name=".app.projects_page"
+            android:exported="false"
+            android:label="Home Page"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
+        <activity
+            android:name=".app.biometrics_page"
             android:exported="false"
             android:label="Home Page"
             android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
