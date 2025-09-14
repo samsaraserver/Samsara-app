@@ -284,117 +284,13 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="116dp"
         android:layout_marginTop="656dp" />
-
-    <!--- Navigation Bar Buttons and Text -->
-
-    <ImageButton
-        android:id="@+id/navbackground"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/navbar_include"
+        layout="@layout/navbar_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="778dp" />
-
-    <ImageButton
-        android:id="@+id/homeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="799dp" />
-
-    <ImageButton
-        android:id="@+id/configBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="799dp" />
-
-    <ImageButton
-        android:id="@+id/terminalBtn1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="167dp"
-        android:layout_marginTop="792dp" />
-
-    <ImageButton
-        android:id="@+id/docsBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="261dp"
-        android:layout_marginTop="799dp" />
-
-    <ImageButton
-        android:id="@+id/profileBtn"
-        android:layout_width="47dp"
-        android:layout_height="40dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="329dp"
-        android:layout_marginTop="799dp" />
-
-    <TextView
-        android:id="@+id/tvNavHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Home"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="33dp"
-        android:layout_marginTop="830dp" />
-
-    <TextView
-        android:id="@+id/tvNavConfig"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Config"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="98dp"
-        android:layout_marginTop="830dp" />
-
-    <TextView
-        android:id="@+id/tvNavDocs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Docs"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="264dp"
-        android:layout_marginTop="830dp" />
-
-    <TextView
-        android:id="@+id/tvNavProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="332dp"
-        android:layout_marginTop="830dp"
-        android:text="Profile"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

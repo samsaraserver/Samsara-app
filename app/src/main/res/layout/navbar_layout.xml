@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageButton
+        android:id="@+id/navbackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/navbar_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/navbar1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/navbar_3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/navbar2"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/navbar2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/navbar_4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/navbar3"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@+id/navbar1" />
+
+    <ImageButton
+        android:id="@+id/navbar3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/navbar_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/navbar4"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@+id/navbar2" />
+
+    <ImageButton
+        android:id="@+id/navbar4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/navbar_5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/navbar5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@+id/navbar3" />
+
+    <ImageButton
+        android:id="@+id/navbar5"
+        android:layout_width="47dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/navbar_6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@+id/navbar4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
