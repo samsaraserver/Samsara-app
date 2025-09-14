@@ -387,7 +387,9 @@ copy_scripts() {
 trap 'stop_spinner' EXIT INT TERM
 
 # Start with environment validation
-printf "\n=== SamsaraServer Alpine Bootstrap ===\n"
+printf "\n======================================\n"
+printf "    SamsaraServer Alpine Bootstrap    \n"
+printf "======================================\n"
 validate_environment
 
 update_packages
@@ -403,28 +405,42 @@ setup_alpine
 copy_scripts
 
 debug_log "Bootstrap completed successfully"
-printf "\n=== Bootstrap Complete ===\n"
+printf "\n======================================\n"
+printf "      Bootstrap Process Complete      \n"
+printf "======================================\n"
 
 # Clear screen if no errors occurred
 if [ "$bootstrap_had_errors" -eq 0 ]; then
-    printf "\n[*] Bootstrap successful - clearing screen...\n"
+    printf "\n[SYSTEM] Bootstrap successful - preparing environment...\n"
     sleep 1
     clear
-    printf "=== SamsaraServer Ready ===\n"
-    printf "Connect: ssh root@<phone-ip> -p 2222 (password: server)\n"
+    printf "\n"
+    printf "╔══════════════════════════════════════╗\n"
+    printf "║          SamsaraServer Ready         ║\n"
+    printf "╚══════════════════════════════════════╝\n"
+    printf "\n"
+    printf "NEXT STEP: Execute 'setup' command to configure SSH server\n"
+    printf "          and complete server initialization\n"
+    printf "\n"
 else
-    printf "\n[!] Bootstrap completed with warnings/errors\n"
-    printf "Check logs: %s\n" "$LOG"
-    printf "Debug info: %s\n" "$DEBUG_LOG"
+    printf "\n[WARNING] Bootstrap completed with warnings or errors\n"
+    printf "Log Files: %s\n" "$LOG"
+    printf "Debug Info: %s\n" "$DEBUG_LOG"
+    printf "\nPlease review logs before proceeding\n"
 fi
 
 # Launch Alpine or stay in Termux shell
 if command -v proot-distro >/dev/null 2>&1 && [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
-    printf "\n[*] Launching Alpine Linux...\n"
+    printf "[SYSTEM] Initializing Alpine Linux environment...\n"
+    printf "────────────────────────────────────────\n"
     exec proot-distro login alpine -- /bin/sh -l
 else
-    printf "\n[!] Alpine not available - staying in Termux shell\n"
-    printf "You can manually install proot-distro with: pkg install proot-distro\n"
-    printf "Then install Alpine with: proot-distro install alpine\n"
+    printf "\n[ERROR] Alpine Linux environment unavailable\n"
+    printf "────────────────────────────────────────\n"
+    printf "Manual Recovery Steps:\n"
+    printf "  1. Install proot-distro: pkg install proot-distro\n"
+    printf "  2. Install Alpine: proot-distro install alpine\n"
+    printf "  3. Restart SamsaraServer application\n"
+    printf "\n"
     exec /bin/sh -l
 fi
