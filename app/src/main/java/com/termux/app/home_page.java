@@ -15,14 +15,14 @@ public class home_page extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-        ImageButton terminalbutton = findViewById(R.id.imageButton9);
-        ImageButton homebutton = findViewById(R.id.navbar1);
-        ImageButton configbutton = findViewById(R.id.navbar2);
-        ImageButton terminalbutton2 = findViewById(R.id.navbar3);
-        ImageButton documentsbutton = findViewById(R.id.navbar4);
-        ImageButton accountbutton = findViewById(R.id.navbar5);
+        ImageButton terminalbutton = findViewById(R.id.terminalBtn1);
+        ImageButton homebutton = findViewById(R.id.homeBtn);
+        ImageButton configbutton = findViewById(R.id.configBtn);
+        ImageButton terminalbutton2 = findViewById(R.id.terminalBtn2);
+        ImageButton documentsbutton = findViewById(R.id.docsBtn);
+        ImageButton profilebutton = findViewById(R.id.profileBtn);
 
-        TextView textView3 = findViewById(R.id.textView3);
+        TextView textView3 = findViewById(R.id.tvIP);
 
         // Apply HTML formatting to textView3 to render bold and underline
         textView3.setText(Html.fromHtml(textView3.getText().toString()));
@@ -62,8 +62,8 @@ public class home_page extends Activity {
             finish();
         });
 
-        accountbutton.setOnClickListener(view -> {
-            Intent intent = new Intent(home_page.this, accounts_page.class);
+        profilebutton.setOnClickListener(view -> {
+            Intent intent = new Intent(home_page.this, profile_page.class);
             intent.putExtra("samsara_mode", true);
             startActivity(intent);
             finish();

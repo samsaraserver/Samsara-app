@@ -7,7 +7,7 @@
     android:background="@color/app_background">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/TopBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/top_bar_1"
@@ -15,269 +15,277 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/SamsaraLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/samsara_logo_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/imageButton5"
+    <TextView
+        android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="192dp"
-        android:layout_marginTop="308dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/home_5"
+        android:text="Samsara Server"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="123dp"
+        android:layout_marginTop="28dp" />
+
+    <!-- Dashboard Section -->
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/redImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="116dp"
         android:src="@drawable/home_3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="116dp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="348dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="192dp"
-        android:text="Manage your server through the web interface once the terminal is running. "
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/imageButton"
+    <ImageView
+        android:id="@+id/DashboardLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="300dp"
-        android:layout_marginTop="124dp"
+        android:src="@drawable/home_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="136dp" />
+
+    <ImageButton
+        android:id="@+id/ipBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="136dp"
-        android:src="@drawable/home_2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="124dp" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tvDash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="248dp"
-        android:text="The ip address is"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="148dp"
         android:text="Access Web Dashboard"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="148dp" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tvDash2"
+        android:layout_width="348dp"
+        android:layout_height="46dp"
+        android:text="Manage your server through the web interface once the terminal is running. "
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="192dp" />
+
+    <TextView
+        android:id="@+id/tvDash3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="248dp"
+        android:text="The ip address is"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="248dp" />
+
+    <TextView
+        android:id="@+id/tvIP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="&lt;u>&lt;b>TextView&lt;/b>&lt;/u>"
         android:textColor="#0000ee"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="248dp" />
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="444dp"
-        android:text="Projects"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- Selection Section -->
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/monitorBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/imageButton6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="420dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/home_6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="300dp" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tvMonitor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="332dp"
         android:text="System Monitor"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="332dp" />
 
     <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="272dp"
-        android:layout_marginTop="448dp"
-        android:text="Documentation"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="155dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="488dp"
-        android:text="Install or manage community server packages"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="272dp"
-        android:layout_marginTop="332dp"
-        android:text="Configuration"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/imageButton7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="192dp"
-        android:layout_marginTop="420dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/home_7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/imageButton9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="564dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/home_8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView16"
-        android:layout_width="173dp"
-        android:layout_height="22dp"
-        android:layout_marginStart="116dp"
-        android:layout_marginTop="656dp"
-        android:text="Tap terminal to initialize"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="116dp"
-        android:layout_marginTop="620dp"
-        android:text="Environment Ready"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/tvMonitor2"
         android:layout_width="159dp"
         android:layout_height="37dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="372dp"
         android:text="CPU, memory, network and temperature stats"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="372dp" />
 
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="160dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="216dp"
-        android:layout_marginTop="488dp"
-        android:text="Access guides and forms"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
+    <ImageButton
+        android:id="@+id/configurationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/home_5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="192dp"
+        android:layout_marginTop="308dp" />
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/tvConfig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Configuration"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="272dp"
+        android:layout_marginTop="332dp" />
+
+    <TextView
+        android:id="@+id/tvConfig2"
         android:layout_width="161dp"
         android:layout_height="35dp"
-        android:layout_marginStart="216dp"
-        android:layout_marginTop="376dp"
         android:text="View and manage your server settings"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="216dp"
+        android:layout_marginTop="376dp" />
 
-    <TextView
-        android:id="@+id/textView17"
+    <ImageButton
+        android:id="@+id/ProjectBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="29dp"
-        android:layout_marginTop="28dp"
-        android:text="Samsara Server"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/home_6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="420dp" />
+
+    <TextView
+        android:id="@+id/tvProject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Projects"
         android:textColor="#FFFFFF"
-        android:textSize="26sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="444dp" />
+
+    <TextView
+        android:id="@+id/tvProject2"
+        android:layout_width="155dp"
+        android:layout_height="33dp"
+        android:text="Install or manage community server packages"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="488dp" />
+
+    <ImageButton
+        android:id="@+id/documentationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/home_7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="192dp"
+        android:layout_marginTop="420dp" />
+
+    <TextView
+        android:id="@+id/tvDocs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Documentation"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="272dp"
+        android:layout_marginTop="448dp" />
+
+    <TextView
+        android:id="@+id/tvDocs2"
+        android:layout_width="160dp"
+        android:layout_height="35dp"
+        android:text="Access guides and forms"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="216dp"
+        android:layout_marginTop="488dp" />
+
+    <!-- Terminal Section -->
+
+    <ImageButton
+        android:id="@+id/terminalBtn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/home_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="564dp" />
+
+    <TextView
+        android:id="@+id/tvEnvironment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Environment Ready"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="620dp" />
+
+    <TextView
+        android:id="@+id/tvInitialize"
+        android:layout_width="173dp"
+        android:layout_height="22dp"
+        android:text="Tap terminal to initialize"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="656dp" />
+
+    <!--- Navigation Bar Buttons and Text -->
 
     <ImageButton
         android:id="@+id/navbackground"
@@ -285,71 +293,108 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="778dp" />
 
     <ImageButton
-        android:id="@+id/navbar1"
+        android:id="@+id/homeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginBottom="40dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/navbar2"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="799dp" />
 
     <ImageButton
-        android:id="@+id/navbar2"
+        android:id="@+id/configBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/navbar3"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toEndOf="@+id/navbar1" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="799dp" />
 
     <ImageButton
-        android:id="@+id/navbar3"
+        android:id="@+id/terminalBtn1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/navbar4"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toEndOf="@+id/navbar2" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="167dp"
+        android:layout_marginTop="792dp" />
 
     <ImageButton
-        android:id="@+id/navbar4"
+        android:id="@+id/docsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/navbar5"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toEndOf="@+id/navbar3" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="261dp"
+        android:layout_marginTop="799dp" />
 
     <ImageButton
-        android:id="@+id/navbar5"
+        android:id="@+id/profileBtn"
         android:layout_width="47dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="40dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_6"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toEndOf="@+id/navbar4" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="329dp"
+        android:layout_marginTop="799dp" />
 
+    <TextView
+        android:id="@+id/tvNavHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="830dp" />
 
+    <TextView
+        android:id="@+id/tvNavConfig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Config"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="98dp"
+        android:layout_marginTop="830dp" />
+
+    <TextView
+        android:id="@+id/tvNavDocs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Docs"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="264dp"
+        android:layout_marginTop="830dp" />
+
+    <TextView
+        android:id="@+id/tvNavProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="332dp"
+        android:layout_marginTop="830dp"
+        android:text="Profile"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
