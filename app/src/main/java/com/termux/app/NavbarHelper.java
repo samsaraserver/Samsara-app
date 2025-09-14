@@ -58,10 +58,10 @@ public class NavbarHelper {
 
         if (accountbutton != null) {
             accountbutton.setOnClickListener(view -> {
-                Intent intent = new Intent(activity, accounts_page.class);
+                Intent intent = new Intent(activity, profile_page.class);
                 intent.putExtra("samsara_mode", true);
                 activity.startActivity(intent);
-                if (!(activity instanceof accounts_page)) {
+                if (!(activity instanceof profile_page)) {
                     activity.finish();
                 }
             });
