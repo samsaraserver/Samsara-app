@@ -10,5 +10,7 @@ public class configuration_page extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.configuration_page);
+
+        NavbarHelper.setupNavbar(this);
     }
 }

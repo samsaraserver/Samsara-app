@@ -10,5 +10,7 @@ public class documents_page extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.documents_page);
+
+        NavbarHelper.setupNavbar(this);
     }
 }

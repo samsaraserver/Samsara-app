@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <!-- Main Logo/Image -->
-
-    <!-- App Title -->
-
-    <!-- App Description -->
-
-    <!-- Loading Progress Bar -->
-
-    <!-- Loading Status Text -->
-
-    <!-- Loading Overlay (for blocking UI during critical operations) -->
-
     <ImageView
         android:id="@+id/logo_image"
         android:layout_width="200dp"
@@ -30,6 +18,8 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- App Title -->
 
     <TextView
         android:id="@+id/app_title"
@@ -45,6 +35,9 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo_image" />
+
+
+    <!-- App Description -->
 
     <TextView
         android:id="@+id/app_description"
@@ -63,7 +56,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_title" />
 
-    
+    <!-- Loading Overlay -->
+
     <LinearLayout
         android:id="@+id/loading_overlay"
         android:layout_width="0dp"
@@ -77,43 +71,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:theme="@android:style/ThemeOverlay.Material.Dark" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Please wait..."
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/imageButton1"
+        android:id="@+id/WelcomeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="112dp"
+        android:layout_marginBottom="192dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/welcome_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.475"
+        app:layout_constraintHorizontal_bias="0.524"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome to samsara server"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton1"
-        app:layout_constraintEnd_toEndOf="@+id/imageButton1"
-        app:layout_constraintStart_toStartOf="@+id/imageButton1"
-        app:layout_constraintTop_toTopOf="@+id/imageButton1" />
+        app:layout_constraintBottom_toBottomOf="@+id/WelcomeBtn"
+        app:layout_constraintEnd_toEndOf="@+id/WelcomeBtn"
+        app:layout_constraintStart_toStartOf="@+id/WelcomeBtn"
+        app:layout_constraintTop_toTopOf="@+id/WelcomeBtn" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

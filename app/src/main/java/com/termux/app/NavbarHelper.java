@@ -14,6 +14,7 @@ public class NavbarHelper {
         ImageButton terminalbutton = activity.findViewById(R.id.navbar3);
         ImageButton documentsbutton = activity.findViewById(R.id.navbar4);
         ImageButton accountbutton = activity.findViewById(R.id.navbar5);
+
         if (homebutton != null) {
             homebutton.setOnClickListener(view -> {
                 Intent intent = new Intent(activity, home_page.class);

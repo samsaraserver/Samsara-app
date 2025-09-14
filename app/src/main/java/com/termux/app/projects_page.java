@@ -10,5 +10,7 @@ public class projects_page extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monitor_page);
+
+        NavbarHelper.setupNavbar(this);
     }
 }
