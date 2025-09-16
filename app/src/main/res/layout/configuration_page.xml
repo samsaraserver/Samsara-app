@@ -7,16 +7,413 @@
     android:background="@color/app_background">
 
 
-    <TextView
-        android:id="@+id/textView22"
+    <ImageView
+        android:id="@+id/LowStorageBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="384dp"
-        android:layout_marginEnd="120dp"
-        android:text="Configuration coming soon"
+        app:srcCompat="@drawable/configuration_6"
+        tools:layout_editor_absoluteX="311dp"
+        tools:layout_editor_absoluteY="940dp" />
+
+    <ImageView
+        android:id="@+id/SSHPortBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/configuration_3"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="447dp" />
+
+    <ImageView
+        android:id="@+id/WebPortBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/configuration_3"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="363dp" />
+
+    <TextView
+        android:id="@+id/tvWebDashboardPort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Web Dashboard Port "
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="334dp" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="58dp"
+        android:layout_height="55dp"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        tools:layout_editor_absoluteX="345dp"
+        tools:layout_editor_absoluteY="138dp" />
+
+    <ImageView
+        android:id="@+id/DashPassBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/configuration_3"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="238dp" />
+
+    <TextView
+        android:id="@+id/tvMonitoring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monitoring"
+        android:textColor="#C44F4F"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="555dp" />
+
+    <TextView
+        android:id="@+id/tvAutoUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Auto Update Project "
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="755dp" />
+
+    <TextView
+        android:id="@+id/tvCommunityProjects"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Community Projects"
+        android:textColor="#C44F4F"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="704dp" />
+
+    <ImageView
+        android:id="@+id/TempBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/configuration_6"
+        tools:layout_editor_absoluteX="311dp"
+        tools:layout_editor_absoluteY="662dp" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/configuration_5"
+        tools:layout_editor_absoluteX="342dp"
+        tools:layout_editor_absoluteY="607dp" />
+
+    <TextView
+        android:id="@+id/tvInstallDir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Installation Directory"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="815dp" />
+
+    <ImageView
+        android:id="@+id/InstallDir2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/configuration_7"
+        tools:layout_editor_absoluteX="27dp"
+        tools:layout_editor_absoluteY="851dp" />
+
+    <TextView
+        android:id="@+id/tvAdvanced"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Advanced"
+        android:textColor="#C44F4F"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="892dp" />
+
+    <ImageButton
+        android:id="@+id/InstallDir3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        app:srcCompat="@drawable/configuration_8"
+        tools:layout_editor_absoluteX="300dp"
+        tools:layout_editor_absoluteY="842dp" />
+
+    <TextView
+        android:id="@+id/tvTempAlert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temperature Alert"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="664dp" />
+
+    <ImageView
+        android:id="@+id/MonitorBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/configuration_4"
+        tools:layout_editor_absoluteX="274dp"
+        tools:layout_editor_absoluteY="601dp" />
+
+    <Switch
+        android:id="@+id/switch2"
+        android:layout_width="58dp"
+        android:layout_height="55dp"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        tools:layout_editor_absoluteX="336dp"
+        tools:layout_editor_absoluteY="736dp" />
+
+    <TextView
+        android:id="@+id/tvMonitoringInterval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monitoring Interval"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="607dp" />
+
+    <TextView
+        android:id="@+id/tvLinuxEnvironemnt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Linux Environment"
+        android:textColor="#C44F4F"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="507dp" />
+
+    <ImageView
+        android:id="@+id/SamsaraLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/samsara_logo_1"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="1dp" />
+
+    <TextView
+        android:id="@+id/tvConfig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Configuration"
+        android:textColor="#C44F4F"
+        android:textSize="34sp"
+        tools:layout_editor_absoluteX="149dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TextView
+        android:id="@+id/tvGeneral"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="General"
+        android:textColor="#C44F4F"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="106dp" />
+
+    <TextView
+        android:id="@+id/tvAutoStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Auto start on boot  "
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="157dp" />
+
+    <TextView
+        android:id="@+id/tvDashPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTintMode="src_in"
+        android:text="Dashboard Password "
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="208dp" />
+
+    <TextView
+        android:id="@+id/tvNetwork"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Network"
+        android:textColor="#C44F4F"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="292dp" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SSH Port "
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="418dp" />
+
+    <TextView
+        android:id="@+id/tvAbout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="About"
+        android:textColor="#C44F4F"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="1114dp" />
+
+    <TextView
+        android:id="@+id/tvBusyBox2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="131dp"
+        tools:layout_editor_absoluteY="1203dp" />
+
+    <ImageButton
+        android:id="@+id/imageView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        app:srcCompat="@drawable/configuration_10"
+        tools:layout_editor_absoluteX="70dp"
+        tools:layout_editor_absoluteY="1240dp" />
+
+    <ImageButton
+        android:id="@+id/imageView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        app:srcCompat="@drawable/configuration_9"
+        tools:layout_editor_absoluteX="200dp"
+        tools:layout_editor_absoluteY="990dp" />
+
+    <ImageButton
+        android:id="@+id/imageView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        app:srcCompat="@drawable/configuration_9"
+        tools:layout_editor_absoluteX="35dp"
+        tools:layout_editor_absoluteY="990dp" />
+
+    <ImageButton
+        android:id="@+id/imageView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        app:srcCompat="@drawable/configuration_9"
+        tools:layout_editor_absoluteX="35dp"
+        tools:layout_editor_absoluteY="1040dp" />
+
+    <ImageButton
+        android:id="@+id/imageView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        app:srcCompat="@drawable/configuration_9"
+        tools:layout_editor_absoluteX="200dp"
+        tools:layout_editor_absoluteY="1040dp" />
+
+    <TextView
+        android:id="@+id/tvAppVersion2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="131dp"
+        tools:layout_editor_absoluteY="1163dp" />
+
+    <TextView
+        android:id="@+id/tvAppVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="App version:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="1163dp" />
+
+    <TextView
+        android:id="@+id/tvBusyBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Busybox:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="1203dp" />
+
+    <TextView
+        android:id="@+id/tvLowStorageWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Low Storage Warning"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="941dp" />
+
+    <TextView
+        android:id="@+id/tvExport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Export Configuration"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="67dp"
+        tools:layout_editor_absoluteY="1010dp" />
+
+    <TextView
+        android:id="@+id/tvImport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Import Configuration"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="230dp"
+        tools:layout_editor_absoluteY="1010dp" />
+
+    <TextView
+        android:id="@+id/tvReset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset to defaults"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="75dp"
+        tools:layout_editor_absoluteY="1060dp" />
+
+    <TextView
+        android:id="@+id/tvChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Changes"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="250dp"
+        tools:layout_editor_absoluteY="1060dp" />
+
+    <TextView
+        android:id="@+id/textView35"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press To View System Files"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="125dp"
+        tools:layout_editor_absoluteY="1260dp" />
+
+    <TextView
+        android:id="@+id/InstallDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="31dp"
+        tools:layout_editor_absoluteY="853dp" />
 
     <include
         android:id="@+id/navbar_include"
@@ -26,4 +423,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
