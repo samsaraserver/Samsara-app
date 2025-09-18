@@ -18,22 +18,50 @@ public class home_page extends Activity {
 
         NavbarHelper.setupNavbar(this);
 
-        ImageButton terminalbutton = findViewById(R.id.terminalBtn2);
         TextView textView3 = findViewById(R.id.tvIP);
 
         textView3.setText(Html.fromHtml(textView3.getText().toString()));
-
-        terminalbutton.setOnClickListener(view -> {
-            Intent intent = new Intent(home_page.this, TermuxActivity.class);
-            intent.putExtra("samsara_mode", true);
-            startActivity(intent);
-            finish();
-        });
 
         ImageButton monitorBtn = findViewById(R.id.monitorBtn);
 
         monitorBtn.setOnClickListener(view -> {
             Intent intent = new Intent(home_page.this, monitor_page.class);
+            intent.putExtra("samsara_mode", true);
+            startActivity(intent);
+            finish();
+        });
+
+        ImageButton configurationBtn = findViewById(R.id.configurationBtn);
+
+        configurationBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(home_page.this, configuration_page.class);
+            intent.putExtra("samsara_mode", true);
+            startActivity(intent);
+            finish();
+        });
+
+        ImageButton ProjectBtn = findViewById(R.id.ProjectBtn);
+
+        ProjectBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(home_page.this, projects_page.class);
+            intent.putExtra("samsara_mode", true);
+            startActivity(intent);
+            finish();
+        });
+
+        ImageButton documentationBtn = findViewById(R.id.documentationBtn);
+
+        documentationBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(home_page.this, documents_page.class);
+            intent.putExtra("samsara_mode", true);
+            startActivity(intent);
+            finish();
+        });
+
+        ImageButton terminalbutton = findViewById(R.id.terminalBtn2);
+
+        terminalbutton.setOnClickListener(view -> {
+            Intent intent = new Intent(home_page.this, TermuxActivity.class);
             intent.putExtra("samsara_mode", true);
             startActivity(intent);
             finish();

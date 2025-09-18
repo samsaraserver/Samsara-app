@@ -189,8 +189,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="460dp
-" />
+        android:layout_marginTop="460dp" />
 
     <TextView
         android:id="@+id/tvProject"
@@ -201,8 +200,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="96dp"
-        android:layout_marginTop="485dp
-" />
+        android:layout_marginTop="485dp" />
 
     <TextView
         android:id="@+id/tvProject2"

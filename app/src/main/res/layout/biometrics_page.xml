@@ -6,16 +6,95 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
+    <!--text-->
+
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="397dp"
-        android:text="biometrics coming soon"
+        android:text="Setup Biometrics"
         android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvSummary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--images-->
+
+    <TextView
+        android:id="@+id/tvSummary"
+        android:layout_width="301dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="256dp"
+        android:text="Biometrics can be used to login and view configurations"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/BiometricsBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/FaceID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="62dp"
+        android:layout_marginBottom="28dp"
+        android:src="@drawable/biometrics_1"
+        app:layout_constraintBottom_toTopOf="@+id/BiometricsBtn"
+        app:layout_constraintEnd_toStartOf="@+id/FingerPrint"
+        app:layout_constraintHorizontal_bias="0.351"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSummary"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <!--button-->
+
+    <ImageView
+        android:id="@+id/FingerPrint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="62dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="28dp"
+        android:src="@drawable/biometrics_2"
+        app:layout_constraintBottom_toTopOf="@+id/BiometricsBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSummary"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <!-- Navbar Include -->
+
+    <ImageButton
+        android:id="@+id/BiometricsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="204dp"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/biometrics_3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvGetStarted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Started"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/BiometricsBtn"
+        app:layout_constraintEnd_toEndOf="@+id/BiometricsBtn"
+        app:layout_constraintStart_toStartOf="@+id/BiometricsBtn"
+        app:layout_constraintTop_toTopOf="@+id/BiometricsBtn" />
+
+    <include
+        android:id="@+id/navbar_include"
+        layout="@layout/navbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
