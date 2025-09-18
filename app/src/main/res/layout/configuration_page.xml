@@ -201,15 +201,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvMonitoring" />
 
-        <ImageView
-            android:id="@+id/MonitorBox"
+        <Spinner
+            android:id="@+id/spinnerMonitoringInterval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="31dp"
             android:layout_marginBottom="58dp"
+            android:background="@drawable/configuration_4"
+            android:padding="10dp"
             app:layout_constraintBottom_toTopOf="@+id/tvCommunityProjects"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:src="@drawable/configuration_4" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!--<ImageView
             android:id="@+id/imageView4"
@@ -244,8 +245,8 @@
             android:paddingStart="20dp"
             android:paddingBottom="10dp"
             android:background="@drawable/configuration_6"
-            app:layout_constraintEnd_toEndOf="@+id/MonitorBox"
-            app:layout_constraintTop_toBottomOf="@+id/MonitorBox"/>
+            app:layout_constraintEnd_toEndOf="@+id/spinnerMonitoringInterval"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerMonitoringInterval"/>
 
         <TextView
             android:id="@+id/tvCommunityProjects"
