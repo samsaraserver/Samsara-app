@@ -6,14 +6,312 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <TextView
-        android:id="@+id/textView20"
+    <ImageView
+        android:id="@+id/SamsaraLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="421dp"
-        android:text="Monitor coming soon"
+        app:srcCompat="@drawable/samsara_logo_1"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <TextView
+        android:id="@+id/tvSystemMonitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="System Monitor"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="34sp"
+        tools:layout_editor_absoluteX="135dp"
+        tools:layout_editor_absoluteY="20dp" />
+
+    <!-- Disk Monitoring Panel -->
+
+    <ImageView
+        android:id="@+id/DiskMonitoringPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/monitor_1"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="165dp" />
+
+    <TextView
+        android:id="@+id/tvDiskIO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Disk IO:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="175dp" />
+
+    <ImageView
+        android:id="@+id/Line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/monitor_2"
+        tools:layout_editor_absoluteX="18dp"
+        tools:layout_editor_absoluteY="198dp" />
+
+    <TextView
+        android:id="@+id/tvReadWrite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Read/Write speed:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="220dp" />
+
+    <TextView
+        android:id="@+id/tvDiskUtil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Disk Utilization:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="265dp" />
+
+    <!-- CPU Monitoring Panel -->
+
+    <TextView
+        android:id="@+id/tvReadWrite2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="145dp"
+        tools:layout_editor_absoluteY="220dp" />
+
+    <TextView
+        android:id="@+id/tvDiskUtil2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="125dp"
+        tools:layout_editor_absoluteY="265dp" />
+
+    <ImageView
+        android:id="@+id/ProcessMonitoringPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/monitor_3"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="330dp" />
+
+    <TextView
+        android:id="@+id/tvProcessMonitoring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Process Monitoring"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="350dp" />
+
+    <ImageView
+        android:id="@+id/Line2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/monitor_2"
+        tools:layout_editor_absoluteX="18dp"
+        tools:layout_editor_absoluteY="375dp" />
+
+    <TextView
+        android:id="@+id/tvCPU"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CPU Usage:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="385dp" />
+
+    <TextView
+        android:id="@+id/tvCpuTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CPU Temperature:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="410dp" />
+
+    <TextView
+        android:id="@+id/tvMemoryUsage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Memory Usage:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="435dp" />
+
+    <TextView
+        android:id="@+id/tvThreadCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thread Count:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="460dp" />
+
+    <TextView
+        android:id="@+id/tvHandles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Handles:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="485dp" />
+
+    <TextView
+        android:id="@+id/tvCPU2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="102dp"
+        tools:layout_editor_absoluteY="385dp" />
+
+    <TextView
+        android:id="@+id/tvCpuTemp2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="142dp"
+        tools:layout_editor_absoluteY="410dp" />
+
+    <TextView
+        android:id="@+id/tvMemoryUsage2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="126dp"
+        tools:layout_editor_absoluteY="435dp" />
+
+    <TextView
+        android:id="@+id/tvThreadCount2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="115dp"
+        tools:layout_editor_absoluteY="460dp" />
+
+    <!-- Network Monitoring Panel -->
+
+    <TextView
+        android:id="@+id/tvHandles2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="82dp"
+        tools:layout_editor_absoluteY="485dp" />
+
+    <ImageView
+        android:id="@+id/NetworkActivityPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/monitor_4"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="573dp" />
+
+    <TextView
+        android:id="@+id/tvNetworkActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Network Activity"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="580dp" />
+
+    <ImageView
+        android:id="@+id/Line3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/monitor_2"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="605dp" />
+
+    <TextView
+        android:id="@+id/tvBandwidthUsage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bandwidth Usage:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="615dp" />
+
+    <TextView
+        android:id="@+id/tvPacketLoss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Packet Loss:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="640dp" />
+
+    <TextView
+        android:id="@+id/tvNetworkLatency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Network Latency:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="670dp" />
+
+    <TextView
+        android:id="@+id/tvActiveConnections"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Active Connections:"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="700dp" />
+
+    <TextView
+        android:id="@+id/tvBandwidthUsage2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="140dp"
+        tools:layout_editor_absoluteY="615dp" />
+
+    <TextView
+        android:id="@+id/tvPacketLoss2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="106dp"
+        tools:layout_editor_absoluteY="640dp" />
+
+    <TextView
+        android:id="@+id/tvNetworkLatency2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="135dp"
+        tools:layout_editor_absoluteY="670dp" />
+
+    <TextView
+        android:id="@+id/tvActiveConnections2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="150dp"
+        tools:layout_editor_absoluteY="700dp" />
+
+    <!-- Navbar Include -->
+
+    <include
+        android:id="@+id/navbar_include"
+        layout="@layout/navbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
