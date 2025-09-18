@@ -29,5 +29,14 @@ public class home_page extends Activity {
             startActivity(intent);
             finish();
         });
+
+        ImageButton monitorBtn = findViewById(R.id.monitorBtn);
+
+        monitorBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(home_page.this, monitor_page.class);
+            intent.putExtra("samsara_mode", true);
+            startActivity(intent);
+            finish();
+        });
     }
 }

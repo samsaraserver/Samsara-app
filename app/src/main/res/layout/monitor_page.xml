@@ -10,29 +10,34 @@
         android:id="@+id/SamsaraLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/samsara_logo_1"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="0dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/samsara_logo_1" />
+
+    <!-- Disk Monitoring Panel -->
 
     <TextView
         android:id="@+id/tvSystemMonitor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="System Monitor"
         android:textColor="#FFFFFF"
         android:textSize="34sp"
-        tools:layout_editor_absoluteX="135dp"
-        tools:layout_editor_absoluteY="20dp" />
-
-    <!-- Disk Monitoring Panel -->
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.848"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/DiskMonitoringPanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/monitor_1"
-        tools:layout_editor_absoluteX="9dp"
-        tools:layout_editor_absoluteY="165dp" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="68dp"
+        android:src="@drawable/monitor_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSystemMonitor" />
 
     <TextView
         android:id="@+id/tvDiskIO"
@@ -40,36 +45,44 @@
         android:layout_height="wrap_content"
         android:text="Disk IO:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="175dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/DiskMonitoringPanel"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp" />
 
     <ImageView
         android:id="@+id/Line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/monitor_2"
-        tools:layout_editor_absoluteX="18dp"
-        tools:layout_editor_absoluteY="198dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDiskIO"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="8dp"
+        app:srcCompat="@drawable/monitor_2" />
 
     <TextView
         android:id="@+id/tvReadWrite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
         android:text="Read/Write speed:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="220dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Line" />
+
+    <!-- CPU Monitoring Panel -->
 
     <TextView
         android:id="@+id/tvDiskUtil"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:text="Disk Utilization:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="265dp" />
-
-    <!-- CPU Monitoring Panel -->
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvReadWrite" />
 
     <TextView
         android:id="@+id/tvReadWrite2"
@@ -77,8 +90,9 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="145dp"
-        tools:layout_editor_absoluteY="220dp" />
+        app:layout_constraintStart_toEndOf="@id/tvReadWrite"
+        app:layout_constraintTop_toTopOf="@id/tvReadWrite"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/tvDiskUtil2"
@@ -86,78 +100,95 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="125dp"
-        tools:layout_editor_absoluteY="265dp" />
+        app:layout_constraintStart_toEndOf="@id/tvDiskUtil"
+        app:layout_constraintTop_toTopOf="@id/tvDiskUtil"
+        android:layout_marginStart="10dp" />
 
     <ImageView
         android:id="@+id/ProcessMonitoringPanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/monitor_3"
-        tools:layout_editor_absoluteX="9dp"
-        tools:layout_editor_absoluteY="330dp" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="56dp"
+        android:src="@drawable/monitor_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDiskUtil" />
 
     <TextView
         android:id="@+id/tvProcessMonitoring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
         android:text="Process Monitoring"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="350dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ProcessMonitoringPanel" />
 
     <ImageView
         android:id="@+id/Line2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/monitor_2"
-        tools:layout_editor_absoluteX="18dp"
-        tools:layout_editor_absoluteY="375dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvProcessMonitoring"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="10dp"
+        app:srcCompat="@drawable/monitor_2" />
 
     <TextView
         android:id="@+id/tvCPU"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
         android:text="CPU Usage:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="385dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Line2" />
 
     <TextView
         android:id="@+id/tvCpuTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
         android:text="CPU Temperature:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="410dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCPU" />
 
     <TextView
         android:id="@+id/tvMemoryUsage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
         android:text="Memory Usage:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="435dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCpuTemp" />
 
     <TextView
         android:id="@+id/tvThreadCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
         android:text="Thread Count:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="460dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMemoryUsage" />
 
     <TextView
         android:id="@+id/tvHandles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
         android:text="Handles:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="485dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvThreadCount" />
 
     <TextView
         android:id="@+id/tvCPU2"
@@ -165,8 +196,9 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="102dp"
-        tools:layout_editor_absoluteY="385dp" />
+        app:layout_constraintStart_toEndOf="@id/tvCPU"
+        app:layout_constraintTop_toTopOf="@id/tvCPU"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/tvCpuTemp2"
@@ -174,8 +206,9 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="410dp" />
+        app:layout_constraintStart_toEndOf="@id/tvCpuTemp"
+        app:layout_constraintTop_toTopOf="@id/tvCpuTemp"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/tvMemoryUsage2"
@@ -183,8 +216,9 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="126dp"
-        tools:layout_editor_absoluteY="435dp" />
+        app:layout_constraintStart_toEndOf="@id/tvMemoryUsage"
+        app:layout_constraintTop_toTopOf="@id/tvMemoryUsage"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/tvThreadCount2"
@@ -192,10 +226,9 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="115dp"
-        tools:layout_editor_absoluteY="460dp" />
-
-    <!-- Network Monitoring Panel -->
+        app:layout_constraintStart_toEndOf="@id/tvThreadCount"
+        app:layout_constraintTop_toTopOf="@id/tvThreadCount"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/tvHandles2"
@@ -203,16 +236,22 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="82dp"
-        tools:layout_editor_absoluteY="485dp" />
+        app:layout_constraintStart_toEndOf="@id/tvHandles"
+        app:layout_constraintTop_toTopOf="@id/tvHandles"
+        android:layout_marginStart="10dp" />
+
+    <!-- Network Monitoring Panel -->
+
 
     <ImageView
         android:id="@+id/NetworkActivityPanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/monitor_4"
-        tools:layout_editor_absoluteX="9dp"
-        tools:layout_editor_absoluteY="573dp" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/monitor_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvHandles" />
 
     <TextView
         android:id="@+id/tvNetworkActivity"
@@ -220,52 +259,64 @@
         android:layout_height="wrap_content"
         android:text="Network Activity"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="580dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/NetworkActivityPanel"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="7dp" />
 
     <ImageView
         android:id="@+id/Line3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/monitor_2"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="605dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNetworkActivity"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        app:srcCompat="@drawable/monitor_2" />
 
     <TextView
         android:id="@+id/tvBandwidthUsage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
         android:text="Bandwidth Usage:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="615dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Line3" />
 
     <TextView
         android:id="@+id/tvPacketLoss"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
         android:text="Packet Loss:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="640dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvBandwidthUsage" />
 
     <TextView
         android:id="@+id/tvNetworkLatency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
         android:text="Network Latency:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="670dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPacketLoss" />
 
     <TextView
         android:id="@+id/tvActiveConnections"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
         android:text="Active Connections:"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="700dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNetworkLatency" />
 
     <TextView
         android:id="@+id/tvBandwidthUsage2"
@@ -273,8 +324,9 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="140dp"
-        tools:layout_editor_absoluteY="615dp" />
+        app:layout_constraintStart_toEndOf="@id/tvBandwidthUsage"
+        app:layout_constraintTop_toTopOf="@id/tvBandwidthUsage"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/tvPacketLoss2"
@@ -282,8 +334,9 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="106dp"
-        tools:layout_editor_absoluteY="640dp" />
+        app:layout_constraintStart_toEndOf="@id/tvPacketLoss"
+        app:layout_constraintTop_toTopOf="@id/tvPacketLoss"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/tvNetworkLatency2"
@@ -291,8 +344,9 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="135dp"
-        tools:layout_editor_absoluteY="670dp" />
+        app:layout_constraintStart_toEndOf="@id/tvNetworkLatency"
+        app:layout_constraintTop_toTopOf="@id/tvNetworkLatency"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/tvActiveConnections2"
@@ -300,8 +354,9 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="150dp"
-        tools:layout_editor_absoluteY="700dp" />
+        app:layout_constraintStart_toEndOf="@id/tvActiveConnections"
+        app:layout_constraintTop_toTopOf="@id/tvActiveConnections"
+        android:layout_marginStart="10dp" />
 
     <!-- Navbar Include -->
 

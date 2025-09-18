@@ -11,109 +11,115 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_1"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@+id/tvNavHome"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="@+id/tvNavHome"
+        app:layout_constraintVertical_bias="0.495" />
 
     <ImageButton
-        android:id="@+id/navbar1"
+        android:id="@+id/NavHomeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="10dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_3"
-        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintEnd_toStartOf="@+id/tvNavConf"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/navbar2"
+        android:id="@+id/NavConfBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="17dp"
-        android:layout_marginBottom="9dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_4"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-        app:layout_constraintEnd_toEndOf="@+id/textView2" />
+        app:layout_constraintBottom_toBottomOf="@+id/tvNavConf"
+        app:layout_constraintEnd_toEndOf="@+id/tvNavConf" />
 
     <ImageButton
-        android:id="@+id/navbar3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/TerminalBtn"
+        android:layout_width="59dp"
+        android:layout_height="57dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_2"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintBottom_toBottomOf="@+id/navbackground"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.500"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView2" />
+        app:layout_constraintTop_toTopOf="@+id/navbackground"
+        app:layout_constraintVertical_bias="0.375" />
 
     <ImageButton
-        android:id="@+id/navbar4"
+        android:id="@+id/NavDocsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="19dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_5"
-        app:layout_constraintBottom_toBottomOf="@+id/navbar2"
-        app:layout_constraintStart_toEndOf="@+id/navbar3"
-        app:layout_constraintTop_toTopOf="@+id/navbar2" />
+        app:layout_constraintBottom_toBottomOf="@+id/NavConfBtn"
+        app:layout_constraintStart_toEndOf="@+id/TerminalBtn"
+        app:layout_constraintTop_toTopOf="@+id/NavConfBtn" />
 
     <ImageButton
-        android:id="@+id/navbar5"
+        android:id="@+id/NavProfileBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="6dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/navbar_6"
-        app:layout_constraintBottom_toBottomOf="@+id/navbar4"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
-        app:layout_constraintTop_toTopOf="@+id/navbar4" />
+        app:layout_constraintBottom_toBottomOf="@+id/NavDocsBtn"
+        app:layout_constraintEnd_toEndOf="@+id/tvNavProfile"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvNavProfile"
+        app:layout_constraintTop_toTopOf="@+id/NavDocsBtn"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvNavHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
         android:text="Home"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/navbar1"
-        app:layout_constraintStart_toStartOf="@+id/navbar1"
-        app:layout_constraintTop_toBottomOf="@+id/navbar1" />
+        app:layout_constraintBottom_toBottomOf="@+id/NavHomeBtn"
+        app:layout_constraintStart_toStartOf="@+id/NavHomeBtn"
+        app:layout_constraintTop_toBottomOf="@+id/NavHomeBtn" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tvNavConf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="3dp"
+        android:layout_marginEnd="1dp"
         android:text="Configuration"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/navbar1"
-        app:layout_constraintEnd_toStartOf="@+id/navbar3"
-        app:layout_constraintTop_toBottomOf="@+id/navbar1" />
+        app:layout_constraintBottom_toBottomOf="@+id/NavHomeBtn"
+        app:layout_constraintEnd_toStartOf="@+id/TerminalBtn"
+        app:layout_constraintTop_toBottomOf="@+id/NavHomeBtn"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tvNavDocs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:text="Docs"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/navbar4"
-        app:layout_constraintStart_toStartOf="@+id/navbar4"
-        app:layout_constraintTop_toBottomOf="@+id/navbar4" />
+        app:layout_constraintBottom_toBottomOf="@+id/NavDocsBtn"
+        app:layout_constraintStart_toStartOf="@+id/NavDocsBtn"
+        app:layout_constraintTop_toBottomOf="@+id/NavDocsBtn" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tvNavProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
+        android:layout_marginStart="15dp"
         android:text="Profile"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/navbar4"
-        app:layout_constraintStart_toEndOf="@+id/navbar4"
-        app:layout_constraintTop_toBottomOf="@+id/navbar4" />
+        app:layout_constraintBottom_toBottomOf="@+id/NavDocsBtn"
+        app:layout_constraintStart_toEndOf="@+id/NavDocsBtn"
+        app:layout_constraintTop_toBottomOf="@+id/NavDocsBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
