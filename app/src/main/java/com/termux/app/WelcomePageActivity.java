@@ -17,7 +17,7 @@ public class WelcomePageActivity extends Activity {
         ImageButton getStartedButton = findViewById(R.id.WelcomeBtn);
         
         getStartedButton.setOnClickListener(view -> {
-            Intent intent = new Intent(WelcomePageActivity.this, home_page.class);
+            Intent intent = new Intent(WelcomePageActivity.this, login_page.class);
             startActivity(intent);
             finish();
         });
