@@ -75,6 +75,11 @@
             android:label="Login Page"
             android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
 
+        <activity android:name=".app.register_page"
+            android:exported="false"
+            android:label="Register Page"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+
         <activity
             android:name=".app.home_page"
             android:exported="false"

@@ -16,19 +16,24 @@ public class login_page extends Activity {
         setContentView(R.layout.login_page);
 
         TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
-
         tvForgotPassword.setText(Html.fromHtml(tvForgotPassword.getText().toString()));
 
         TextView tvSignUp2 = findViewById(R.id.tvSignUp2);
-
         tvSignUp2.setText(Html.fromHtml(tvSignUp2.getText().toString()));
 
-        ImageButton loginButton = findViewById(R.id.ContinueWithoutAccountBtn);
-
-        Intent intent = new Intent(login_page.this, home_page.class);
-        loginButton.setOnClickListener(view -> {
+        ImageButton SignUpButton = findViewById(R.id.SignUpBtn);
+        Intent intent = new Intent(login_page.this, register_page.class);
+        SignUpButton.setOnClickListener(view -> {
             startActivity(intent);
             finish();
         });
+
+        ImageButton login2Button = findViewById(R.id.ContinueWithoutAccountBtn);
+        Intent intent2 = new Intent(login_page.this, home_page.class);
+        login2Button.setOnClickListener(view -> {
+            startActivity(intent2);
+            finish();
+        });
+
     }
 }
