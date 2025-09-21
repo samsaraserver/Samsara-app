@@ -34,6 +34,5 @@ public class login_page extends Activity {
             startActivity(intent2);
             finish();
         });
-
     }
 }
