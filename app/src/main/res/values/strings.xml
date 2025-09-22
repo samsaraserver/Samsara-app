@@ -230,6 +230,17 @@
     <!-- About Preference -->
     <string name="about_preference_title">About</string>
 
-    
+    <!--Nav bar-->
+    <string name="home">Home</string>
+    <string name="configuration">Configuration</string>
+    <string name="docs">Docs</string>
+    <string name="profile">Profile</string>
+
+    <!-- Content descriptions for accessibility -->
+    <string name="home_description">Navigate to home</string>
+    <string name="config_description">Navigate to configuration</string>
+    <string name="center_description">Main navigation button</string>
+    <string name="docs_description">Navigate to documentation</string>
+    <string name="profile_description">Navigate to profile</string>
 
 </resources>
