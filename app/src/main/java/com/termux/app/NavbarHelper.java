@@ -9,11 +9,11 @@ import com.termux.R;
 public class NavbarHelper {
     
     public static void setupNavbar(Activity activity) {
-        ImageButton homebutton = activity.findViewById(R.id.NavHomeBtn);
-        ImageButton configbutton = activity.findViewById(R.id.NavConfBtn);
-        ImageButton terminalbutton = activity.findViewById(R.id.TerminalBtn);
-        ImageButton documentsbutton = activity.findViewById(R.id.NavDocsBtn);
-        ImageButton accountbutton = activity.findViewById(R.id.NavProfileBtn);
+        ImageButton homebutton = activity.findViewById(R.id.navbar_home);
+        ImageButton configbutton = activity.findViewById(R.id.navbar_config);
+        ImageButton terminalbutton = activity.findViewById(R.id.navbar_center);
+        ImageButton documentsbutton = activity.findViewById(R.id.navbar_docs);
+        ImageButton accountbutton = activity.findViewById(R.id.navbar_profile);
 
         if (homebutton != null) {
             homebutton.setOnClickListener(view -> {
