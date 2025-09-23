@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/nav_padding">
+    android:layout_height="wrap_content">
 
     <!-- Background image behind nav items -->
     <ImageView
         android:id="@+id/navbackground"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/navbar_1"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,6 +24,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
+        android:padding="@dimen/nav_padding"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,17 +100,6 @@
                 android:src="@drawable/navbar_2"
                 android:contentDescription="@string/center_description" />
 
-            <!-- Optional center text:
-            <TextView
-                android:id="@+id/text_center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/nav_text_margin"
-                android:text="Play"
-                android:textColor="#FFFFFF"
-                android:textSize="@dimen/nav_text_size"
-                android:gravity="center" />
-            -->
         </LinearLayout>
 
         <!-- Docs -->
