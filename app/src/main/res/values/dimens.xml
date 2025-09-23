@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation dimensions -->
+    <dimen name="nav_padding">16dp</dimen>
+    <dimen name="nav_icon_size">24dp</dimen>
+    <dimen name="nav_icon_size_large">48dp</dimen>
+    <dimen name="nav_text_margin">4dp</dimen>
+    <dimen name="nav_text_size">12sp</dimen>
+    <dimen name="nav_corner_radius">24dp</dimen>
+</resources>

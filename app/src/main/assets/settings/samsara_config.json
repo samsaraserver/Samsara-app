@@ -1,0 +1,23 @@
+{
+    "version": "1.0.0",
+    "lastModified": "2025-09-23T00:00:00Z",
+    "general": {
+        "autoStartOnBoot": false
+    },
+    "network": {
+        "dashboardPassword": "server",
+        "webDashboardPort": "8080",
+        "sshPort": "2222"
+    },
+    "monitoring": {
+        "monitoringInterval": "30s",
+        "temperatureAlert": "60"
+    },
+    "communityProjects": {
+        "autoUpdateProject": false,
+        "installationDirectory": "/data"
+    },
+    "advanced": {
+        "lowStorageWarningThreshold": "8"
+    }
+}

@@ -5,121 +5,157 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageButton
+    <!-- Background image behind nav items -->
+    <ImageView
         android:id="@+id/navbackground"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_1"
-        app:layout_constraintBottom_toTopOf="@+id/tvNavHome"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvNavHome"
-        app:layout_constraintVertical_bias="0.495" />
-
-    <ImageButton
-        android:id="@+id/NavHomeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="10dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_3"
-        app:layout_constraintEnd_toStartOf="@+id/tvNavConf"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/NavConfBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_4"
-        app:layout_constraintBottom_toBottomOf="@+id/tvNavConf"
-        app:layout_constraintEnd_toEndOf="@+id/tvNavConf" />
-
-    <ImageButton
-        android:id="@+id/TerminalBtn"
-        android:layout_width="59dp"
-        android:layout_height="57dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_2"
-        app:layout_constraintBottom_toBottomOf="@+id/navbackground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.500"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/navbackground"
-        app:layout_constraintVertical_bias="0.375" />
-
-    <ImageButton
-        android:id="@+id/NavDocsBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="19dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_5"
-        app:layout_constraintBottom_toBottomOf="@+id/NavConfBtn"
-        app:layout_constraintStart_toEndOf="@+id/TerminalBtn"
-        app:layout_constraintTop_toTopOf="@+id/NavConfBtn" />
-
-    <ImageButton
-        android:id="@+id/NavProfileBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="6dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/navbar_6"
-        app:layout_constraintBottom_toBottomOf="@+id/NavDocsBtn"
-        app:layout_constraintEnd_toEndOf="@+id/tvNavProfile"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tvNavProfile"
-        app:layout_constraintTop_toTopOf="@+id/NavDocsBtn"
-        app:layout_constraintVertical_bias="0.0" />
+        android:scaleType="fitXY"
+        android:src="@drawable/navbar_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/tvNavHome"
-        android:layout_width="wrap_content"
+    <!-- Navigation Row -->
+    <LinearLayout
+        android:id="@+id/nav_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:text="Home"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/NavHomeBtn"
-        app:layout_constraintStart_toStartOf="@+id/NavHomeBtn"
-        app:layout_constraintTop_toBottomOf="@+id/NavHomeBtn" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="@dimen/nav_padding"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <TextView
-        android:id="@+id/tvNavConf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="1dp"
-        android:text="Configuration"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/NavHomeBtn"
-        app:layout_constraintEnd_toStartOf="@+id/TerminalBtn"
-        app:layout_constraintTop_toBottomOf="@+id/NavHomeBtn"
-        app:layout_constraintVertical_bias="0.0" />
+        <!-- Home -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-    <TextView
-        android:id="@+id/tvNavDocs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:text="Docs"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/NavDocsBtn"
-        app:layout_constraintStart_toStartOf="@+id/NavDocsBtn"
-        app:layout_constraintTop_toBottomOf="@+id/NavDocsBtn" />
+            <ImageButton
+                android:id="@+id/navbar_home"
+                android:layout_width="@dimen/nav_icon_size"
+                android:layout_height="@dimen/nav_icon_size"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/navbar_3"
+                android:contentDescription="@string/home_description" />
 
-    <TextView
-        android:id="@+id/tvNavProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:text="Profile"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/NavDocsBtn"
-        app:layout_constraintStart_toEndOf="@+id/NavDocsBtn"
-        app:layout_constraintTop_toBottomOf="@+id/NavDocsBtn" />
+            <TextView
+                android:id="@+id/text_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/nav_text_margin"
+                android:text="@string/home"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/nav_text_size"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Config -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/navbar_config"
+                android:layout_width="@dimen/nav_icon_size"
+                android:layout_height="@dimen/nav_icon_size"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/navbar_4"
+                android:contentDescription="@string/config_description" />
+
+            <TextView
+                android:id="@+id/text_config"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/nav_text_margin"
+                android:text="@string/configuration"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/nav_text_size"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Center (Main button) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/navbar_center"
+                android:layout_width="@dimen/nav_icon_size_large"
+                android:layout_height="@dimen/nav_icon_size_large"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/navbar_2"
+                android:contentDescription="@string/center_description" />
+
+        </LinearLayout>
+
+        <!-- Docs -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/navbar_docs"
+                android:layout_width="@dimen/nav_icon_size"
+                android:layout_height="@dimen/nav_icon_size"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/navbar_5"
+                android:contentDescription="@string/docs_description" />
+
+            <TextView
+                android:id="@+id/text_docs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/nav_text_margin"
+                android:text="@string/docs"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/nav_text_size"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Profile -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/navbar_profile"
+                android:layout_width="@dimen/nav_icon_size"
+                android:layout_height="@dimen/nav_icon_size"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/navbar_6"
+                android:contentDescription="@string/profile_description" />
+
+            <TextView
+                android:id="@+id/text_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/nav_text_margin"
+                android:text="@string/profile"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/nav_text_size"
+                android:gravity="center" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
