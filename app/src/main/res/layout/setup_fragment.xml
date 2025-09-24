@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:text="Installation Guide"
+                android:text="Samsara Setup"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/Background1"
                 app:layout_constraintStart_toStartOf="@id/Background1"
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:text="System Requirements"
+                android:text="Heading 1"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/Background1"
                 app:layout_constraintStart_toStartOf="@id/Background1"
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:text="Minimum Requirements"
+                android:text="Heading 2"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/Background1"
                 app:layout_constraintHorizontal_bias="0.501"
@@ -160,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="Installation Steps"
+                android:text="Heading 3"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/Background2"
                 app:layout_constraintHorizontal_bias="0.498"
@@ -192,47 +192,21 @@
                 app:layout_constraintEnd_toEndOf="@id/Background2" />
 
             <!-- Install image with overlayed code text -->
-            <ImageView
-                android:id="@+id/InstallView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitStart"
-                android:src="@drawable/documentation_7"
-                android:contentDescription="@null"
-                app:layout_constraintTop_toBottomOf="@id/tvInstallationSteps2"
-                app:layout_constraintStart_toStartOf="@id/Background2"
-                app:layout_constraintEnd_toEndOf="@id/Background2" />
 
-            <TextView
-                android:id="@+id/tvInstallationSteps3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="npm install -g samsara-server"
-                android:textColor="#FFFFFF"
-                app:layout_constraintTop_toTopOf="@id/InstallView"
-                app:layout_constraintBottom_toBottomOf="@id/InstallView"
-                app:layout_constraintStart_toStartOf="@id/InstallView"
-                app:layout_constraintEnd_toEndOf="@id/InstallView" />
+            <!-- Text overlaid on Background2 - BOTTOM -->
 
             <TextView
                 android:id="@+id/tvInstallationSteps4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam."
                 android:textColor="#FFFFFF"
-                app:layout_constraintTop_toBottomOf="@id/InstallView"
+                app:layout_constraintEnd_toEndOf="@id/Background2"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/Background2"
-                app:layout_constraintEnd_toEndOf="@id/Background2" />
-
-            <!-- Text overlaid on Background2 - BOTTOM -->
+                app:layout_constraintTop_toBottomOf="@+id/tvInstallationSteps2" />
 
             <TextView
                 android:id="@+id/tvConfig"
@@ -240,7 +214,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="Configuration"
+                android:text="Heading 4"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/Background2"
                 app:layout_constraintStart_toStartOf="@id/Background2"
@@ -282,61 +256,62 @@
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
                 app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.052"
+                app:layout_constraintHorizontal_bias="0.055"
                 app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
                 app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.053" />
+                app:layout_constraintVertical_bias="0.032" />
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="System Requirements"
+                android:text="Heading 1"
                 android:textColor="#C44F4F"
                 app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
                 app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.072"
+                app:layout_constraintHorizontal_bias="0.057"
                 app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
                 app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.268" />
+                app:layout_constraintVertical_bias="0.236" />
 
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Minimum Requirements"
+                android:text="Heading 2"
                 android:textColor="#C44F4F"
                 app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
                 app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.075"
+                app:layout_constraintHorizontal_bias="0.057"
                 app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
                 app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.483" />
+                app:layout_constraintVertical_bias="0.44" />
 
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Installation Steps"
+                android:text="Heading 3"
                 android:textColor="#C44F4F"
                 app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
                 app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.063"
+                app:layout_constraintHorizontal_bias="0.057"
                 app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
                 app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.698" />
+                app:layout_constraintVertical_bias="0.655" />
 
             <TextView
                 android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="84dp"
-                android:text="Configuration"
+                android:text="Heading 4"
                 android:textColor="#C44F4F"
+                app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
                 app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.058"
+                app:layout_constraintHorizontal_bias="0.057"
                 app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
-                app:layout_constraintTop_toTopOf="@+id/OverviewIcon" />
+                app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
+                app:layout_constraintVertical_bias="0.87" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

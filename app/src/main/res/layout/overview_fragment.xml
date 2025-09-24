@@ -285,7 +285,7 @@
                 app:layout_constraintHorizontal_bias="0.052"
                 app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
                 app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.053" />
+                app:layout_constraintVertical_bias="0.064" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -311,7 +311,7 @@
                 app:layout_constraintHorizontal_bias="0.075"
                 app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
                 app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.483" />
+                app:layout_constraintVertical_bias="0.473" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -324,19 +324,21 @@
                 app:layout_constraintHorizontal_bias="0.063"
                 app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
                 app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.698" />
+                app:layout_constraintVertical_bias="0.677" />
 
             <TextView
                 android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="84dp"
                 android:text="Configuration"
                 android:textColor="#C44F4F"
+                app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
                 app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
                 app:layout_constraintHorizontal_bias="0.058"
                 app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
-                app:layout_constraintTop_toTopOf="@+id/OverviewIcon" />
+                app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
+                app:layout_constraintVertical_bias="0.885
+" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
