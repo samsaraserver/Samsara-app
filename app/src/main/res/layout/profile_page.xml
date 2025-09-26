@@ -6,58 +6,95 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
+    <!-- Add guidelines for proportional margins -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.97" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.47" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.53" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
     <!--Top Nav Bar and Title-->
 
     <ImageView
-        android:id="@+id/TopNavBar"
-        android:layout_width="wrap_content"
+        android:id="@+id/TopBar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         android:src="@drawable/top_bar_1"
-        tools:layout_editor_absoluteX="0dp" />
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/SamsaraLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/TopNavBar"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:src="@drawable/samsara_logo_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        android:src="@drawable/samsara_logo_1" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvTitle"
+        android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="152dp"
         android:text="Profile"
         android:textColor="#FFFFFF"
-        android:textSize="32sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.988"
-        app:layout_constraintStart_toStartOf="@+id/TopNavBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.025" />
+        android:textSize="@dimen/text_xl"
+        app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
+        app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
+        android:layout_marginStart="@dimen/padding_md"
+        android:layout_marginTop="@dimen/padding_xl" />
 
     <ImageButton
         android:id="@+id/SignInOutBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintEnd_toEndOf="@id/TopBar"
+        app:layout_constraintTop_toTopOf="@id/TopBar"
         android:src="@drawable/account_1" />
 
     <TextView
@@ -66,12 +103,10 @@
         android:layout_height="wrap_content"
         android:text="Sign In"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.920"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0142" />
+        app:layout_constraintBottom_toBottomOf="@+id/SignInOutBtn"
+        app:layout_constraintEnd_toEndOf="@+id/SignInOutBtn"
+        app:layout_constraintStart_toStartOf="@+id/SignInOutBtn"
+        app:layout_constraintTop_toTopOf="@+id/SignInOutBtn" />
 
     <!--User infomation-->
 
@@ -79,12 +114,10 @@
         android:id="@+id/imgProfilePic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.159"
+        android:layout_marginTop="@dimen/padding_lg"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/TopBar"
         android:src="@drawable/account_2" />
 
     <TextView
@@ -92,28 +125,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Username"
+        android:layout_marginTop="@dimen/padding_xl"
+        android:layout_marginStart="@dimen/padding_sm"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.053"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.365" />
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/imgProfilePic"/>
 
     <EditText
         android:id="@+id/UserBox"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Username"
         android:textColorHint="#a2a2a2"
+        android:scaleType="fitXY"
         android:paddingStart="15dp"
+        android:layout_marginTop="@dimen/padding_sm"
         android:background="@drawable/account_3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.41" />
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/tvUsername" />
 
     <TextView
         android:id="@+id/tvEmailPhone"
@@ -121,27 +151,25 @@
         android:layout_height="wrap_content"
         android:text="Email or Phone Number"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.053"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.477" />
+        android:layout_marginStart="@dimen/padding_sm"
+        android:layout_marginTop="@dimen/padding_lg"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/UserBox"
+        />
 
     <EditText
         android:id="@+id/EmailPhoneBox"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/email_phone_number"
         android:textColorHint="#a2a2a2"
         android:paddingStart="15dp"
+        android:scaleType="fitXY"
         android:background="@drawable/account_3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.457"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.524"
+        android:layout_marginTop="@dimen/padding_sm"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/tvEmailPhone"
         android:src="@drawable/account_3" />
 
     <TextView
@@ -151,43 +179,37 @@
         android:freezesText="true"
         android:text="Password"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.053"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.582" />
+        android:layout_marginStart="@dimen/padding_sm"
+        android:layout_marginTop="@dimen/padding_lg"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/EmailPhoneBox" />
 
 
     <!--Buttons-->
 
     <EditText
         android:id="@+id/PasswordBox"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/account_3"
         android:hint="Password"
         android:src="@drawable/account_3"
         android:textColorHint="#a2a2a2"
         android:paddingStart="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.485"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/TopNavBar"
-        app:layout_constraintVertical_bias="0.635" />
+        android:scaleType="fitXY"
+        android:layout_marginTop="@dimen/padding_sm"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/tvPassword" />
 
     <ImageButton
         android:id="@+id/SetupBiometricsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.739"
+        app:layout_constraintEnd_toEndOf="@id/guideline_middle"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
         android:src="@drawable/account_4" />
 
     <TextView
@@ -198,11 +220,9 @@
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/SetupBiometricsBtn"
-        app:layout_constraintEnd_toStartOf="@+id/EditInformationBtn"
-        app:layout_constraintHorizontal_bias="0.640"
+        app:layout_constraintEnd_toEndOf="@+id/SetupBiometricsBtn"
         app:layout_constraintStart_toStartOf="@+id/SetupBiometricsBtn"
-        app:layout_constraintTop_toTopOf="@+id/SetupBiometricsBtn"
-        app:layout_constraintVertical_bias="0.50" />
+        app:layout_constraintTop_toTopOf="@+id/SetupBiometricsBtn" />
 
     <ImageButton
         android:id="@+id/EditInformationBtn"
@@ -210,12 +230,9 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/account_4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.835"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.739" />
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_middle"
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom" />
 
     <TextView
         android:id="@+id/tvEditInformation"
@@ -225,22 +242,17 @@
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/EditInformationBtn"
         app:layout_constraintEnd_toEndOf="@+id/EditInformationBtn"
-        app:layout_constraintHorizontal_bias="0.40"
-        app:layout_constraintStart_toEndOf="@+id/SetupBiometricsBtn"
-        app:layout_constraintTop_toTopOf="@+id/EditInformationBtn"
-        app:layout_constraintVertical_bias="0.50" />
+        app:layout_constraintStart_toStartOf="@+id/EditInformationBtn"
+        app:layout_constraintTop_toTopOf="@+id/EditInformationBtn" />
 
     <ImageButton
         android:id="@+id/SaveBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.811"
+        app:layout_constraintEnd_toEndOf="@id/EditInformationBtn"
+        app:layout_constraintStart_toStartOf="@id/SetupBiometricsBtn"
+        app:layout_constraintTop_toBottomOf="@id/EditInformationBtn"
         android:src="@drawable/account_5" />
 
     <TextView

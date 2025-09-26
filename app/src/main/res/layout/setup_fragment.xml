@@ -6,190 +6,261 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:layout_height="wrap_content">
 
+            <!-- Add guidelines for proportional margins -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.03" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.97" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_mleft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.47" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_mright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.53" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_middle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.08" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.7" />
+
+            <ImageView
+                android:id="@+id/TopBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/top_bar_1"
+                android:scaleType="fitXY"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <ImageView
+                android:id="@+id/SamsaraLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/samsara_logo_1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/tvSetup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Samsara Setup"
+                android:textColor="#C44F4F"
+                android:textSize="34sp"
+                app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
+                app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
+                android:layout_marginStart="@dimen/padding_md"
+                android:layout_marginTop="@dimen/padding_lg"  />
             <!-- Background 1 -->
 
             <!--Background 2-->
 
             <ImageView
                 android:id="@+id/Background1"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:contentDescription="@null"
-                android:scaleType="fitStart"
+                android:scaleType="fitXY"
                 android:src="@drawable/documentation_6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/TopBar" />
 
             <ImageView
                 android:id="@+id/Background2"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/padding_md"
                 android:adjustViewBounds="true"
                 android:contentDescription="@null"
-                android:scaleType="fitStart"
+                android:scaleType="fitXY"
                 android:src="@drawable/documentation_6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/Background1" />
 
             <!--content-->
 
-            <TextView
-                android:id="@+id/tvInstallationGuide"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center"
-                android:text="@string/samsara_setup"
-                android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="@id/Background1"
-                app:layout_constraintStart_toStartOf="@id/Background1"
-                app:layout_constraintTop_toTopOf="@id/Background1" />
-
             <ImageView
                 android:id="@+id/OverviewIcon"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/padding_md"
                 android:contentDescription="@null"
+                android:scaleType="fitXY"
                 android:src="@drawable/documentation_8"
-                app:layout_constraintEnd_toEndOf="@id/Background1"
-                app:layout_constraintHorizontal_bias="0.473"
-                app:layout_constraintStart_toStartOf="@id/Background1"
-                app:layout_constraintTop_toBottomOf="@id/tvInstallationGuide" />
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/TopBar" />
 
             <TextView
                 android:id="@+id/tvSystemRequirements"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/padding_sm"
                 android:gravity="center"
                 android:text="Heading 1"
                 android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="@id/Background1"
-                app:layout_constraintStart_toStartOf="@id/Background1"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/OverviewIcon" />
 
             <ImageView
                 android:id="@+id/line1"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginStart="@dimen/padding_md"
+                android:layout_marginEnd="@dimen/padding_md"
                 android:src="@drawable/documentation_9"
                 android:contentDescription="@null"
+                android:scaleType="fitXY"
                 app:layout_constraintTop_toBottomOf="@id/tvSystemRequirements"
-                app:layout_constraintStart_toStartOf="@id/Background1"
-                app:layout_constraintEnd_toEndOf="@id/Background1" />
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
             <TextView
                 android:id="@+id/tvSystemRequirements2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/padding_smd"
+                android:layout_marginEnd="@dimen/padding_smd"
+                android:layout_marginTop="@dimen/padding_sm"
                 android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
                 android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="@id/Background1"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@id/Background1"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/line1" />
 
             <TextView
                 android:id="@+id/tvMinimumRequirments"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/padding_sm"
                 android:gravity="center"
+                android:scaleType="fitXY"
                 android:text="Heading 2"
                 android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="@id/Background1"
-                app:layout_constraintHorizontal_bias="0.501"
-                app:layout_constraintStart_toStartOf="@id/Background1"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/tvSystemRequirements2" />
 
             <ImageView
                 android:id="@+id/line2"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginStart="@dimen/padding_md"
+                android:layout_marginEnd="@dimen/padding_md"
                 android:src="@drawable/documentation_9"
-                app:layout_constraintBottom_toTopOf="@+id/tvMinimumRequirments2"
-                app:layout_constraintEnd_toEndOf="@id/Background1"
-                app:layout_constraintStart_toStartOf="@id/Background1"
-                app:layout_constraintTop_toBottomOf="@+id/tvMinimumRequirments"
-                app:layout_constraintVertical_bias="0.333" />
+                android:scaleType="fitXY"
+                app:layout_constraintTop_toBottomOf="@id/tvMinimumRequirments"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
             <TextView
                 android:id="@+id/tvMinimumRequirments2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginStart="@dimen/padding_smd"
+                android:layout_marginEnd="@dimen/padding_smd"
                 android:text="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 android:textColor="#FFFFFF"
-                app:layout_constraintBottom_toBottomOf="@+id/Background1"
-                app:layout_constraintEnd_toEndOf="@id/Background1"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@id/Background1"
-                app:layout_constraintTop_toBottomOf="@+id/tvMinimumRequirments"
-                app:layout_constraintVertical_bias="0.3" />
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/line2" />
 
             <TextView
                 android:id="@+id/tvInstallationSteps"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:scaleType="fitXY"
                 android:gravity="center"
                 android:text="Heading 3"
                 android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="@id/Background2"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="@id/Background2"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toTopOf="@id/Background2" />
 
             <ImageView
                 android:id="@+id/line3"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginStart="@dimen/padding_md"
+                android:layout_marginEnd="@dimen/padding_md"
+                android:scaleType="fitXY"
                 android:src="@drawable/documentation_9"
                 android:contentDescription="@null"
                 app:layout_constraintTop_toBottomOf="@id/tvInstallationSteps"
-                app:layout_constraintStart_toStartOf="@id/Background2"
-                app:layout_constraintEnd_toEndOf="@id/Background2" />
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
             <TextView
                 android:id="@+id/tvInstallationSteps2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginStart="@dimen/padding_smd"
+                android:layout_marginEnd="@dimen/padding_smd"
                 android:text="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores."
                 android:textColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/line3"
-                app:layout_constraintStart_toStartOf="@id/Background2"
-                app:layout_constraintEnd_toEndOf="@id/Background2" />
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
             <!-- Install image with overlayed code text -->
 
@@ -199,80 +270,75 @@
                 android:id="@+id/tvInstallationSteps4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginStart="@dimen/padding_smd"
+                android:layout_marginEnd="@dimen/padding_smd"
                 android:text="Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam."
                 android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="@id/Background2"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@id/Background2"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@+id/tvInstallationSteps2" />
 
             <TextView
                 android:id="@+id/tvConfig"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/padding_sm"
                 android:gravity="center"
                 android:text="Heading 4"
+                android:scaleType="fitXY"
                 android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="@id/Background2"
-                app:layout_constraintStart_toStartOf="@id/Background2"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/tvInstallationSteps4" />
 
             <ImageView
                 android:id="@+id/line4"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginStart="@dimen/padding_md"
+                android:layout_marginEnd="@dimen/padding_md"
+                android:scaleType="fitXY"
                 android:contentDescription="@null"
                 android:src="@drawable/documentation_9"
-                app:layout_constraintEnd_toEndOf="@id/Background2"
-                app:layout_constraintHorizontal_bias="0.504"
-                app:layout_constraintStart_toStartOf="@id/Background2"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/tvConfig" />
 
             <TextView
                 android:id="@+id/tvConfig2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="88dp"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginStart="@dimen/padding_smd"
+                android:layout_marginEnd="@dimen/padding_smd"
                 android:text="At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti."
                 android:textColor="#FFFFFF"
-                app:layout_constraintBottom_toBottomOf="@id/Background2"
-                app:layout_constraintEnd_toEndOf="@id/Background2"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@id/Background2"
-                app:layout_constraintTop_toBottomOf="@+id/line4"
-                app:layout_constraintVertical_bias="0.243" />
+                app:layout_constraintTop_toBottomOf="@id/line4"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
             <TextView
                 android:id="@+id/textView2"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginStart="@dimen/padding_lg"
                 android:text="Contents"
                 android:textColor="#000000"
-                app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
-                app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.055"
-                app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
-                app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.032" />
+                app:layout_constraintHorizontal_bias="0.55"
+                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintTop_toTopOf="@+id/OverviewIcon" />
 
             <TextView
                 android:id="@+id/textView3"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Heading 1"
                 android:textColor="#C44F4F"
-                app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
-                app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.057"
-                app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
-                app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.236" />
+                app:layout_constraintStart_toStartOf="@+id/textView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -280,12 +346,8 @@
                 android:layout_height="wrap_content"
                 android:text="Heading 2"
                 android:textColor="#C44F4F"
-                app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
-                app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.057"
-                app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
-                app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.44" />
+                app:layout_constraintStart_toStartOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -293,12 +355,8 @@
                 android:layout_height="wrap_content"
                 android:text="Heading 3"
                 android:textColor="#C44F4F"
-                app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
-                app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.057"
-                app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
-                app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.655" />
+                app:layout_constraintStart_toStartOf="@+id/textView5"
+                app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -306,12 +364,8 @@
                 android:layout_height="wrap_content"
                 android:text="Heading 4"
                 android:textColor="#C44F4F"
-                app:layout_constraintBottom_toBottomOf="@+id/OverviewIcon"
-                app:layout_constraintEnd_toEndOf="@+id/OverviewIcon"
-                app:layout_constraintHorizontal_bias="0.057"
-                app:layout_constraintStart_toStartOf="@+id/OverviewIcon"
-                app:layout_constraintTop_toTopOf="@+id/OverviewIcon"
-                app:layout_constraintVertical_bias="0.87" />
+                app:layout_constraintStart_toStartOf="@+id/textView6"
+                app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
