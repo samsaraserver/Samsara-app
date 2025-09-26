@@ -6,6 +6,56 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
+    <!-- Add guidelines for proportional margins -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.97" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.47" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.53" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
     <!--text-->
 
     <TextView
@@ -13,40 +63,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Setup Biometrics"
+        android:layout_marginTop="@dimen/spacing_xl"
         android:textColor="#FFFFFF"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/tvSummary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toTopOf="@id/guideline_top" />
 
     <!--images-->
 
     <TextView
         android:id="@+id/tvSummary"
-        android:layout_width="301dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="256dp"
-        android:text="@string/biometrics_can_be_used_to_login_and_view_configurations"
+        android:layout_width="@dimen/padding_na"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xl"
+        android:gravity="center_horizontal"
+        android:text="Biometrics can be used to login and view configurations"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/BiometricsBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start" />
 
     <ImageView
         android:id="@+id/FaceID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="62dp"
-        android:layout_marginBottom="28dp"
         android:src="@drawable/biometrics_1"
         app:layout_constraintBottom_toTopOf="@+id/BiometricsBtn"
-        app:layout_constraintEnd_toStartOf="@+id/FingerPrint"
-        app:layout_constraintHorizontal_bias="0.351"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/tvSummary"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.1" />
 
     <!--button-->
 
@@ -54,14 +103,12 @@
         android:id="@+id/FingerPrint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="62dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="28dp"
         android:src="@drawable/biometrics_2"
         app:layout_constraintBottom_toTopOf="@+id/BiometricsBtn"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@+id/tvSummary"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.1" />
 
     <!-- Navbar Include -->
 
@@ -69,19 +116,17 @@
         android:id="@+id/BiometricsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="204dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/biometrics_3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start" />
 
     <TextView
         android:id="@+id/tvGetStarted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/get_started"
+        android:text="Get Started"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/BiometricsBtn"
         app:layout_constraintEnd_toEndOf="@+id/BiometricsBtn"

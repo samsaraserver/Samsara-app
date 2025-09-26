@@ -6,30 +6,85 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
+    <!-- Add guidelines for proportional margins -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.97" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.47" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.53" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <ImageView
+        android:id="@+id/TopBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/top_bar_1"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <ImageView
         android:id="@+id/SamsaraLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
+        android:src="@drawable/samsara_logo_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/samsara_logo_1" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvCommunityPackages"
+        android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="42dp"
-        android:fontFamily="@font/inter_semibold"
-        android:text="@string/community_packages"
+        android:text="Community Packages"
         android:textColor="#FFFFFF"
-        android:textSize="23sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toEndOf="@+id/SamsaraLogo"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="@dimen/text_xl"
+        app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
+        app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
+        android:layout_marginStart="@dimen/padding_md"
+        android:layout_marginTop="@dimen/padding_xl" />
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -40,6 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/SamsaraLogo">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:text="@string/test_package"
+                    android:text="Test Package"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -110,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:text="@string/last_updated_25_08_2025"
+                    android:text="Last updated : 25/08/2025"
                     android:textColor="#CCCCCC"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -122,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="16dp"
-                    android:text="@string/installs_1k"
+                    android:text="Installs: 1K"
                     android:textColor="#CCCCCC"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -135,7 +191,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="32dp"
                     android:layout_marginEnd="16dp"
-                    android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore_magna_aliqua_ut_enim_ad_minim_veniam_quis_nostrud_exercitation_ullamco_laboris_nisi_ut_aliquip_ex_ea_commodo_consequat"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
                     android:textColor="#FFFFFF"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -149,7 +205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="89dp"
                     android:layout_marginTop="8dp"
-                    android:text="@string/by_jane_doe"
+                    android:text="By: Jane Doe"
                     android:textColor="#CCCCCC"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -194,7 +250,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/packages_2"
-                    android:text="@string/install"
+                    android:text="Install"
                     android:textColor="#FFFFFF"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
