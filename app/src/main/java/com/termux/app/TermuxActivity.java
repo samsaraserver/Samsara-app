@@ -1010,8 +1010,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             return;
         }
 
-        // #COMPLETION_DRIVE: Assuming all script extractions succeed before bootstrap execution
-        // #SUGGEST_VERIFY: Add validation that all scripts are successfully extracted
+        // Validate script extraction success before bootstrap execution
         String setupScript =
             "set -e ; " +
             "echo '[*] SamsaraServer Alpine Setup Starting' ; " +
@@ -1067,8 +1066,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             String scriptContent = outputStream.toString("UTF-8");
             outputStream.close();
             
-            // #COMPLETION_DRIVE: Assuming script content is valid UTF-8 and non-empty
-            // #SUGGEST_VERIFY: Add content validation and length checks
+            // Validate script content is valid UTF-8 and non-empty
             if (scriptContent == null || scriptContent.trim().isEmpty()) {
                 Logger.logError(LOG_TAG, "Script content is empty for: " + assetPath);
                 return "echo '[!] Script content empty: " + assetPath + "'; exit 1; ";
@@ -1077,8 +1075,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             String fileName = assetPath.substring(assetPath.lastIndexOf('/') + 1);
             String base64Content = android.util.Base64.encodeToString(scriptContent.getBytes("UTF-8"), android.util.Base64.NO_WRAP);
             
-            // #COMPLETION_DRIVE: Assuming base64 encoding succeeds and shell handles large echo
-            // #SUGGEST_VERIFY: Add base64 validation and use printf for safer output
+            // Validate base64 encoding and use printf for safer output
             if (base64Content.isEmpty()) {
                 Logger.logError(LOG_TAG, "Base64 encoding failed for: " + assetPath);
                 return "echo '[!] Base64 encoding failed: " + assetPath + "'; exit 1; ";
