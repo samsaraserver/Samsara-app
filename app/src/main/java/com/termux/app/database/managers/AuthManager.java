@@ -10,6 +10,7 @@ public class AuthManager {
     private static final String KEY_USERNAME = "username";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_IS_LOGGED_IN = "is_logged_in";
+    private static final String KEY_PROFILE_PICTURE_URL = "profile_picture_url";
 
     private static AuthManager instance;
     private SharedPreferences prefs;
@@ -50,6 +51,7 @@ public class AuthManager {
         editor.putLong(KEY_USER_ID, user.getId() != null ? user.getId() : 0L);
         editor.putString(KEY_USERNAME, user.getUsername());
         editor.putString(KEY_EMAIL, user.getEmail());
+        editor.putString(KEY_PROFILE_PICTURE_URL, user.getProfilePictureUrl());
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.apply();
     }
@@ -60,6 +62,7 @@ public class AuthManager {
             currentUser.setId(prefs.getLong(KEY_USER_ID, 0L));
             currentUser.setUsername(prefs.getString(KEY_USERNAME, null));
             currentUser.setEmail(prefs.getString(KEY_EMAIL, null));
+            currentUser.setProfilePictureUrl(prefs.getString(KEY_PROFILE_PICTURE_URL, null));
         }
     }
 

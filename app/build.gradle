@@ -36,6 +36,9 @@ android {
         // OkHttp for direct REST API calls to Supabase PostgreSQL
         implementation "com.squareup.okhttp3:okhttp:4.11.0"
         implementation "org.json:json:20230227"
+        
+        // Image loading library
+        implementation "com.squareup.picasso:picasso:2.8"
 
         implementation project(":terminal-view")
         implementation project(":termux-shared")

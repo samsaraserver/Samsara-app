@@ -7,6 +7,7 @@ public class SamsaraUser {
     private String username;
     private String email;
     private String passwordHash;
+    private String profilePictureUrl;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Boolean isActive;
@@ -20,6 +21,7 @@ public class SamsaraUser {
         this.username = username;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.profilePictureUrl = null;
     }
     
     public Long getId() {
@@ -52,6 +54,14 @@ public class SamsaraUser {
     
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+    
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+    
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
     
     public Timestamp getCreatedAt() {

@@ -2,22 +2,27 @@ package com.termux.app;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.termux.R;
 import com.termux.app.database.SupabaseConfig;
 import com.termux.app.database.managers.AuthManager;
 import com.termux.app.database.models.SamsaraUser;
 import com.termux.app.database.repository.UserRepository;
+import com.termux.app.database.utils.ImageUtils;
+import com.termux.app.utils.ImagePickerHelper;
 
-public class profile_page extends Activity {
+public class profile_page extends Activity implements ImagePickerHelper.ImagePickerCallback {
     private static final String TAG = "ProfilePage";
     private AuthManager authManager;
     private UserRepository userRepository;
@@ -26,6 +31,8 @@ public class profile_page extends Activity {
     private EditText passwordBox;
     private TextView signInOutText;
     private ImageButton signInOutButton;
+    private ImageView profilePictureView;
+    private ImagePickerHelper imagePickerHelper;
     private boolean isEditMode = false;
 
     @Override
@@ -56,7 +63,9 @@ public class profile_page extends Activity {
         passwordBox = findViewById(R.id.PasswordBox);
         signInOutText = findViewById(R.id.tvSignInOut);
         signInOutButton = findViewById(R.id.SignInOutBtn);
+        profilePictureView = findViewById(R.id.imgProfilePic);
         
+        imagePickerHelper = new ImagePickerHelper(this, this);
         setFieldsEnabled(false);
     }
 
@@ -74,6 +83,14 @@ public class profile_page extends Activity {
         saveButton.setOnClickListener(v -> saveUserData());
 
         signInOutButton.setOnClickListener(v -> handleSignInOut());
+        
+        profilePictureView.setOnClickListener(v -> {
+            if (authManager.isLoggedIn()) {
+                imagePickerHelper.showImagePickerDialog();
+            } else {
+                Toast.makeText(this, "Please sign in to change profile picture", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadUserData() {
@@ -83,12 +100,43 @@ public class profile_page extends Activity {
                 usernameBox.setText(currentUser.getUsername());
                 emailBox.setText(currentUser.getEmail());
                 passwordBox.setText("••••••••");
+                loadProfilePicture(currentUser.getProfilePictureUrl());
             }
         } else {
             usernameBox.setText("");
             emailBox.setText("");
             passwordBox.setText("");
+            loadDefaultProfilePicture();
         }
+    }
+    
+    private void loadProfilePicture(String imageData) {
+        if (imageData != null && !imageData.isEmpty()) {
+            // #COMPLETION_DRIVE: Handle both base64 data URIs and regular filenames
+            // #SUGGEST_VERIFY: Test both storage bucket URLs and base64 fallback approach
+            if (imageData.startsWith("data:image/")) {
+                // Base64 data URI - load directly with Picasso
+                Picasso.get()
+                    .load(imageData)
+                    .placeholder(R.drawable.account_2)
+                    .error(R.drawable.account_2)
+                    .into(profilePictureView);
+            } else {
+                // Regular filename - get storage URL
+                String imageUrl = userRepository.getProfilePictureUrl(imageData);
+                Picasso.get()
+                    .load(imageUrl)
+                    .placeholder(R.drawable.account_2)
+                    .error(R.drawable.account_2)
+                    .into(profilePictureView);
+            }
+        } else {
+            loadDefaultProfilePicture();
+        }
+    }
+    
+    private void loadDefaultProfilePicture() {
+        profilePictureView.setImageResource(R.drawable.account_2);
     }
 
     private void updateSignInOutButton() {
@@ -255,6 +303,89 @@ public class profile_page extends Activity {
         super.onResume();
         loadUserData();
         updateSignInOutButton();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imagePickerHelper.handleActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        imagePickerHelper.handlePermissionResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onImageSelected(Uri imageUri) {
+        if (!authManager.isLoggedIn()) {
+            Toast.makeText(this, "Please sign in first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        SamsaraUser currentUser = authManager.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User session expired", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(this, "Processing image...", Toast.LENGTH_SHORT).show();
+
+        new Thread(() -> {
+            byte[] imageData = ImageUtils.processImageFromUri(this, imageUri);
+            
+            if (imageData == null) {
+                runOnUiThread(() -> Toast.makeText(this, "Failed to process image", Toast.LENGTH_LONG).show());
+                return;
+            }
+
+            if (!ImageUtils.isValidImageSize(imageData)) {
+                runOnUiThread(() -> Toast.makeText(this, "Image size must be less than 5MB", Toast.LENGTH_LONG).show());
+                return;
+            }
+
+            runOnUiThread(() -> Toast.makeText(this, "Uploading image...", Toast.LENGTH_SHORT).show());
+
+            userRepository.uploadProfilePicture(currentUser.getId(), imageData)
+                .thenCompose(imageDataResult -> {
+                    if (imageDataResult != null) {
+                        // #COMPLETION_DRIVE: Handle both storage filename and base64 data URI results
+                        // #SUGGEST_VERIFY: Test both successful storage upload and fallback scenarios
+                        if (imageDataResult.startsWith("data:image/")) {
+                            // Base64 data URI - already stored in database by alternative method
+                            return java.util.concurrent.CompletableFuture.completedFuture(imageDataResult);
+                        } else {
+                            // Regular filename - need to update database
+                            return userRepository.updateUserProfilePicture(currentUser.getId(), imageDataResult)
+                                .thenApply(success -> success ? imageDataResult : null);
+                        }
+                    }
+                    return java.util.concurrent.CompletableFuture.completedFuture(null);
+                })
+                .thenAccept(imageDataResult -> {
+                    runOnUiThread(() -> {
+                        if (imageDataResult != null) {
+                            currentUser.setProfilePictureUrl(imageDataResult);
+                            authManager.loginUser(currentUser);
+                            loadProfilePicture(imageDataResult);
+                            Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Failed to update profile picture", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                })
+                .exceptionally(throwable -> {
+                    Log.e(TAG, "Error updating profile picture", throwable);
+                    runOnUiThread(() -> Toast.makeText(this, "Error: " + throwable.getMessage(), Toast.LENGTH_LONG).show());
+                    return null;
+                });
+        }).start();
+    }
+
+    @Override
+    public void onError(String error) {
+        Toast.makeText(this, "Error: " + error, Toast.LENGTH_LONG).show();
     }
 
     @Override

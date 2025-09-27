@@ -20,6 +20,9 @@ public class JsonUtils {
         if (user.getPasswordHash() != null) {
             json.put("password_hash", user.getPasswordHash());
         }
+        if (user.getProfilePictureUrl() != null) {
+            json.put("profile_picture_url", user.getProfilePictureUrl());
+        }
         if (user.getIsActive() != null) {
             json.put("is_active", user.getIsActive());
         }
@@ -34,6 +37,7 @@ public class JsonUtils {
         user.setUsername(safeGetString(json, "username", null));
         user.setEmail(safeGetString(json, "email", null));
         user.setPasswordHash(safeGetString(json, "password_hash", null));
+        user.setProfilePictureUrl(safeGetString(json, "profile_picture_url", null));
         user.setIsActive(safeGetBoolean(json, "is_active", true));
         
         String createdAtStr = safeGetString(json, "created_at", null);
