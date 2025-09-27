@@ -282,6 +282,87 @@ public class UserRepository {
         }, executorService);
     }
 
+    public CompletableFuture<Boolean> updateUserInfo(Long userId, String username, String email) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                JSONObject updateData = new JSONObject();
+                updateData.put("username", username);
+                updateData.put("email", email);
+                
+                String timestamp = new java.sql.Timestamp(System.currentTimeMillis()).toString();
+                updateData.put("updated_at", timestamp);
+                
+                RequestBody body = RequestBody.create(updateData.toString(), JSON);
+                String url = baseUrl + TABLE_NAME + "?id=eq." + userId;
+                
+                Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .addHeader("Content-Type", "application/json")
+                    .patch(body)
+                    .build();
+                
+                try (Response response = httpClient.newCall(request).execute()) {
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "User info updated successfully");
+                        return true;
+                    } else {
+                        String errorBody = response.body() != null ? response.body().string() : "Unknown error";
+                        Log.e(TAG, "Failed to update user info. Status: " + response.code() + ", Error: " + errorBody);
+                        return false;
+                    }
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error updating user info: " + e.getMessage(), e);
+                return false;
+            }
+        }, executorService);
+    }
+
+    public CompletableFuture<Boolean> updateUserWithPassword(Long userId, String username, String email, String password) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String passwordHash = hashPassword(password);
+                
+                JSONObject updateData = new JSONObject();
+                updateData.put("username", username);
+                updateData.put("email", email);
+                updateData.put("password_hash", passwordHash);
+                
+                String timestamp = new java.sql.Timestamp(System.currentTimeMillis()).toString();
+                updateData.put("updated_at", timestamp);
+                
+                RequestBody body = RequestBody.create(updateData.toString(), JSON);
+                String url = baseUrl + TABLE_NAME + "?id=eq." + userId;
+                
+                Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .addHeader("Content-Type", "application/json")
+                    .patch(body)
+                    .build();
+                
+                try (Response response = httpClient.newCall(request).execute()) {
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "User info with password updated successfully");
+                        return true;
+                    } else {
+                        String errorBody = response.body() != null ? response.body().string() : "Unknown error";
+                        Log.e(TAG, "Failed to update user with password. Status: " + response.code() + ", Error: " + errorBody);
+                        return false;
+                    }
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error updating user with password: " + e.getMessage(), e);
+                return false;
+            }
+        }, executorService);
+    }
+
     public void shutdown() {
         if (executorService != null && !executorService.isShutdown()) {
             executorService.shutdown();
