@@ -13,8 +13,6 @@ public class SamsaraUser {
     
     public SamsaraUser() {
         this.isActive = true;
-        this.createdAt = new Timestamp(System.currentTimeMillis());
-        this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
     
     public SamsaraUser(String username, String email, String passwordHash) {

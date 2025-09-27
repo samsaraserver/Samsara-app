@@ -15,13 +15,14 @@ import android.widget.Toast;
 import com.termux.R;
 import com.termux.app.database.SupabaseConfig;
 import com.termux.app.database.repository.UserRepository;
+import com.termux.app.database.managers.AuthManager;
 import java.util.concurrent.CompletableFuture;
 
 public class register_page extends Activity {
     private static final String TAG = "RegisterPage";
     private UserRepository userRepository;
     private EditText usernameBox;
-    private EditText emailPhoneBox;
+    private EditText emailBox;
     private EditText passwordBox;
 
     @Override
@@ -30,7 +31,7 @@ public class register_page extends Activity {
         setContentView(R.layout.register_page);
 
         try {
-            SupabaseConfig.initialize();
+            SupabaseConfig.initialize(this);
             userRepository = new UserRepository();
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize Supabase: " + e.getMessage(), e);
@@ -48,7 +49,7 @@ public class register_page extends Activity {
         tvSignUp2.setText(Html.fromHtml(tvSignUp2.getText().toString()));
 
         usernameBox = findViewById(R.id.UsernameBox);
-        emailPhoneBox = findViewById(R.id.EmailPhoneBox);
+        emailBox = findViewById(R.id.EmailPhoneBox);
         passwordBox = findViewById(R.id.PasswordBox);
     }
 
@@ -75,7 +76,7 @@ public class register_page extends Activity {
 
     private void handleCreateAccount() {
         String username = usernameBox.getText().toString().trim();
-        String email = emailPhoneBox.getText().toString().trim();
+        String email = emailBox.getText().toString().trim();
         String password = passwordBox.getText().toString();
 
         if (!validateInput(username, email, password)) {
@@ -102,8 +103,8 @@ public class register_page extends Activity {
                 if (emailExists) {
                     runOnUiThread(() -> {
                         setFormEnabled(true);
-                        emailPhoneBox.setError("Email already registered");
-                        emailPhoneBox.requestFocus();
+                        emailBox.setError("Email already registered");
+                        emailBox.requestFocus();
                     });
                     return CompletableFuture.completedFuture(false);
                 }
@@ -111,17 +112,29 @@ public class register_page extends Activity {
                 runOnUiThread(() -> Toast.makeText(this, "Creating account...", Toast.LENGTH_SHORT).show());
                 return userRepository.createUser(username, email, password);
             })
-            .thenAccept(success -> {
+            .thenCompose(success -> {
+                if (success) {
+                    Log.d(TAG, "User creation successful, fetching user data...");
+                    return userRepository.getUserByEmail(email);
+                } else {
+                    Log.e(TAG, "User creation failed");
+                    return CompletableFuture.completedFuture(null);
+                }
+            })
+            .thenAccept(user -> {
                 runOnUiThread(() -> {
                     setFormEnabled(true);
-                    if (success) {
+                    if (user != null) {
+                        Log.d(TAG, "User data retrieved successfully: " + user.getUsername());
+                        AuthManager.getInstance(this).loginUser(user);
                         Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
                         
                         Intent intent = new Intent(register_page.this, home_page.class);
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(this, "Failed to create account. Please try again.", Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "Failed to retrieve user data after creation");
+                        Toast.makeText(this, "Account may have been created, but login failed. Please try signing in manually.", Toast.LENGTH_LONG).show();
                     }
                 });
             })
@@ -149,14 +162,14 @@ public class register_page extends Activity {
         }
 
         if (TextUtils.isEmpty(email)) {
-            emailPhoneBox.setError("Email is required");
-            emailPhoneBox.requestFocus();
+            emailBox.setError("Email is required");
+            emailBox.requestFocus();
             return false;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailPhoneBox.setError("Please enter a valid email address");
-            emailPhoneBox.requestFocus();
+            emailBox.setError("Please enter a valid email address");
+            emailBox.requestFocus();
             return false;
         }
 
@@ -177,7 +190,7 @@ public class register_page extends Activity {
 
     private void setFormEnabled(boolean enabled) {
         usernameBox.setEnabled(enabled);
-        emailPhoneBox.setEnabled(enabled);
+        emailBox.setEnabled(enabled);
         passwordBox.setEnabled(enabled);
         findViewById(R.id.CreateAccountBtn).setEnabled(enabled);
     }

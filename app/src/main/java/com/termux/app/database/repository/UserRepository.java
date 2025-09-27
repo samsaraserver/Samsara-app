@@ -46,13 +46,13 @@ public class UserRepository {
                     .addHeader("apikey", apiKey)
                     .addHeader("Authorization", "Bearer " + apiKey)
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("Prefer", "return=minimal")
+                    .addHeader("Prefer", "return=representation")
                     .post(body)
                     .build();
                 
                 try (Response response = httpClient.newCall(request).execute()) {
-                    if (isValidResponse(response)) {
-                        Log.d(TAG, "User created successfully");
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "User created successfully with status: " + response.code());
                         return true;
                     } else {
                         String errorBody = response.body() != null ? response.body().string() : "Unknown error";
@@ -233,6 +233,55 @@ public class UserRepository {
         }
     }
     
+    public CompletableFuture<Boolean> updateUser(SamsaraUser user) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                JSONObject updateData = new JSONObject();
+                if (user.getUsername() != null) {
+                    updateData.put("username", user.getUsername());
+                }
+                if (user.getEmail() != null) {
+                    updateData.put("email", user.getEmail());
+                }
+                if (user.getPasswordHash() != null) {
+                    updateData.put("password_hash", user.getPasswordHash());
+                }
+                if (user.getIsActive() != null) {
+                    updateData.put("is_active", user.getIsActive());
+                }
+                
+                String timestamp = new java.sql.Timestamp(System.currentTimeMillis()).toString();
+                updateData.put("updated_at", timestamp);
+                
+                RequestBody body = RequestBody.create(updateData.toString(), JSON);
+                String url = baseUrl + TABLE_NAME + "?id=eq." + user.getId();
+                
+                Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .addHeader("Content-Type", "application/json")
+                    .patch(body)
+                    .build();
+                
+                try (Response response = httpClient.newCall(request).execute()) {
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "User updated successfully with status: " + response.code());
+                        return true;
+                    } else {
+                        String errorBody = response.body() != null ? response.body().string() : "Unknown error";
+                        Log.e(TAG, "Failed to update user. Status: " + response.code() + ", Error: " + errorBody);
+                        return false;
+                    }
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error updating user: " + e.getMessage(), e);
+                return false;
+            }
+        }, executorService);
+    }
+
     public void shutdown() {
         if (executorService != null && !executorService.isShutdown()) {
             executorService.shutdown();
@@ -275,12 +324,7 @@ public class UserRepository {
             return false;
         }
         
-        String contentType = response.header("Content-Type");
-        if (contentType == null || !contentType.contains("application/json")) {
-            Log.w(TAG, "Unexpected content type: " + contentType);
-            return false;
-        }
-        
+        Log.d(TAG, "Response successful with status: " + response.code());
         return true;
     }
 }

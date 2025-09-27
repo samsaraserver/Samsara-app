@@ -37,22 +37,34 @@ public class JsonUtils {
         user.setIsActive(safeGetBoolean(json, "is_active", true));
         
         String createdAtStr = safeGetString(json, "created_at", null);
-        if (createdAtStr != null) {
+        if (createdAtStr != null && !createdAtStr.isEmpty()) {
             try {
-                user.setCreatedAt(Timestamp.valueOf(createdAtStr.replace('T', ' ').substring(0, 19)));
+                String cleanTimestamp = createdAtStr.replace('T', ' ');
+                if (cleanTimestamp.contains(".")) {
+                    cleanTimestamp = cleanTimestamp.substring(0, cleanTimestamp.indexOf('.'));
+                }
+                if (cleanTimestamp.length() > 19) {
+                    cleanTimestamp = cleanTimestamp.substring(0, 19);
+                }
+                user.setCreatedAt(Timestamp.valueOf(cleanTimestamp));
             } catch (Exception e) {
-                // If timestamp parsing fails, use current time
-                user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+                user.setCreatedAt(null);
             }
         }
         
         String updatedAtStr = safeGetString(json, "updated_at", null);
-        if (updatedAtStr != null) {
+        if (updatedAtStr != null && !updatedAtStr.isEmpty()) {
             try {
-                user.setUpdatedAt(Timestamp.valueOf(updatedAtStr.replace('T', ' ').substring(0, 19)));
+                String cleanTimestamp = updatedAtStr.replace('T', ' ');
+                if (cleanTimestamp.contains(".")) {
+                    cleanTimestamp = cleanTimestamp.substring(0, cleanTimestamp.indexOf('.'));
+                }
+                if (cleanTimestamp.length() > 19) {
+                    cleanTimestamp = cleanTimestamp.substring(0, 19);
+                }
+                user.setUpdatedAt(Timestamp.valueOf(cleanTimestamp));
             } catch (Exception e) {
-                // If timestamp parsing fails, use current time
-                user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+                user.setUpdatedAt(null);
             }
         }
         
@@ -65,6 +77,11 @@ public class JsonUtils {
         json.put("email", email);
         json.put("password_hash", passwordHash);
         json.put("is_active", true);
+        
+        long currentTime = System.currentTimeMillis();
+        String timestamp = new java.sql.Timestamp(currentTime).toString();
+        json.put("created_at", timestamp);
+        json.put("updated_at", timestamp);
         
         return json.toString();
     }
