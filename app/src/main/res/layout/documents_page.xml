@@ -76,21 +76,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--search bar-->
+
+    <!-- Buttons -->
+
     <TextView
         android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_md"
+        android:layout_marginTop="10dp"
         android:text="Documents"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_top"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.298"
         app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
-        app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
-        android:layout_marginStart="@dimen/padding_md"
-        android:layout_marginTop="@dimen/padding_xl" />
-
-    <!--search bar-->
-
-    <!-- Buttons -->
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.521" />
 
     <ImageView
         android:id="@+id/SearchBarBackground"
@@ -155,11 +159,12 @@
         android:id="@+id/Fragment2Btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_md"
+        android:layout_marginTop="10dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintEnd_toStartOf="@+id/Fragment3Btn"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toEndOf="@id/Fragment1Btn"
-        app:layout_constraintTop_toBottomOf="@id/SearchBarBackground"
+        app:layout_constraintTop_toBottomOf="@+id/SearchBarBackground"
         app:srcCompat="@drawable/documentation_5" />
 
     <TextView

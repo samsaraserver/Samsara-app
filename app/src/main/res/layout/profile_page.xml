@@ -80,13 +80,17 @@
         android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="10dp"
         android:text="Profile"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_top"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
         app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
-        android:layout_marginStart="@dimen/padding_md"
-        android:layout_marginTop="@dimen/padding_xl" />
+        app:layout_constraintVertical_bias="0.450" />
 
     <ImageButton
         android:id="@+id/SignInOutBtn"
@@ -161,7 +165,7 @@
         android:id="@+id/EmailPhoneBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/email_phone_number"
+        android:hint="@string/email"
         android:textColorHint="#a2a2a2"
         android:paddingStart="15dp"
         android:scaleType="fitXY"
@@ -169,8 +173,7 @@
         android:layout_marginTop="@dimen/padding_sm"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/tvEmailPhone"
-        android:src="@drawable/account_3" />
+        app:layout_constraintTop_toBottomOf="@id/tvEmailPhone" />
 
     <TextView
         android:id="@+id/tvPassword"
@@ -193,7 +196,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/account_3"
         android:hint="Password"
-        android:src="@drawable/account_3"
         android:textColorHint="#a2a2a2"
         android:paddingStart="15dp"
         android:scaleType="fitXY"
@@ -207,10 +209,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintEnd_toEndOf="@id/guideline_middle"
+        android:src="@drawable/account_4"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.122"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
-        android:src="@drawable/account_4" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom" />
 
     <TextView
         android:id="@+id/tvSetupBiometrics"
@@ -231,7 +234,8 @@
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/account_4"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_middle"
+        app:layout_constraintHorizontal_bias="0.873"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/guideline_bottom" />
 
     <TextView
@@ -250,10 +254,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintEnd_toEndOf="@id/EditInformationBtn"
-        app:layout_constraintStart_toStartOf="@id/SetupBiometricsBtn"
-        app:layout_constraintTop_toBottomOf="@id/EditInformationBtn"
-        android:src="@drawable/account_5" />
+        android:src="@drawable/account_5"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/EditInformationBtn" />
 
     <TextView
         android:id="@+id/tvSave"

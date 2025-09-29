@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/nav_text_margin"
-                android:text="@string/configuration"
+                android:text="Config"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/text_xs"
                 android:gravity="center" />

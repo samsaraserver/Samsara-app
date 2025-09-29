@@ -37,8 +37,8 @@ public class alpine_fragment extends Fragment {
      * @return A new instance of fragment setup_fragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static setup_fragment newInstance(String param1, String param2) {
-        setup_fragment fragment = new setup_fragment();
+    public static alpine_fragment newInstance(String param1, String param2) {
+        alpine_fragment fragment = new alpine_fragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +59,6 @@ public class alpine_fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.setup_fragment, container, false);
+        return inflater.inflate(R.layout.alpine_fragment, container, false);
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -27,6 +28,16 @@ public class login_page extends Activity {
             startActivity(intent);
             finish();
         });
+
+
+        Button Signup2Button = findViewById(R.id.SignupBtn2);
+        Intent intent3 = new Intent(login_page.this, register_page.class);
+        Signup2Button.setOnClickListener(view -> {
+            startActivity(intent);
+            finish();
+        });
+
+
 
         ImageButton login2Button = findViewById(R.id.ContinueWithoutAccountBtn);
         Intent intent2 = new Intent(login_page.this, home_page.class);

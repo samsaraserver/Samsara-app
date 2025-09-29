@@ -328,5 +328,6 @@
     <string name="contents">Contents</string>
     <string name="system_requirements">System Requirements</string>
     <string name="samsara_setup">Samsara Setup</string>
+    <string name="email">Email</string>
 
 </resources>

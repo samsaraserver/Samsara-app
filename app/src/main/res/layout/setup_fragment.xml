@@ -61,33 +61,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.08" />
+                app:layout_constraintGuide_percent="0.02" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.7" />
+                app:layout_constraintGuide_percent="0.9" />
 
-            <ImageView
-                android:id="@+id/TopBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/top_bar_1"
-                android:scaleType="fitXY"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+            <!-- Background 1 -->
 
-            <ImageView
-                android:id="@+id/SamsaraLogo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/samsara_logo_1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+            <!--Background 2-->
 
             <TextView
                 android:id="@+id/tvSetup"
@@ -96,25 +81,23 @@
                 android:text="Samsara Setup"
                 android:textColor="#C44F4F"
                 android:textSize="34sp"
-                app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
-                app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
-                android:layout_marginStart="@dimen/padding_md"
-                android:layout_marginTop="@dimen/padding_lg"  />
-            <!-- Background 1 -->
-
-            <!--Background 2-->
+                app:layout_constraintEnd_toEndOf="@+id/guideline_end"
+                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintTop_toTopOf="@+id/guideline_top" />
 
             <ImageView
                 android:id="@+id/Background1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@null"
                 android:scaleType="fitXY"
                 android:src="@drawable/documentation_6"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/TopBar" />
+                app:layout_constraintTop_toBottomOf="@+id/tvSetup" />
 
             <ImageView
                 android:id="@+id/Background2"
@@ -135,13 +118,14 @@
                 android:id="@+id/OverviewIcon"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_md"
+                android:layout_marginTop="12dp"
                 android:contentDescription="@null"
                 android:scaleType="fitXY"
                 android:src="@drawable/documentation_8"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/TopBar" />
+                app:layout_constraintTop_toBottomOf="@+id/tvSetup" />
 
             <TextView
                 android:id="@+id/tvSystemRequirements"
