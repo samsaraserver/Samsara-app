@@ -373,24 +373,38 @@ check_disk_space() {
 
 setup_alpine() {
     debug_log "Starting Alpine Linux setup"
-    
-    if [ ! -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
+
+    alpine_installed=0
+    if command -v proot-distro >/dev/null 2>&1; then
+        if proot-distro list 2>/dev/null | grep -E '^alpine\b' >/dev/null 2>&1; then
+            alpine_installed=1
+        else
+            # Probe by attempting a no-op login
+            if proot-distro login alpine -- true >/dev/null 2>&1; then
+                alpine_installed=1
+            fi
+        fi
+    fi
+
+    if [ "$alpine_installed" -eq 0 ]; then
         start_spinner "Installing Alpine Linux"
         debug_log "Alpine not found, performing fresh installation"
-        
+
         if ! check_disk_space; then
             debug_log "Insufficient disk space for Alpine installation"
             error_exit $ERR_ALPINE_INSTALL "Insufficient disk space for Alpine installation"
         fi
-        
+
         debug_log "Running proot-distro install alpine"
         if proot-distro install alpine; then
-            if [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
+            # Verify with list or login instead of path-only checks
+            if proot-distro list 2>/dev/null | grep -E '^alpine\b' >/dev/null 2>&1 || \
+               proot-distro login alpine -- true >/dev/null 2>&1; then
                 task_success "Alpine Linux installed"
                 debug_log "Alpine Linux installation and verification successful"
             else
-                debug_log "Alpine installation succeeded but directory not created"
-                error_exit $ERR_ALPINE_INSTALL "Alpine directory not created after installation"
+                debug_log "Alpine installation succeeded but verification failed"
+                error_exit $ERR_ALPINE_INSTALL "Alpine verification failed after installation"
             fi
         else
             debug_log "Alpine installation failed"
@@ -399,7 +413,7 @@ setup_alpine() {
     else
         start_spinner "Updating Alpine packages"
         debug_log "Alpine found, updating existing installation"
-        
+
         if proot-distro login alpine -- sh -lc 'apk update && apk upgrade -U -a'; then
             task_success "Alpine packages updated"
             debug_log "Alpine packages updated successfully"

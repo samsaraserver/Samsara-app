@@ -5,12 +5,7 @@ set -e
 # #SUGGEST_VERIFY: Check `$PREFIX` is set and `pkg --version` works
 
 PORT=333
-DASHBOARD_PORT=8765
 SV_DIR="$PREFIX/var/service"
-SVC_NAME="samsara-dashboard"
-SVC_PATH="$SV_DIR/$SVC_NAME"
-HTML_PATH="$PREFIX/share/samsara/samsara_dashboard.html"
-TS_PATH="$PREFIX/bin/samsara_dashboard.ts"
 
 info(){ echo "[INFO] $*"; }
 fail(){ echo "[!] $*" 1>&2; exit 1; }
@@ -26,6 +21,8 @@ install_packages() {
     ensure_runtime_libs
     yes | pkg update || true
     yes | pkg upgrade || true
+    # #COMPLETION_DRIVE: Install default packages per SERVERSYSTEM.md
+    # #SUGGEST_VERIFY: Verify commands exist: sshd, nano, htop, node, deno
     yes | pkg install termux-services openssh nano htop nodejs deno || fail "Package install failed"
 }
 
@@ -40,16 +37,40 @@ Port $PORT
 ListenAddress 0.0.0.0
 HostKey $PREFIX/etc/ssh/ssh_host_rsa_key
 PasswordAuthentication yes
-PermitRootLogin yes
+PubkeyAuthentication no
 PermitEmptyPasswords no
 UseDNS no
 PermitTTY yes
 EOF
     [ -f "$PREFIX/etc/ssh/ssh_host_rsa_key" ] || ssh-keygen -t rsa -b 2048 -f "$PREFIX/etc/ssh/ssh_host_rsa_key" -N "" -q || true
-    # #COMPLETION_DRIVE: Set default password 'server' for the current Termux user
-    # #SUGGEST_VERIFY: Run `whoami` then `ssh -p 333 <user>@<ip>` and login with 'server'
-    u=$(whoami)
-    printf "server\nserver\n" | passwd "$u" >/dev/null 2>&1 || true
+}
+
+# #COMPLETION_DRIVE: On Termux, create a passwd alias so username 'samsara' maps to current UID/GID
+# #SUGGEST_VERIFY: After running, `grep '^samsara:' "$PREFIX/etc/passwd"` and SSH as samsara with password 'server'
+ensure_default_user() {
+    curu=$(whoami)
+    uid=$(id -u)
+    gid=$(id -g)
+    home="$HOME"
+    shell="$PREFIX/bin/login"
+    PASSWD_FILE="$PREFIX/etc/passwd"
+    [ -f "$PASSWD_FILE" ] || touch "$PASSWD_FILE"
+    if ! grep -q '^samsara:' "$PASSWD_FILE" 2>/dev/null; then
+        # Duplicate current user's line if available; else synthesize one
+        cur_line=$(grep "^$curu:" "$PASSWD_FILE" 2>/dev/null || true)
+        if [ -n "$cur_line" ]; then
+            echo "$cur_line" | sed "s/^$curu:/samsara:/" >> "$PASSWD_FILE"
+        else
+            echo "samsara:x:$uid:$gid:Samsara User:$home:$shell" >> "$PASSWD_FILE"
+        fi
+    fi
+    # Set password for samsara or fallback to current user
+    if printf "server\nserver\n" | passwd samsara >/dev/null 2>&1; then
+        echo "user:samsara" > "$HOME/.samsara-user" 2>/dev/null || true
+    else
+        printf "server\nserver\n" | passwd "$curu" >/dev/null 2>&1 || true
+        echo "user:$curu" > "$HOME/.samsara-user" 2>/dev/null || true
+    fi
 }
 
 ensure_services() {
@@ -64,106 +85,29 @@ ensure_services() {
     "$sv_enable" sshd || true
     sv up sshd || true
 }
-
-write_dashboard_ts() {
-    info "Writing dashboard server"
-    mkdir -p "$PREFIX/bin" "$PREFIX/share/samsara"
-    cat > "$TS_PATH" <<'TS'
-// #COMPLETION_DRIVE: Bind to localhost-only in Termux
-// #SUGGEST_VERIFY: curl http://127.0.0.1:8765/ inside Termux
-const hostname = "127.0.0.1";
-const port = 8765;
-
-async function root() {
-  try {
-    const html = await Deno.readTextFile("$PREFIX/share/samsara/samsara_dashboard.html".replace("$PREFIX", Deno.env.get("PREFIX") ?? "/data/data/com.termux/files/usr"));
-    return new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } });
-  } catch {
-    return new Response("<h1>Samsara Dashboard</h1>");
-  }
-}
-
 ensure_config() {
-    # #COMPLETION_DRIVE: Copy config JSON into Termux config directory if present
-    # #SUGGEST_VERIFY: Check $HOME/.config/samsara/samsara_config.json after running setup
-    mkdir -p "$HOME/.config/samsara"
-    if [ -f "$HOME/scripts/samsara_config.json" ] && [ ! -f "$HOME/.config/samsara/samsara_config.json" ]; then
-        cp -f "$HOME/scripts/samsara_config.json" "$HOME/.config/samsara/samsara_config.json" || true
-        chmod 0644 "$HOME/.config/samsara/samsara_config.json" || true
-    fi
-}
-
-function readFirst(paths) {
-  for (const p of paths) {
-    try { const t = Deno.readTextFileSync(p).trim(); if (t) return t; } catch {}
-  }
-  return "";
-}
-
-function temp() {
-  const paths = [
-    "/sys/class/thermal/thermal_zone0/temp",
-    "/sys/devices/virtual/thermal/thermal_zone0/temp",
-  ];
-  const raw = readFirst(paths);
-  if (!raw) return new Response(JSON.stringify({ celsius: null }), { headers: { "content-type": "application/json" } });
-  const n = Number(raw);
-  const c = Number.isNaN(n) ? null : (n > 1000 ? Math.round(n) / 1000 : n);
-  return new Response(JSON.stringify({ celsius: c }), { headers: { "content-type": "application/json" } });
-}
-
-Deno.serve({ hostname, port }, (req) => {
-  const u = new URL(req.url);
-  if (u.pathname === "/") return root();
-  if (u.pathname === "/api/temperature") return temp();
-  if (u.pathname === "/healthz") return new Response("ok");
-  return new Response("Not found", { status: 404 });
-});
-TS
-    chmod 0755 "$TS_PATH" || true
-}
-
-ensure_dashboard_html() {
-    mkdir -p "$(dirname "$HTML_PATH")"
-    if [ -f "$HTML_PATH" ]; then return 0; fi
-    if [ -f "$HOME/scripts/samsara_dashboard.html" ]; then
-        cp -f "$HOME/scripts/samsara_dashboard.html" "$HTML_PATH" || true
-    else
-        echo "<h1>Samsara Dashboard</h1>" > "$HTML_PATH"
-    fi
-}
-
-install_runit_service() {
-    info "Installing runit service for dashboard"
-    mkdir -p "$SVC_PATH/log"
-    cat > "$SVC_PATH/run" <<EOF
-#!/data/data/com.termux/files/usr/bin/sh
-exec 2>&1
-exec deno run --no-prompt --allow-read=$PREFIX/share/samsara,$PREFIX/bin --allow-net=127.0.0.1:$DASHBOARD_PORT "$TS_PATH"
-EOF
-    chmod 0755 "$SVC_PATH/run"
-    cat > "$SVC_PATH/log/run" <<'EOF'
-#!/data/data/com.termux/files/usr/bin/sh
-exec svlogd -tt ./
-EOF
-    chmod 0755 "$SVC_PATH/log/run"
-    sv up "$SVC_NAME" || true
+        # #COMPLETION_DRIVE: Copy config JSON into Termux config directory if present
+        # #SUGGEST_VERIFY: Check $HOME/.config/samsara/samsara_config.json after running setup
+        mkdir -p "$HOME/.config/samsara"
+        if [ -f "$HOME/scripts/samsara_config.json" ] && [ ! -f "$HOME/.config/samsara/samsara_config.json" ]; then
+                cp -f "$HOME/scripts/samsara_config.json" "$HOME/.config/samsara/samsara_config.json" || true
+                chmod 0644 "$HOME/.config/samsara/samsara_config.json" || true
+        fi
 }
 
 summary() {
     echo "Termux setup complete"
-    echo "SSH:    port $PORT (service: sshd)"
-    echo "UI:     http://127.0.0.1:$DASHBOARD_PORT/ (localhost only)"
+    userLabel="$(cut -d: -f2 "$HOME/.samsara-user" 2>/dev/null | sed -n 's/^user://p' || true)"
+    [ -z "$userLabel" ] && userLabel="$(whoami)"
+    echo "SSH:    ssh ${userLabel}@<phone-ip> -p $PORT (password: server)"
 }
 
 main() {
     install_packages
     configure_ssh
+    ensure_default_user
     ensure_services
     ensure_config
-    ensure_dashboard_html
-    write_dashboard_ts
-    install_runit_service
     summary
 }
 
