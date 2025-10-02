@@ -401,87 +401,36 @@ public class UserRepository {
     
     public CompletableFuture<String> uploadProfilePicture(Long userId, byte[] imageData) {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                String filename = userId + "_" + System.currentTimeMillis() + ".jpg";  
-                
-                if (userId == null || userId <= 0) {
-                    Log.e(TAG, "Invalid user ID provided: " + userId);
-                    return null;
-                }
-                
-                if (imageData == null || imageData.length == 0) {
-                    Log.e(TAG, "Invalid image data: null or empty");
-                    return null;
-                }
-                
-                if (apiKey == null || apiKey.isEmpty()) {
-                    Log.e(TAG, "API key is not configured");
-                    return null;
-                }
-                
-                String supabaseUrl = SupabaseConfig.getSupabaseUrl();
-                if (supabaseUrl == null || supabaseUrl.isEmpty()) {
-                    Log.e(TAG, "Supabase URL is not configured");
-                    return null;
-                }
-                
-                Log.d(TAG, "=== PROFILE PICTURE UPLOAD DEBUG ===");
-                Log.d(TAG, "User ID: " + userId);
-                Log.d(TAG, "Filename: " + filename);
-                Log.d(TAG, "Image data size: " + imageData.length + " bytes (" + (imageData.length / 1024.0 / 1024.0) + " MB)");
-                
-                Log.d(TAG, "Attempting multiple storage upload formats...");
-                
-                String[] uploadAttempts = {
-                    SupabaseConfig.getSupabaseUrl() + "/storage/v1/object/samsara_profile_pictures/" + filename,
-                    SupabaseConfig.getSupabaseUrl() + "/storage/v1/upload/samsara_profile_pictures/" + filename,
-                    SupabaseConfig.getSupabaseUrl() + "/storage/v1/object/public/samsara_profile_pictures/" + filename
-                };
-                
-                for (int i = 0; i < uploadAttempts.length; i++) {
-                    String uploadUrl = uploadAttempts[i];
-                    Log.d(TAG, "Attempt " + (i + 1) + " - Upload URL: " + uploadUrl);
-                    
-                    RequestBody fileBody = RequestBody.create(imageData, MediaType.get("image/jpeg"));
-                    
-                    Request.Builder requestBuilder = new Request.Builder()
-                        .url(uploadUrl)
-                        .post(fileBody);
-                    
-                    if (i == 0 || i == 1) {
-                        requestBuilder.addHeader("apikey", apiKey)
-                                    .addHeader("Authorization", "Bearer " + apiKey)
-                                    .addHeader("Content-Type", "image/jpeg");
-                    }
-                    
-                    if (i == 0) {
-                        requestBuilder.addHeader("x-upsert", "true");
-                    }
-                    
-                    Request request = requestBuilder.build();
-                
-                    try (Response response = httpClient.newCall(request).execute()) {
-                        Log.d(TAG, "Attempt " + (i + 1) + " response status: " + response.code());
-                        String responseBody = response.body() != null ? response.body().string() : "No response body";
-                        Log.d(TAG, "Attempt " + (i + 1) + " response: " + responseBody);
-                        
-                        if (response.isSuccessful()) {
-                            Log.d(TAG, "✓ Storage upload successful with method " + (i + 1) + ": " + filename);
-                            return filename;
-                        } else {
-                            Log.w(TAG, "Attempt " + (i + 1) + " failed - Status: " + response.code() + ", Error: " + responseBody);
-                        }
-                    } catch (IOException e) {
-                        Log.w(TAG, "Attempt " + (i + 1) + " IOException: " + e.getMessage());
-                    }
-                }
-                
-                Log.e(TAG, "✗ All storage upload methods failed");
-                Log.e(TAG, "Check: 1) Bucket exists 2) Bucket is public 3) RLS policies allow storage operations");
+            // #COMPLETION_DRIVE: Assuming userId and imageData validation prevents null values
+            // #SUGGEST_VERIFY: Add null checks and validate image size limits
+            if (userId == null || userId <= 0 || imageData == null || imageData.length == 0) {
+                Log.e(TAG, "Invalid upload parameters");
                 return null;
-                
+            }
+            
+            String filename = userId + "_" + System.currentTimeMillis() + ".jpg";
+            String uploadUrl = SupabaseConfig.getSupabaseUrl() + "/storage/v1/object/samsara_profile_pictures/" + filename;
+            
+            RequestBody fileBody = RequestBody.create(imageData, MediaType.get("image/jpeg"));
+            Request request = new Request.Builder()
+                .url(uploadUrl)
+                .addHeader("apikey", apiKey)
+                .addHeader("Authorization", "Bearer " + apiKey)
+                .addHeader("Content-Type", "image/jpeg")
+                .addHeader("x-upsert", "true")
+                .post(fileBody)
+                .build();
+            
+            try (Response response = httpClient.newCall(request).execute()) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "Profile picture uploaded successfully: " + filename);
+                    return filename;
+                } else {
+                    Log.e(TAG, "Upload failed with status: " + response.code());
+                    return null;
+                }
             } catch (Exception e) {
-                Log.e(TAG, "✗ Exception during profile picture upload: " + e.getMessage(), e);
+                Log.e(TAG, "Upload exception: " + e.getMessage());
                 return null;
             }
         }, executorService);
@@ -491,25 +440,15 @@ public class UserRepository {
     
     public CompletableFuture<Boolean> updateUserProfilePicture(Long userId, String filename) {
         return CompletableFuture.supplyAsync(() -> {
+            // #COMPLETION_DRIVE: Assuming filename is always a valid storage filename
+            // #SUGGEST_VERIFY: Add filename validation to ensure it matches expected format
             try {
-                Log.d(TAG, "=== DATABASE UPDATE DEBUG ===");
-                Log.d(TAG, "Updating profile picture for user ID: " + userId);
-                Log.d(TAG, "Profile picture data type: " + (filename.startsWith("data:image/") ? "Base64" : "Filename"));
-                Log.d(TAG, "Data length: " + (filename != null ? filename.length() : 0));
-                
                 JSONObject updateData = new JSONObject();
                 updateData.put("profile_picture_url", filename);
-                
-                String timestamp = new java.sql.Timestamp(System.currentTimeMillis()).toString();
-                updateData.put("updated_at", timestamp);
-                
-                Log.d(TAG, "JSON update data prepared successfully");
+                updateData.put("updated_at", new java.sql.Timestamp(System.currentTimeMillis()).toString());
                 
                 RequestBody body = RequestBody.create(updateData.toString(), JSON);
                 String url = baseUrl + TABLE_NAME + "?id=eq." + userId;
-                
-                Log.d(TAG, "Database update URL: " + url);
-                Log.d(TAG, "Making database update request...");
                 
                 Request request = new Request.Builder()
                     .url(url)
@@ -520,20 +459,15 @@ public class UserRepository {
                     .build();
                 
                 try (Response response = httpClient.newCall(request).execute()) {
-                    Log.d(TAG, "Database update response status: " + response.code());
-                    
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "✓ Profile picture URL updated successfully in database");
                         return true;
                     } else {
-                        String errorBody = response.body() != null ? response.body().string() : "Unknown error";
-                        Log.e(TAG, "✗ Database update failed. Status: " + response.code() + ", Error: " + errorBody);
+                        Log.e(TAG, "Profile picture update failed with status: " + response.code());
                         return false;
                     }
                 }
-                
             } catch (Exception e) {
-                Log.e(TAG, "Error updating profile picture URL: " + e.getMessage(), e);
+                Log.e(TAG, "Error updating profile picture: " + e.getMessage());
                 return false;
             }
         }, executorService);

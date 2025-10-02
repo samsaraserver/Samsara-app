@@ -130,7 +130,6 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
                 return;
             }
             
-            Log.d(TAG, "Loading profile picture from storage URL: " + imageUrl);
             Picasso.get()
                 .load(imageUrl)
                 .placeholder(R.drawable.account_2)
@@ -138,17 +137,16 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
                 .into(profilePictureView, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
-                        Log.d(TAG, "✓ Profile picture loaded successfully from storage");
+                        
                     }
                     
                     @Override
                     public void onError(Exception e) {
-                        Log.e(TAG, "✗ Failed to load profile picture from storage: " + e.getMessage());
+                        Log.e(TAG, "Failed to load profile picture: " + e.getMessage());
                         loadDefaultProfilePicture();
                     }
                 });
         } else {
-            Log.d(TAG, "No profile picture filename - loading default");
             loadDefaultProfilePicture();
         }
     }
@@ -363,28 +361,15 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
                 return;
             }
             
-            Log.d(TAG, "=== IMAGE PROCESSING DEBUG ===");
-            Log.d(TAG, "Processing image from URI: " + imageUri);
-            
             byte[] imageData = ImageUtils.processImageFromUri(this, imageUri);
             
-            Log.d(TAG, "Image processing result - Data is null: " + (imageData == null));
-            if (imageData != null) {
-                Log.d(TAG, "Processed image size: " + imageData.length + " bytes (" + (imageData.length / 1024.0 / 1024.0) + " MB)");
-            }
-            
             if (imageData == null) {
-                Log.e(TAG, "✗ Image processing failed - imageData is null");
-                runOnUiThread(() -> Toast.makeText(this, "Failed to process image", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show());
                 return;
             }
-
-            boolean isValidSize = ImageUtils.isValidImageSize(imageData);
-            Log.d(TAG, "Image size validation result: " + isValidSize);
             
-            if (!isValidSize) {
-                Log.e(TAG, "✗ Image size validation failed - Size: " + (imageData.length / 1024.0 / 1024.0) + " MB");
-                runOnUiThread(() -> Toast.makeText(this, "Image size must be less than 5MB", Toast.LENGTH_LONG).show());
+            if (!ImageUtils.isValidImageSize(imageData)) {
+                runOnUiThread(() -> Toast.makeText(this, "Image size must be less than 5MB", Toast.LENGTH_SHORT).show());
                 return;
             }
 
@@ -393,46 +378,23 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
 
             userRepository.uploadProfilePicture(currentUser.getId(), imageData)
                 .thenCompose(filename -> {
-                    Log.d(TAG, "Storage upload result: " + (filename != null ? filename : "Failed"));
-                    
+                    // #COMPLETION_DRIVE: Assuming storage upload success guarantees valid filename
+                    // #SUGGEST_VERIFY: Add filename format validation before database update
                     if (filename != null && !filename.isEmpty()) {
-                        if (userRepository == null) {
-                            Log.e(TAG, "UserRepository is null during database update");
-                            return java.util.concurrent.CompletableFuture.completedFuture(null);
-                        }
-                        
-                        if (currentUser.getId() == null) {
-                            Log.e(TAG, "User ID is null during database update");
-                            return java.util.concurrent.CompletableFuture.completedFuture(null);
-                        }
-                        
-                        Log.d(TAG, "Storage upload successful - updating database with filename: " + filename);
                         return userRepository.updateUserProfilePicture(currentUser.getId(), filename)
-                            .thenApply(success -> {
-                                Log.d(TAG, "Database update result: " + success);
-                                return (success != null && success) ? filename : null;
-                            });
+                            .thenApply(success -> (success != null && success) ? filename : null);
                     }
-                    Log.e(TAG, "Storage upload failed - no filename returned");
                     return java.util.concurrent.CompletableFuture.completedFuture(null);
                 })
                 .thenAccept(filename -> {
                     runOnUiThread(() -> {
                         if (filename != null && !filename.isEmpty()) {
-                            Log.d(TAG, "✓ Profile picture upload complete - updating UI");
-                            
-                            if (currentUser != null && authManager != null) {
-                                currentUser.setProfilePictureUrl(filename);
-                                authManager.loginUser(currentUser);
-                                loadProfilePicture(filename);
-                                Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.e(TAG, "Current user or auth manager is null during UI update");
-                                Toast.makeText(this, "Upload succeeded but session update failed", Toast.LENGTH_LONG).show();
-                            }
+                            currentUser.setProfilePictureUrl(filename);
+                            authManager.loginUser(currentUser);
+                            loadProfilePicture(filename);
+                            Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show();
                         } else {
-                            Log.e(TAG, "✗ Profile picture upload failed completely");
-                            Toast.makeText(this, "Failed to update profile picture - storage bucket not configured", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Failed to update profile picture", Toast.LENGTH_SHORT).show();
                         }
                     });
                 })
