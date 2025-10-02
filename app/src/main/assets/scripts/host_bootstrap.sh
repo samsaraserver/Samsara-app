@@ -1,8 +1,6 @@
 #!/bin/sh
 set -e
 
-# Console-only mode: no file logs
-
 ERR_NO_INTERNET=1
 ERR_PKG_UPDATE=2
 ERR_PKG_INSTALL=3
@@ -78,7 +76,7 @@ EOF
 
 ensure_runtime_libs() {
     # #COMPLETION_DRIVE: Ensure apt-get can start by providing required runtime libs
-    # #SUGGEST_VERIFY: After calling, run `apt-get -v` to confirm no missing .so errors
+    # #SUGGEST_VERIFY: After calling, run apt-get -v to confirm no missing .so errors
     if [ -n "$PREFIX" ] && [ -d "$PREFIX/lib" ]; then
         if [ ! -e "$PREFIX/lib/liblz4.so.1" ] && [ -e "$PREFIX/lib/liblz4.so" ]; then
             ln -sf "$PREFIX/lib/liblz4.so" "$PREFIX/lib/liblz4.so.1" 2>/dev/null || true
@@ -88,7 +86,6 @@ ensure_runtime_libs() {
 }
 
 apt_update_quick() {
-    # Use apt-get with explicit timeouts to avoid hangs
     if command -v apt-get >/dev/null 2>&1; then
         if apt-get \
             -o Dpkg::Options::=--force-confnew \
@@ -103,7 +100,6 @@ apt_update_quick() {
 }
 
 ensure_dpkg_clean() {
-    # Attempt to recover from interrupted dpkg states in a bounded manner
     attempts=0
     while [ $attempts -lt 2 ]; do
         attempts=$((attempts+1))
@@ -137,7 +133,6 @@ switch_termux_mirrors_and_update() {
         fi
     done
     task_fail "All mirrors failed"
-    # Restore original sources if backup exists
     if [ -f "$SRC_FILE.bak" ]; then
         cp "$SRC_FILE.bak" "$SRC_FILE" 2>/dev/null || true
     fi
@@ -192,7 +187,6 @@ check_dpkg_locked() {
         return 0
     fi
     
-    # Test if pkg upgrade works to detect dpkg interruption
     if ! pkg upgrade --dry-run >/dev/null 2>&1; then
         local pkg_error=$(pkg upgrade --dry-run 2>&1)
         if echo "$pkg_error" | grep -q "dpkg.*configure.*-a"; then
@@ -234,15 +228,16 @@ fix_dpkg_state() {
 update_packages() {
     start_spinner "Updating package repositories"
     
-	if ! check_internet; then
-		error_exit $ERR_NO_INTERNET "No internet connection available"
-	fi
-    
-	if check_dpkg_locked; then
-		if ! fix_dpkg_state; then
-			error_exit $ERR_DPKG_LOCKED "Cannot fix dpkg locked state"
-		fi
-	fi
+
+    if ! check_internet; then
+        error_exit $ERR_NO_INTERNET "No internet connection available"
+    fi
+
+    if check_dpkg_locked; then
+        if ! fix_dpkg_state; then
+            error_exit $ERR_DPKG_LOCKED "Cannot fix dpkg locked state"
+        fi
+    fi
     
     ensure_ipv4_only
     ensure_noninteractive
@@ -252,23 +247,23 @@ update_packages() {
     if apt_update_quick; then
         task_success "Package repositories updated"
     else
-		if check_dpkg_locked; then
-			if fix_dpkg_state; then
-				if apt_update_quick; then
-					task_success "Package repositories updated (after fixing dpkg)"
-					return 0
-				fi
-			fi
-		fi
+        if check_dpkg_locked; then
+            if fix_dpkg_state; then
+                if apt_update_quick; then
+                    task_success "Package repositories updated (after fixing dpkg)"
+                    return 0
+                fi
+            fi
+        fi
         if switch_termux_mirrors_and_update; then
             return 0
         fi
-        error_exit $ERR_Set_PKG_UPDATE "Passed new package failed" 
-	fi
+        error_exit $ERR_PKG_UPDATE "Failed to update package repositories"
+    fi
 }
 
 upgrade_packages() {
-	start_spinner "Upgrading packages"
+    start_spinner "Upgrading packages"
     
     if check_dpkg_locked; then
         if ! fix_dpkg_state; then
@@ -277,15 +272,16 @@ upgrade_packages() {
         fi
     fi
     
-	if pkg upgrade -y; then
-		task_success "Packages upgraded"
+
+    if pkg upgrade -y; then
+        task_success "Packages upgraded"
         return 0
-	else
+    else
         if pkg upgrade --dry-run 2>&1 | grep -q "dpkg.*configure.*-a"; then
             task_fail "dpkg interruption detected - attempting fix"
             
             if fix_dpkg_state; then
-				if pkg upgrade -y; then
+                if pkg upgrade -y; then
                     task_success "Packages upgraded (after dpkg fix)"
                     return 0
                 fi
@@ -294,21 +290,19 @@ upgrade_packages() {
         
         task_fail "Package upgrade failed - continuing without upgrade"
         return 1
-	fi
+    fi
 }
 
 install_proot() {
-	start_spinner "Installing proot-distro"
+    start_spinner "Installing proot-distro"
     debug_log "Starting proot-distro installation"
     
-    # Check if already installed
     if command -v proot-distro >/dev/null 2>&1; then
         task_success "proot-distro already installed"
         debug_log "proot-distro already available"
         return 0
     fi
     
-    # Check and fix dpkg state before installation
     ensure_noninteractive
     ensure_dpkg_clean
     if check_dpkg_locked; then
@@ -321,19 +315,18 @@ install_proot() {
     
     debug_log "Running pkg install proot-distro"
     if pkg install -y proot-distro; then
-		if command -v proot-distro >/dev/null 2>&1; then
-			task_success "proot-distro installed"
+        if command -v proot-distro >/dev/null 2>&1; then
+            task_success "proot-distro installed"
             debug_log "proot-distro installation successful"
             return 0
-		else
+        else
             debug_log "proot-distro package installed but command not available"
-			task_fail "proot-distro command not available after installation"
-		fi
-	else
+            task_fail "proot-distro command not available after installation"
+        fi
+    else
         local install_exit_code=$?
         debug_log "proot-distro installation failed with exit code: $install_exit_code"
         
-        # Check if it's the dpkg interruption issue
         if apt-get -s install proot-distro 2>&1 | grep -q "dpkg was interrupted"; then
             debug_log "dpkg interruption detected during proot-distro install"
             task_fail "dpkg interruption detected - attempting fix"
@@ -351,7 +344,6 @@ install_proot() {
             fi
         fi
         
-        # Try basic package update and retry
         debug_log "Updating package cache and retrying"
         if apt_update_quick && pkg install -y proot-distro; then
             if command -v proot-distro >/dev/null 2>&1; then
@@ -362,104 +354,112 @@ install_proot() {
         fi
 
         error_exit $ERR_PKG_INSTALL "proot-distro installation failed - check dpkg state manually"
-	fi
+    fi
 }
 
 check_disk_space() {
-	REQUIRED_MB=1024
-	if command -v df >/dev/null 2>&1; then
-		AVAILABLE_KB=$(df "$PREFIX" 2>/dev/null | awk 'NR==2 {print $4}' 2>/dev/null)
-		if [ -n "$AVAILABLE_KB" ] && [ "$AVAILABLE_KB" -gt 0 ]; then
-			AVAILABLE_MB=$((AVAILABLE_KB / 1024))
+    REQUIRED_MB=1024
+    if command -v df >/dev/null 2>&1; then
+        AVAILABLE_KB=$(df "$PREFIX" 2>/dev/null | awk 'NR==2 {print $4}' 2>/dev/null)
+        if [ -n "$AVAILABLE_KB" ] && [ "$AVAILABLE_KB" -gt 0 ]; then
+            AVAILABLE_MB=$((AVAILABLE_KB / 1024))
             [ "$AVAILABLE_MB" -ge "$REQUIRED_MB" ] && return 0
             echo "Insufficient disk space: $AVAILABLE_MB MB available, $REQUIRED_MB MB required" >&2
-			return 1
-		fi
-	fi
-	return 0
+            return 1
+        fi
+    fi
+    return 0
 }
 
 setup_alpine() {
     debug_log "Starting Alpine Linux setup"
     
-	if [ ! -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
-		start_spinner "Installing Alpine Linux"
+    if [ ! -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
+        start_spinner "Installing Alpine Linux"
         debug_log "Alpine not found, performing fresh installation"
         
-		if ! check_disk_space; then
+        if ! check_disk_space; then
             debug_log "Insufficient disk space for Alpine installation"
-			error_exit $ERR_ALPINE_INSTALL "Insufficient disk space for Alpine installation"
-		fi
+            error_exit $ERR_ALPINE_INSTALL "Insufficient disk space for Alpine installation"
+        fi
         
         debug_log "Running proot-distro install alpine"
         if proot-distro install alpine; then
-			if [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
-				task_success "Alpine Linux installed"
+            if [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
+                task_success "Alpine Linux installed"
                 debug_log "Alpine Linux installation and verification successful"
-			else
+            else
                 debug_log "Alpine installation succeeded but directory not created"
-				error_exit $ERR_ALPINE_INSTALL "Alpine directory not created after installation"
-			fi
-		else
+                error_exit $ERR_ALPINE_INSTALL "Alpine directory not created after installation"
+            fi
+        else
             debug_log "Alpine installation failed"
-			error_exit $ERR_ALPINE_INSTALL "Alpine installation failed"
-		fi
-	else
-		start_spinner "Updating Alpine packages"
+            error_exit $ERR_ALPINE_INSTALL "Alpine installation failed"
+        fi
+    else
+        start_spinner "Updating Alpine packages"
         debug_log "Alpine found, updating existing installation"
         
         if proot-distro login alpine -- sh -lc 'apk update && apk upgrade -U -a'; then
-			task_success "Alpine packages updated"
+            task_success "Alpine packages updated"
             debug_log "Alpine packages updated successfully"
-		else
+        else
             debug_log "Alpine update failed"
-			error_exit $ERR_ALPINE_INSTALL "Alpine update failed"
-		fi
-	fi
+            error_exit $ERR_ALPINE_INSTALL "Alpine update failed"
+        fi
+    fi
 }
 
 copy_scripts() {
-	start_spinner "Installing setup scripts"
+    start_spinner "Installing setup scripts"
     debug_log "Starting script installation to Alpine"
     
-	mkdir -p "$HOME/scripts"
-	TO_COPY=""
-	for f in setup; do
+    mkdir -p "$HOME/scripts"
+    TO_COPY=""
+    for f in a_setup.sh samsara_config.json; do
         debug_log "Checking for script: $HOME/scripts/$f"
-		if [ -f "$HOME/scripts/$f" ]; then
+        if [ -f "$HOME/scripts/$f" ]; then
             TO_COPY="$TO_COPY $f"
             debug_log "Found script: $f"
         else
             debug_log "Script not found: $f"
         fi
-	done
-    
-	if [ -n "$TO_COPY" ]; then
+    done
+
+    if [ -n "$TO_COPY" ]; then
         debug_log "Copying scripts to Alpine: $TO_COPY"
         if tar -C "$HOME/scripts" -cf - $TO_COPY | proot-distro login alpine -- sh -lc '
-		set -e
-		mkdir -p /root/scripts
-		tar -C /root/scripts -xpf -
-		sed -i "s/\r$//" /root/scripts/setup 2>/dev/null || true
-		chmod 0755 /root/scripts/setup || true
-		mkdir -p /usr/local/bin
-		cp -f /root/scripts/setup /usr/local/bin/setup || install -m 0755 /root/scripts/setup /usr/local/bin/setup
-        '; then
-			task_success "Setup scripts installed"
+            set -e
+            mkdir -p /root/scripts
+            tar -C /root/scripts -xpf -
+            if [ -f /root/scripts/a_setup.sh ]; then
+                sed -i "s/\r$//" /root/scripts/a_setup.sh 2>/dev/null || true
+                chmod 0755 /root/scripts/a_setup.sh || true
+                mkdir -p /usr/local/bin
+                cp -f /root/scripts/a_setup.sh /usr/local/bin/a_setup || install -m 0755 /root/scripts/a_setup.sh /usr/local/bin/a_setup
+            fi
+            mkdir -p /root/.config/samsara
+            if [ -f /root/scripts/samsara_config.json ]; then
+                if [ ! -f /root/.config/samsara/samsara_config.json ]; then
+                    cp -f /root/scripts/samsara_config.json /root/.config/samsara/samsara_config.json || true
+                    chmod 0644 /root/.config/samsara/samsara_config.json || true
+                fi
+            fi
+        ' ; then
+            task_success "Setup scripts installed"
             debug_log "Scripts successfully installed to Alpine"
-		else
+        else
             debug_log "Script installation to Alpine failed"
-			error_exit $ERR_SCRIPT_COPY "Script installation to Alpine failed"
-		fi
-	else
-        debug_log "No setup scripts found to copy"
-		error_exit $ERR_SCRIPT_COPY "No setup scripts found in $HOME/scripts"
-	fi
+            error_exit $ERR_SCRIPT_COPY "Script installation to Alpine failed"
+        fi
+    else
+        debug_log "No setup assets found to copy"
+        error_exit $ERR_SCRIPT_COPY "No setup assets found in $HOME/scripts"
+    fi
 }
 
 trap 'stop_spinner' EXIT INT TERM
 
-# Start with environment validation
 echo
 echo "======================================"
 echo "    SamsaraServer Alpine Bootstrap    "
@@ -471,7 +471,6 @@ ensure_runtime_libs
 
 update_packages
 
-# Try upgrade, but continue if it fails
 if ! upgrade_packages; then
     echo
     echo "[WARNING] Package upgrade failed, continuing with current packages"
@@ -487,7 +486,6 @@ echo "======================================"
 echo "      Bootstrap Process Complete      "
 echo "======================================"
 
-# Clear screen if no errors occurred
 if [ "$bootstrap_had_errors" -eq 0 ]; then
     echo
     echo "[SYSTEM] Bootstrap successful - preparing environment..."
@@ -497,7 +495,7 @@ if [ "$bootstrap_had_errors" -eq 0 ]; then
     echo "║          SamsaraServer Ready         ║"
     echo "╚══════════════════════════════════════╝"
     echo
-    echo "NEXT STEP: Execute 'setup' command to configure SSH server"
+    echo "NEXT STEP: Inside Alpine, run 'a_setup' to install packages and configure SSH"
     echo "          and complete server initialization"
     echo
 else
@@ -507,7 +505,6 @@ else
     echo "Please review logs before proceeding"
 fi
 
-# Launch Alpine or stay in Termux shell
 if command -v proot-distro >/dev/null 2>&1 && [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
     echo "[SYSTEM] Initializing Alpine Linux environment..."
     echo "────────────────────────────────────────"
