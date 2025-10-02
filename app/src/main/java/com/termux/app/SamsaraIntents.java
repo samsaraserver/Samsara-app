@@ -5,14 +5,14 @@ import android.content.Intent;
 public class SamsaraIntents {
     public static final String EXTRA_SAMSARA_MODE = "samsara_mode";
     public static final String EXTRA_SAMSARA_ENV = "samsara_env";
+    public static final String ACTION_SAMSARA_OPEN_TERMUX = "com.termux.app.action.SAMSARA_OPEN_TERMUX";
+    public static final String ACTION_SAMSARA_OPEN_ALPINE = "com.termux.app.action.SAMSARA_OPEN_ALPINE";
 
     public static final String ENV_TERMUX = "termux";
     public static final String ENV_ALPINE = "alpine";
 
     public static void putEnv(Intent intent, String env) {
         intent.putExtra(EXTRA_SAMSARA_ENV, env);
-        // #COMPLETION_DRIVE: Only set legacy flag true for Alpine for backward compatibility
-        // #SUGGEST_VERIFY: Verify Termux selection no longer invokes Alpine path in TermuxActivity
         intent.putExtra(EXTRA_SAMSARA_MODE, ENV_ALPINE.equals(env));
     }
 
@@ -22,5 +22,13 @@ public class SamsaraIntents {
         if (env != null && !env.isEmpty()) return env;
         boolean legacy = intent.getExtras().getBoolean(EXTRA_SAMSARA_MODE, false);
         return legacy ? ENV_ALPINE : null;
+    }
+
+    public static boolean isOpenTermuxAction(Intent intent) {
+        return intent != null && ACTION_SAMSARA_OPEN_TERMUX.equals(intent.getAction());
+    }
+
+    public static boolean isOpenAlpineAction(Intent intent) {
+        return intent != null && ACTION_SAMSARA_OPEN_ALPINE.equals(intent.getAction());
     }
 }

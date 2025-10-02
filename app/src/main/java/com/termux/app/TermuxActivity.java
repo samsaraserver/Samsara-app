@@ -402,12 +402,15 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                         String samsaraEnv = null;
                         if (intent != null && intent.getExtras() != null) {
                             launchFailsafe = intent.getExtras().getBoolean(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
-                            // #COMPLETION_DRIVE: Assuming new extra samsara_env supersedes legacy samsara_mode
-                            // #SUGGEST_VERIFY: Verify downstream flows honor alpine selection via createAlpineSession
                             samsaraEnv = SamsaraIntents.getEnv(intent);
                             isSamsaraMode = (samsaraEnv == null) && intent.getExtras().getBoolean("samsara_mode", false);
                         }
-                        if (SamsaraIntents.ENV_ALPINE.equals(samsaraEnv) || isSamsaraMode) {
+                        // Prefer explicit actions first
+                        if (SamsaraIntents.isOpenAlpineAction(intent)) {
+                            createAlpineSession();
+                        } else if (SamsaraIntents.isOpenTermuxAction(intent)) {
+                            mTermuxTerminalSessionActivityClient.addNewSession(launchFailsafe, null);
+                        } else if (SamsaraIntents.ENV_ALPINE.equals(samsaraEnv) || isSamsaraMode) {
                             createAlpineSession();
                         } else {
                             mTermuxTerminalSessionActivityClient.addNewSession(launchFailsafe, null);
@@ -421,6 +424,12 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 finishActivityIfNotFinishing();
             }
         } else {
+            // If there are existing sessions, honor explicit Alpine action by creating a new Alpine session
+            if (SamsaraIntents.isOpenAlpineAction(intent)) {
+                createAlpineSession();
+                return;
+            }
+
             // If termux was started from launcher "New session" shortcut and activity is recreated,
             // then the original intent will be re-delivered, resulting in a new session being re-added
             // each time.

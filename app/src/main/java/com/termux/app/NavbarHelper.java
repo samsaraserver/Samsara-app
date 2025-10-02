@@ -42,8 +42,6 @@ public class NavbarHelper {
 
         if (terminalbutton != null) {
             terminalbutton.setOnClickListener(view -> {
-                // #COMPLETION_DRIVE: Assuming a simple dialog choice is acceptable for environment selection
-                // #SUGGEST_VERIFY: Validate UX flow on devices and confirm accessibility/readability of the popup
                 String[] options = new String[]{"Termux (port 333)", "Alpine (port 222)"};
                 new AlertDialog.Builder(activity)
                         .setTitle("Select environment")
@@ -82,15 +80,15 @@ public class NavbarHelper {
 
     private static void launchTermux(Activity activity) {
         Intent intent = new Intent(activity, TermuxActivity.class);
+        intent.setAction(SamsaraIntents.ACTION_SAMSARA_OPEN_TERMUX);
         SamsaraIntents.putEnv(intent, SamsaraIntents.ENV_TERMUX);
         activity.startActivity(intent);
         activity.finish();
     }
 
     private static void startAlpineSession(Activity activity) {
-        // #COMPLETION_DRIVE: Defer proot-distro invocation to TermuxActivity bootstrap to ensure it's installed
-        // #SUGGEST_VERIFY: Confirm no extra failing session appears before bootstrap completes
         Intent termuxIntent = new Intent(activity, TermuxActivity.class);
+        termuxIntent.setAction(SamsaraIntents.ACTION_SAMSARA_OPEN_ALPINE);
         SamsaraIntents.putEnv(termuxIntent, SamsaraIntents.ENV_ALPINE);
         activity.startActivity(termuxIntent);
         activity.finish();
