@@ -18,9 +18,10 @@ public class home_page extends Activity {
 
         NavbarHelper.setupNavbar(this);
 
-        TextView textView3 = findViewById(R.id.tvIP);
+        //TextView textViewUnderline = findViewById(R.id.tvIP);
 
-        textView3.setText(Html.fromHtml(textView3.getText().toString()));
+        //String ipAddress = getDeviceIpAddress(); // Implement this method
+        //textViewUnderline.setText(Html.fromHtml("<u>" + ipAddress + "</u>"));
 
         ImageButton monitorBtn = findViewById(R.id.monitorBtn);
 

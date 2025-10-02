@@ -43,7 +43,7 @@ public class documents_page extends AppCompatActivity {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             setup_fragment setup_fragment = new setup_fragment();
-            fragmentTransaction.replace(R.id.fragment_container, setup_fragment, "overview");
+            fragmentTransaction.replace(R.id.fragment_container, setup_fragment, "setup");
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         });
@@ -53,7 +53,7 @@ public class documents_page extends AppCompatActivity {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             alpine_fragment alpine_fragment = new alpine_fragment();
-            fragmentTransaction.replace(R.id.fragment_container, alpine_fragment, "overview");
+            fragmentTransaction.replace(R.id.fragment_container, alpine_fragment, "alpine");
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         });

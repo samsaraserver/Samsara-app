@@ -6,83 +6,127 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
+    <!-- Add guidelines for proportional margins -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.97" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.47" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.53" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90" />
+
     <!-- Top Nav Bar -->
 
     <ImageView
-        android:id="@+id/TopNavBar"
-        android:layout_width="wrap_content"
+        android:id="@+id/TopBar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:src="@drawable/top_bar_1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/SamsaraLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/samsara_logo_1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/TopNavBar"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvTtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Documentation"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/TopNavBar"
-        app:layout_constraintEnd_toEndOf="@+id/TopNavBar"
-        app:layout_constraintHorizontal_bias="0.43"
-        app:layout_constraintStart_toEndOf="@+id/SamsaraLogo"
-        app:layout_constraintTop_toTopOf="@+id/TopNavBar"
-        app:layout_constraintVertical_bias="0.528" />
 
     <!--search bar-->
 
     <!-- Buttons -->
 
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_md"
+        android:layout_marginTop="10dp"
+        android:text="Documents"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/text_xl"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_top"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.298"
+        app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.521" />
+
     <ImageView
         android:id="@+id/SearchBarBackground"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/TopBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.110"
         app:srcCompat="@drawable/documentation_1" />
 
     <EditText
         android:id="@+id/search_bar"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/documentation_2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/TopNavBar"
-        app:layout_constraintVertical_bias="0.120" />
+        android:scaleType="fitXY"
+        android:layout_marginTop="@dimen/padding_md"
+        app:layout_constraintTop_toTopOf="@+id/SearchBarBackground"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
     <ImageView
         android:id="@+id/Search_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:layout_marginBottom="@dimen/spacing_xs"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/search_bar"
-        app:layout_constraintEnd_toEndOf="@+id/search_bar"
-        app:layout_constraintHorizontal_bias="0.016"
         app:layout_constraintStart_toStartOf="@+id/search_bar"
         app:layout_constraintTop_toTopOf="@+id/search_bar"
-        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/documentation_3" />
 
     <!--Buttons-->
@@ -92,12 +136,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.159"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.188"
+        android:layout_marginStart="@dimen/padding_smd"
+        android:layout_marginEnd="@dimen/padding_na"
+        android:layout_marginTop="@dimen/padding_md"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/SearchBarBackground"
         app:srcCompat="@drawable/documentation_4" />
 
 
@@ -105,78 +148,68 @@
         android:id="@+id/tvOverview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Overview"
+        android:text="@string/overview"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/Fragment1Btn"
         app:layout_constraintEnd_toEndOf="@+id/Fragment1Btn"
-        app:layout_constraintHorizontal_bias="0.478"
         app:layout_constraintStart_toStartOf="@+id/Fragment1Btn"
-        app:layout_constraintTop_toTopOf="@+id/Fragment1Btn"
-        app:layout_constraintVertical_bias="0.46" />
+        app:layout_constraintTop_toTopOf="@+id/Fragment1Btn" />
 
     <ImageButton
         android:id="@+id/Fragment2Btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.188"
+        app:layout_constraintEnd_toStartOf="@+id/Fragment3Btn"
+        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintStart_toEndOf="@id/Fragment1Btn"
+        app:layout_constraintTop_toBottomOf="@+id/SearchBarBackground"
         app:srcCompat="@drawable/documentation_5" />
 
     <TextView
         android:id="@+id/tvSetup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Setup "
+        android:text="@string/setup"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/Fragment2Btn"
         app:layout_constraintEnd_toEndOf="@+id/Fragment2Btn"
-        app:layout_constraintStart_toEndOf="@+id/Fragment1Btn"
-        app:layout_constraintTop_toTopOf="@+id/Fragment2Btn"
-        app:layout_constraintVertical_bias="0.46" />
+        app:layout_constraintStart_toStartOf="@+id/Fragment2Btn"
+        app:layout_constraintTop_toTopOf="@+id/Fragment2Btn"  />
 
     <ImageButton
         android:id="@+id/Fragment3Btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/padding_smd"
+        android:layout_marginTop="@dimen/padding_md"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.837"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.188"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintTop_toBottomOf="@id/SearchBarBackground"
         app:srcCompat="@drawable/documentation_5" />
 
     <TextView
         android:id="@+id/tvAlpine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Alpine"
+        android:text="@string/alpine"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/Fragment3Btn"
         app:layout_constraintEnd_toEndOf="@+id/Fragment3Btn"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toEndOf="@+id/Fragment2Btn"
-        app:layout_constraintTop_toTopOf="@+id/Fragment3Btn"
-        app:layout_constraintVertical_bias="0.48" />
+        app:layout_constraintStart_toStartOf="@+id/Fragment3Btn"
+        app:layout_constraintTop_toTopOf="@+id/Fragment3Btn" />
 
     <!-- Fragment Container -->
 
     <FrameLayout
         android:id="@+id/fragment_container"
-        android:layout_width="412dp"
-        android:layout_height="533dp"
-        app:layout_constraintBottom_toTopOf="@+id/navbar_include"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Fragment2Btn"
-        app:layout_constraintVertical_bias="0.0">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/Fragment2Btn">
 
     </FrameLayout>
 

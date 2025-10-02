@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -47,6 +48,7 @@ public class register_page extends Activity {
     private void initializeViews() {
         TextView tvSignUp2 = findViewById(R.id.tvSignUp2);
         tvSignUp2.setText(Html.fromHtml(tvSignUp2.getText().toString()));
+
 
         usernameBox = findViewById(R.id.UsernameBox);
         emailBox = findViewById(R.id.EmailPhoneBox);
