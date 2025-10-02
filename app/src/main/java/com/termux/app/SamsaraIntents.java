@@ -12,8 +12,6 @@ public class SamsaraIntents {
     public static final String ENV_ALPINE = "alpine";
 
     public static void putEnv(Intent intent, String env) {
-        // #COMPLETION_DRIVE: Do not write legacy samsara_mode; rely on explicit env and actions
-        // #SUGGEST_VERIFY: Launch Alpine/Termux via navbar; ensure older callers that still write samsara_mode are handled by getEnv()
         intent.putExtra(EXTRA_SAMSARA_ENV, env);
     }
 
