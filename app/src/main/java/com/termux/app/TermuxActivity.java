@@ -39,6 +39,7 @@ import com.termux.shared.android.PermissionUtils;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_ACTIVITY;
+import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_SERVICE;
 import com.termux.app.activities.SettingsActivity;
 import com.termux.shared.termux.crash.TermuxCrashUtils;
 import com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences;
@@ -398,19 +399,19 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                     if (mTermuxService == null) return; // Activity might have been destroyed.
                     try {
                         boolean launchFailsafe = false;
-                        boolean isSamsaraMode = false;
                         String samsaraEnv = null;
                         if (intent != null && intent.getExtras() != null) {
                             launchFailsafe = intent.getExtras().getBoolean(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
                             samsaraEnv = SamsaraIntents.getEnv(intent);
-                            isSamsaraMode = (samsaraEnv == null) && intent.getExtras().getBoolean("samsara_mode", false);
                         }
+                        // #COMPLETION_DRIVE: Prefer explicit actions and samsara_env; do not use direct legacy samsara_mode flag here
+                        // #SUGGEST_VERIFY: Launch both Termux and Alpine via navbar; verify Alpine also launches if only legacy samsara_mode is set (via SamsaraIntents fallback)
                         // Prefer explicit actions first
                         if (SamsaraIntents.isOpenAlpineAction(intent)) {
                             createAlpineSession();
                         } else if (SamsaraIntents.isOpenTermuxAction(intent)) {
                             mTermuxTerminalSessionActivityClient.addNewSession(launchFailsafe, null);
-                        } else if (SamsaraIntents.ENV_ALPINE.equals(samsaraEnv) || isSamsaraMode) {
+                        } else if (SamsaraIntents.ENV_ALPINE.equals(samsaraEnv)) {
                             createAlpineSession();
                         } else {
                             mTermuxTerminalSessionActivityClient.addNewSession(launchFailsafe, null);
@@ -640,8 +641,39 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (getDrawer().isDrawerOpen(Gravity.LEFT)) {
             getDrawer().closeDrawers();
         } else {
-            finishActivityIfNotFinishing();
+            showExitConfirmationDialog();
         }
+    }
+
+    private void showExitConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.exit_prompt_title);
+        builder.setMessage(R.string.exit_prompt_message);
+
+        // #COMPLETION_DRIVE: Running in background should only close the Activity and keep TermuxService alive
+        // #SUGGEST_VERIFY: After selecting this option, confirm the foreground notification persists and sessions remain attached in TermuxService
+        builder.setNegativeButton(R.string.action_run_in_background, (dialog, which) -> {
+            Logger.logDebug(LOG_TAG, "User chose to run in background");
+            dialog.dismiss();
+            finishActivityIfNotFinishing();
+        });
+
+        // #COMPLETION_DRIVE: Exit fully should stop TermuxService via ACTION_STOP_SERVICE before finishing Activity
+        // #SUGGEST_VERIFY: Ensure the service notification disappears and mShellManager sessions are cleared after this action
+        builder.setPositiveButton(R.string.action_exit_fully, (dialog, which) -> {
+            Logger.logDebug(LOG_TAG, "User chose to exit fully");
+            dialog.dismiss();
+            try {
+                Intent stopIntent = new Intent(this, TermuxService.class).setAction(TERMUX_SERVICE.ACTION_STOP_SERVICE);
+                startService(stopIntent);
+            } catch (Exception e) {
+                Logger.logStackTraceWithMessage(LOG_TAG, "Failed to send stop intent to TermuxService", e);
+            }
+            finishActivityIfNotFinishing();
+        });
+
+        builder.setCancelable(true);
+        builder.show();
     }
 
     public void finishActivityIfNotFinishing() {
