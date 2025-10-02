@@ -399,11 +399,15 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                     try {
                         boolean launchFailsafe = false;
                         boolean isSamsaraMode = false;
+                        String samsaraEnv = null;
                         if (intent != null && intent.getExtras() != null) {
                             launchFailsafe = intent.getExtras().getBoolean(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
-                            isSamsaraMode = intent.getExtras().getBoolean("samsara_mode", false);
+                            // #COMPLETION_DRIVE: Assuming new extra samsara_env supersedes legacy samsara_mode
+                            // #SUGGEST_VERIFY: Verify downstream flows honor alpine selection via createAlpineSession
+                            samsaraEnv = SamsaraIntents.getEnv(intent);
+                            isSamsaraMode = (samsaraEnv == null) && intent.getExtras().getBoolean("samsara_mode", false);
                         }
-                        if (isSamsaraMode) {
+                        if (SamsaraIntents.ENV_ALPINE.equals(samsaraEnv) || isSamsaraMode) {
                             createAlpineSession();
                         } else {
                             mTermuxTerminalSessionActivityClient.addNewSession(launchFailsafe, null);
