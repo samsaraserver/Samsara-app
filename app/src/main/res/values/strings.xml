@@ -84,6 +84,13 @@
     <string name="notification_action_wake_unlock">Release wakelock</string>
 
 
+    <!-- Exit Confirmation Dialog -->
+    <string name="exit_prompt_title">Leave terminal?</string>
+    <string name="exit_prompt_message">Do you want to keep the terminal running in the background or exit fully?</string>
+    <string name="action_run_in_background">Run in background</string>
+    <string name="action_exit_fully">Exit fully</string>
+
+
     <!-- TermuxService -->
     <string name="error_display_over_other_apps_permission_not_granted_to_start_terminal">&TERMUX_APP_NAME;
         requires
