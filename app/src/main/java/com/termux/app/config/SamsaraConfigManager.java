@@ -126,8 +126,7 @@ public class SamsaraConfigManager {
             outputStream.close();
             return true;
         } catch (IOException | JSONException e) {
-            // #COMPLETION_DRIVE: Assuming save failure should return false
-            // #SUGGEST_VERIFY: Add proper error handling and user notification
+            Log.e(TAG, "Failed to save configuration: " + e.getMessage(), e);
             return false;
         }
     }
