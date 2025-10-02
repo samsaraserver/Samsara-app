@@ -59,6 +59,30 @@ validate_environment() {
     echo "HOME: $HOME" >> "$LOG"
 }
 
+ensure_ipv4_only() {
+    CONF_DIR="$PREFIX/etc/apt/apt.conf.d"
+    mkdir -p "$CONF_DIR"
+    echo 'Acquire::ForceIPv4 "true";' > "$CONF_DIR/99force-ipv4" 2>/dev/null || true
+}
+
+switch_termux_mirrors_and_update() {
+    start_spinner "Switching Termux mirrors"
+    SRC_FILE="$PREFIX/etc/apt/sources.list"
+    mkdir -p "$(dirname "$SRC_FILE")"
+    [ -f "$SRC_FILE" ] && cp "$SRC_FILE" "$LOG_DIR/sources.list.bak" 2>/dev/null || true
+
+    MIRRORS="https://packages.termux.dev/apt/termux-main https://grimler.se/termux/apt/termux-main https://mirror.alpix.eu/termux/apt/termux-main"
+    for MIR in $MIRRORS; do
+        printf "deb %s stable main\n" "$MIR" > "$SRC_FILE"
+        if pkg update -y >>"$LOG" 2>&1; then
+            task_success "Switched repo and updated"
+            return 0
+        fi
+    done
+    task_fail "All mirrors failed"
+    return 1
+}
+
 start_spinner() {
 	printf "\r[*] %s " "$1"
 	(
@@ -161,7 +185,7 @@ fix_dpkg_state() {
 }
 
 update_packages() {
-	start_spinner "Updating package repositories"
+    start_spinner "Updating package repositories"
     
 	if ! check_internet; then
 		error_exit $ERR_NO_INTERNET "No internet connection available"
@@ -173,9 +197,10 @@ update_packages() {
 		fi
 	fi
     
-	if pkg update -y >>"$LOG" 2>&1; then
-		task_success "Package repositories updated"
-	else
+    ensure_ipv4_only
+    if pkg update -y >>"$LOG" 2>&1; then
+        task_success "Package repositories updated"
+    else
 		if check_dpkg_locked; then
 			if fix_dpkg_state; then
 				if pkg update -y >>"$LOG" 2>&1; then
@@ -184,7 +209,10 @@ update_packages() {
 				fi
 			fi
 		fi
-		error_exit $ERR_PKG_UPDATE "Failed to update package repositories"
+        if switch_termux_mirrors_and_update; then
+            return 0
+        fi
+        error_exit $ERR_PKG_UPDATE "Failed to update package repositories"
 	fi
 }
 
