@@ -219,7 +219,6 @@
     <string name="center_description">Main navigation button</string>
     <string name="docs_description">Navigate to documentation</string>
     <string name="profile_description">Navigate to profile</string>
-    <string name="config">config</string>
     <string name="samsara_server_logo">Samsara Server Logo</string>
     <string name="samsaraserver">SamsaraServer</string>
     <string name="transform_your_android_device_into_a_powerful_linux_server">Transform your Android device into a powerful Linux server</string>
