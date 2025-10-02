@@ -335,5 +335,9 @@
     <string name="system_requirements">System Requirements</string>
     <string name="samsara_setup">Samsara Setup</string>
     <string name="email">Email</string>
+    <string name="show_ip">Show IP</string>
+    <string name="login_or_create_an_account">Login or create an account</string>
+    <string name="email_or_username">Email or Username</string>
+    <string name="email_address">Email Address</string>
 
 </resources>

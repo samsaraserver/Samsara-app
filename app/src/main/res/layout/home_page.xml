@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.53" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_middle"
         android:layout_width="wrap_content"
@@ -45,11 +46,11 @@
         android:id="@+id/TopBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/top_bar_1"
         android:scaleType="fitXY"
+        android:src="@drawable/top_bar_1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/SamsaraLogo"
@@ -59,122 +60,138 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--Dashboard Section-->
+
     <TextView
         android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="28dp"
         android:text="Samsara Server"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
         app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
-        app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
-        android:layout_marginStart="@dimen/padding_md"
-        android:layout_marginTop="@dimen/padding_xl" />
-
-    <!-- Dashboard Section -->
+        app:layout_constraintTop_toTopOf="@id/SamsaraLogo" />
 
     <ImageView
         android:id="@+id/redImage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
+        android:layout_marginTop="132dp"
         android:layout_marginEnd="@dimen/padding_na"
-        android:layout_marginTop="@dimen/padding_lg"
-        android:src="@drawable/home_3"
         android:scaleType="fitXY"
-        app:layout_constraintTop_toBottomOf="@id/TopBar"
+        android:src="@drawable/home_3"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+        app:layout_constraintTop_toBottomOf="@id/TopBar" />
+
+    <ImageView
+        android:id="@+id/DashboardLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/home_2"
+        app:layout_constraintStart_toStartOf="@id/redImage"
+        app:layout_constraintTop_toTopOf="@id/redImage" />
+
+    <TextView
+        android:id="@+id/tvDash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:text="Access Web Dashboard"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toEndOf="@id/DashboardLogo"
+        app:layout_constraintTop_toTopOf="@id/DashboardLogo" />
 
     <ImageButton
         android:id="@+id/ipBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="132dp"
+        android:layout_marginBottom="22dp"
         android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/home_1"
-        app:layout_constraintTop_toTopOf="@id/redImage"
-        app:layout_constraintEnd_toEndOf="@id/redImage"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:layout_marginEnd="@dimen/padding_sm" />
+        app:layout_constraintBottom_toTopOf="@+id/tvDash2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/tvDash"
+        app:layout_constraintTop_toTopOf="@+id/redImage"
+        app:layout_constraintVertical_bias="1.0"
+        android:src="@drawable/home_1" />
+
+    <TextView
+        android:id="@+id/tvIP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_ip"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/ipBtn"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/ipBtn"
+        app:layout_constraintTop_toTopOf="@+id/ipBtn" />
 
     <TextView
         android:id="@+id/tvDash2"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="@dimen/padding_na"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="@dimen/padding_na"
         android:text="Manage your server through the web interface once the terminal is running. "
         android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/DashboardLogo"
-        app:layout_constraintTop_toBottomOf="@+id/DashboardLogo"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+        app:layout_constraintTop_toBottomOf="@+id/DashboardLogo" />
 
     <TextView
         android:id="@+id/tvDash3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="@dimen/padding_sm"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
         android:text="The ip address is:"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/tvDash2"
         app:layout_constraintTop_toBottomOf="@id/tvDash2" />
 
     <TextView
-        android:id="@+id/tvIP"
+        android:id="@+id/tvIP2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_sm"
-        android:layout_marginTop="@dimen/padding_sm"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:text="&lt;u>&lt;b>TextView&lt;/b>&lt;/u>"
         android:textColor="#0000ee"
         app:layout_constraintStart_toEndOf="@+id/tvDash3"
         app:layout_constraintTop_toBottomOf="@+id/tvDash2" />
 
-    <TextView
-        android:id="@+id/tvDash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_md"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="Access Web Dashboard"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/DashboardLogo"
-        app:layout_constraintTop_toTopOf="@id/DashboardLogo" />
-
-    <ImageView
-        android:id="@+id/DashboardLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_md"
-        android:layout_marginTop="@dimen/padding_md"
-        android:src="@drawable/home_2"
-        app:layout_constraintStart_toStartOf="@id/redImage"
-        app:layout_constraintTop_toTopOf="@id/redImage" />
-
-    <!-- Selection Section -->
+    <!-- Buttons Section -->
 
     <ImageButton
         android:id="@+id/monitorBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="@dimen/padding_md"
+        android:layout_marginTop="8dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_4"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/redImage"
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
-        />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/redImage" />
 
     <TextView
         android:id="@+id/tvMonitor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xxl"
-        android:layout_marginTop="@dimen/padding_xl"
-        android:layout_marginEnd="@dimen/padding_xl"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="20dp"
         android:text="System Monitor"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/monitorBtn"
@@ -184,24 +201,27 @@
         android:id="@+id/tvMonitor2"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_xl"
         android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="@dimen/padding_lg"
         android:text="CPU, memory, network and temperature stats"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/monitorBtn"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/monitorBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvMonitor" />
+
 
     <ImageButton
         android:id="@+id/configurationBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_md"
+        android:layout_marginTop="8dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_5"
         app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@+id/redImage" />
 
@@ -209,9 +229,8 @@
         android:id="@+id/tvConfig"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xxl"
-        android:layout_marginTop="@dimen/padding_xl"
-        android:layout_marginEnd="@dimen/padding_xl"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="20dp"
         android:text="Configuration"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/configurationBtn"
@@ -221,13 +240,14 @@
         android:id="@+id/tvConfig2"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/padding_lg"
-        android:layout_marginTop="@dimen/padding_xl"
         android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="@dimen/padding_lg"
         android:text="View and manage your server settings"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/configurationBtn"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/configurationBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvConfig" />
 
@@ -236,10 +256,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="@dimen/padding_sm"
+        android:layout_marginTop="12dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_6"
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/monitorBtn" />
 
@@ -247,26 +268,25 @@
         android:id="@+id/tvProject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="44dp"
         android:text="Projects"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/ProjectBtn"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintTop_toTopOf="@+id/ProjectBtn" />
 
     <TextView
         android:id="@+id/tvProject2"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_xl"
         android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="@dimen/padding_lg"
         android:text="Install or manage community server packages"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/ProjectBtn"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/ProjectBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvProject" />
 
@@ -275,10 +295,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="@dimen/padding_sm"
+        android:layout_marginTop="12dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_7"
         app:layout_constraintEnd_toEndOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@+id/configurationBtn" />
 
@@ -286,27 +307,25 @@
         android:id="@+id/tvDocs"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xxl"
-        android:layout_marginTop="@dimen/padding_xl"
-        android:layout_marginEnd="@dimen/padding_xl"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
         android:text="Documentation"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/documentationBtn"
         app:layout_constraintTop_toTopOf="@+id/documentationBtn" />
 
-    <!-- Terminal Section -->
-
     <TextView
         android:id="@+id/tvDocs2"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_xl"
         android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="@dimen/padding_lg"
         android:text="Access guides and forms"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/documentationBtn"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/documentationBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvDocs" />
 
@@ -318,7 +337,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

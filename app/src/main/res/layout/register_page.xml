@@ -173,7 +173,7 @@
         android:scaleType="fitXY"
         android:layout_marginTop="20dp"
         android:background="@drawable/account_3"
-        android:hint="Email Address"
+        android:hint="@string/email_address"
         android:inputType="textEmailAddress"
         android:paddingLeft="15dp"
         android:textColorHint="#a2a2a2"
