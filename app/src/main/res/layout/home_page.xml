@@ -6,13 +6,50 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <ImageView
-        android:id="@+id/TopBar"
+    <!-- Add guidelines for proportional margins -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.97" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.47" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.53" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <ImageView
+        android:id="@+id/TopBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:src="@drawable/top_bar_1"
+        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/SamsaraLogo"
@@ -28,88 +65,93 @@
         android:layout_height="wrap_content"
         android:text="Samsara Server"
         android:textColor="#FFFFFF"
-        android:textSize="26sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="123dp"
-        android:layout_marginTop="28dp" />
+        android:textSize="@dimen/text_xl"
+        app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
+        app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
+        android:layout_marginStart="@dimen/padding_md"
+        android:layout_marginTop="@dimen/padding_xl" />
 
     <!-- Dashboard Section -->
 
     <ImageView
         android:id="@+id/redImage"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="136dp"
+        android:layout_marginStart="@dimen/padding_na"
+        android:layout_marginEnd="@dimen/padding_na"
+        android:layout_marginTop="@dimen/padding_lg"
         android:src="@drawable/home_3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toBottomOf="@id/TopBar"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
     <ImageButton
         android:id="@+id/ipBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="296dp"
-        android:layout_marginTop="144dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/redImage"
+        app:layout_constraintEnd_toEndOf="@id/redImage"
+        android:layout_marginTop="@dimen/padding_sm"
+        android:layout_marginEnd="@dimen/padding_sm" />
 
     <TextView
         android:id="@+id/tvDash2"
-        android:layout_width="348dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="212dp"
+        android:layout_width="@dimen/padding_na"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_na"
+        android:layout_marginTop="@dimen/padding_na"
+        android:layout_marginEnd="@dimen/padding_na"
         android:text="Manage your server through the web interface once the terminal is running. "
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@id/DashboardLogo"
+        app:layout_constraintTop_toBottomOf="@+id/DashboardLogo"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
     <TextView
         android:id="@+id/tvDash3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="268dp"
-        android:text="The ip address is"
+        android:layout_marginStart="@dimen/padding_na"
+        android:layout_marginTop="@dimen/padding_sm"
+        android:text="The ip address is:"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@id/tvDash2"
+        app:layout_constraintTop_toBottomOf="@id/tvDash2" />
 
     <TextView
         android:id="@+id/tvIP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="144dp"
-        android:layout_marginTop="268dp"
+        android:layout_marginStart="@dimen/padding_sm"
+        android:layout_marginTop="@dimen/padding_sm"
         android:text="&lt;u>&lt;b>TextView&lt;/b>&lt;/u>"
         android:textColor="#0000ee"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/tvDash3"
+        app:layout_constraintTop_toBottomOf="@+id/tvDash2" />
 
     <TextView
         android:id="@+id/tvDash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="168dp"
+        android:layout_marginStart="@dimen/padding_md"
+        android:layout_marginTop="@dimen/padding_sm"
         android:text="Access Web Dashboard"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/DashboardLogo"
+        app:layout_constraintTop_toTopOf="@id/DashboardLogo" />
 
     <ImageView
         android:id="@+id/DashboardLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginStart="@dimen/padding_md"
+        android:layout_marginTop="@dimen/padding_md"
         android:src="@drawable/home_2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@id/redImage"
+        app:layout_constraintTop_toTopOf="@id/redImage" />
 
     <!-- Selection Section -->
 
@@ -117,173 +159,193 @@
         android:id="@+id/monitorBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_na"
+        android:layout_marginTop="@dimen/padding_md"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="324dp" />
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/redImage"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
+        />
 
     <TextView
         android:id="@+id/tvMonitor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_xxl"
+        android:layout_marginTop="@dimen/padding_xl"
+        android:layout_marginEnd="@dimen/padding_xl"
         android:text="System Monitor"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="355dp" />
+        app:layout_constraintEnd_toEndOf="@+id/monitorBtn"
+        app:layout_constraintTop_toTopOf="@+id/monitorBtn" />
 
     <TextView
         android:id="@+id/tvMonitor2"
-        android:layout_width="159dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="400dp"
+        android:layout_width="@dimen/padding_na"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_xl"
+        android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginEnd="@dimen/padding_lg"
         android:text="CPU, memory, network and temperature stats"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/monitorBtn"
+        app:layout_constraintStart_toStartOf="@+id/monitorBtn"
+        app:layout_constraintTop_toBottomOf="@+id/tvMonitor" />
 
     <ImageButton
         android:id="@+id/configurationBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_md"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="192dp"
-        android:layout_marginTop="330dp" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toEndOf="@+id/guideline_middle"
+        app:layout_constraintTop_toBottomOf="@+id/redImage" />
 
     <TextView
         android:id="@+id/tvConfig"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_xxl"
+        android:layout_marginTop="@dimen/padding_xl"
+        android:layout_marginEnd="@dimen/padding_xl"
         android:text="Configuration"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="272dp"
-        android:layout_marginTop="355dp" />
+        app:layout_constraintEnd_toEndOf="@+id/configurationBtn"
+        app:layout_constraintTop_toTopOf="@+id/configurationBtn" />
 
     <TextView
         android:id="@+id/tvConfig2"
-        android:layout_width="161dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="216dp"
-        android:layout_marginTop="400dp"
+        android:layout_width="@dimen/padding_na"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/padding_lg"
+        android:layout_marginTop="@dimen/padding_xl"
+        android:layout_marginStart="@dimen/spacing_lg"
         android:text="View and manage your server settings"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/configurationBtn"
+        app:layout_constraintStart_toStartOf="@+id/configurationBtn"
+        app:layout_constraintTop_toBottomOf="@+id/tvConfig" />
 
     <ImageButton
         android:id="@+id/ProjectBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_na"
+        android:layout_marginTop="@dimen/padding_sm"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="460dp" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/monitorBtn" />
 
     <TextView
         android:id="@+id/tvProject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="50dp"
         android:text="Projects"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="485dp" />
+        app:layout_constraintEnd_toEndOf="@+id/ProjectBtn"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintTop_toTopOf="@+id/ProjectBtn" />
 
     <TextView
         android:id="@+id/tvProject2"
-        android:layout_width="155dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="528dp"
+        android:layout_width="@dimen/padding_na"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_xl"
+        android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginEnd="@dimen/padding_lg"
         android:text="Install or manage community server packages"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/ProjectBtn"
+        app:layout_constraintStart_toStartOf="@+id/ProjectBtn"
+        app:layout_constraintTop_toBottomOf="@+id/tvProject" />
 
     <ImageButton
         android:id="@+id/documentationBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_na"
+        android:layout_marginTop="@dimen/padding_sm"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="192dp"
-        android:layout_marginTop="460dp" />
+        app:layout_constraintEnd_toEndOf="@+id/guideline_end"
+        app:layout_constraintStart_toEndOf="@+id/guideline_middle"
+        app:layout_constraintTop_toBottomOf="@+id/configurationBtn" />
 
     <TextView
         android:id="@+id/tvDocs"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_xxl"
+        android:layout_marginTop="@dimen/padding_xl"
+        android:layout_marginEnd="@dimen/padding_xl"
         android:text="Documentation"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="272dp"
-        android:layout_marginTop="485dp" />
+        app:layout_constraintEnd_toEndOf="@+id/documentationBtn"
+        app:layout_constraintTop_toTopOf="@+id/documentationBtn" />
 
     <!-- Terminal Section -->
 
     <TextView
         android:id="@+id/tvDocs2"
-        android:layout_width="160dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="216dp"
-        android:layout_marginTop="528dp"
+        android:layout_width="@dimen/padding_na"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_xl"
+        android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginEnd="@dimen/padding_lg"
         android:text="Access guides and forms"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/documentationBtn"
+        app:layout_constraintStart_toStartOf="@+id/documentationBtn"
+        app:layout_constraintTop_toBottomOf="@+id/tvDocs" />
 
     <ImageButton
         android:id="@+id/terminalBtn2"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_na"
+        android:layout_marginTop="@dimen/padding_xl"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         android:src="@drawable/home_8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="600dp" />
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/documentationBtn" />
 
     <TextView
         android:id="@+id/tvEnvironment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xxl"
         android:text="Environment Ready"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="116dp"
-        android:layout_marginTop="650dp" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/terminalBtn2"
+        app:layout_constraintTop_toTopOf="@+id/terminalBtn2" />
 
     <TextView
         android:id="@+id/tvInitialize"
-        android:layout_width="173dp"
-        android:layout_height="22dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_sm"
         android:text="Tap terminal to initialize"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="116dp"
-        android:layout_marginTop="685dp" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/tvEnvironment" />
 
     <!-- Navbar Include -->
 

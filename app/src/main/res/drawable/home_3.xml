@@ -1,11 +1,11 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="388dp"
-    android:height="173dp"
-    android:viewportWidth="388"
-    android:viewportHeight="173">
+    android:width="372dp"
+    android:height="157dp"
+    android:viewportWidth="372"
+    android:viewportHeight="157">
   <path
-      android:pathData="M20,6L368,6A12,12 0,0 1,380 18L380,151A12,12 0,0 1,368 163L20,163A12,12 0,0 1,8 151L8,18A12,12 0,0 1,20 6z">
+      android:pathData="M12,0L360,0A12,12 0,0 1,372 12L372,145A12,12 0,0 1,360 157L12,157A12,12 0,0 1,0 145L0,12A12,12 0,0 1,12 0z">
     <aapt:attr name="android:fillColor">
       <gradient 
           android:startX="92.07"
