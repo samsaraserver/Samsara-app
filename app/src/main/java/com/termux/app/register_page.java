@@ -3,11 +3,12 @@ package com.termux.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
+    import android.text.Html;
 
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ public class register_page extends Activity {
     private EditText usernameBox;
     private EditText emailBox;
     private EditText passwordBox;
+    private CheckBox checkBoxTermsAndConditions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class register_page extends Activity {
         usernameBox = findViewById(R.id.UsernameBox);
         emailBox = findViewById(R.id.EmailPhoneBox);
         passwordBox = findViewById(R.id.PasswordBox);
+        checkBoxTermsAndConditions = findViewById(R.id.CheckBoxTermsAndConditions);
     }
 
     private void setupClickListeners() {
@@ -184,6 +187,11 @@ public class register_page extends Activity {
         if (password.length() < 8) {
             passwordBox.setError("Password must be at least 8 characters");
             passwordBox.requestFocus();
+            return false;
+        }
+
+        if (!checkBoxTermsAndConditions.isChecked()) {
+            Toast.makeText(this, "You must agree to the Terms and Conditions", Toast.LENGTH_LONG).show();
             return false;
         }
 
