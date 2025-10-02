@@ -130,8 +130,11 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
                 return;
             }
             
+            int size = com.termux.app.database.utils.ImageUtils.PROFILE_IMAGE_SIZE;
             Picasso.get()
                 .load(imageUrl)
+                .resize(size, size)
+                .centerCrop()
                 .placeholder(R.drawable.account_2)
                 .error(R.drawable.account_2)
                 .into(profilePictureView, new com.squareup.picasso.Callback() {
@@ -378,9 +381,7 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
 
             userRepository.uploadProfilePicture(currentUser.getId(), imageData)
                 .thenCompose(filename -> {
-                    // #COMPLETION_DRIVE: Assuming storage upload success guarantees valid filename
-                    // #SUGGEST_VERIFY: Add filename format validation before database update
-                    if (filename != null && !filename.isEmpty()) {
+                    if (filename != null && filename.matches("\\d+_\\d+\\.jpg")) {
                         return userRepository.updateUserProfilePicture(currentUser.getId(), filename)
                             .thenApply(success -> (success != null && success) ? filename : null);
                     }

@@ -401,10 +401,13 @@ public class UserRepository {
     
     public CompletableFuture<String> uploadProfilePicture(Long userId, byte[] imageData) {
         return CompletableFuture.supplyAsync(() -> {
-            // #COMPLETION_DRIVE: Assuming userId and imageData validation prevents null values
-            // #SUGGEST_VERIFY: Add null checks and validate image size limits
             if (userId == null || userId <= 0 || imageData == null || imageData.length == 0) {
                 Log.e(TAG, "Invalid upload parameters");
+                return null;
+            }
+            // enforce max 5MB
+            if (imageData.length > 5 * 1024 * 1024) {
+                Log.e(TAG, "Image exceeds 5MB limit");
                 return null;
             }
             
@@ -440,9 +443,14 @@ public class UserRepository {
     
     public CompletableFuture<Boolean> updateUserProfilePicture(Long userId, String filename) {
         return CompletableFuture.supplyAsync(() -> {
-            // #COMPLETION_DRIVE: Assuming filename is always a valid storage filename
-            // #SUGGEST_VERIFY: Add filename validation to ensure it matches expected format
             try {
+                if (userId == null || userId <= 0) return false;
+                if (filename == null || filename.isEmpty()) return false;
+                // basic filename validation: {id}_{timestamp}.jpg
+                if (!filename.matches("\\d+_\\d+\\.jpg")) {
+                    Log.e(TAG, "Invalid profile picture filename format: " + filename);
+                    return false;
+                }
                 JSONObject updateData = new JSONObject();
                 updateData.put("profile_picture_url", filename);
                 updateData.put("updated_at", new java.sql.Timestamp(System.currentTimeMillis()).toString());

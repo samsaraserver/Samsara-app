@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 public class ImageUtils {
     private static final String TAG = "ImageUtils";
-    private static final int MAX_IMAGE_SIZE = 800;
+    public static final int PROFILE_IMAGE_SIZE = 512;
     private static final int JPEG_QUALITY = 85;
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -35,14 +35,16 @@ public class ImageUtils {
             }
 
             Bitmap rotatedBitmap = rotateImageIfRequired(context, originalBitmap, imageUri);
-            Bitmap resizedBitmap = resizeImage(rotatedBitmap, MAX_IMAGE_SIZE);
+            Bitmap squared = cropCenterSquare(rotatedBitmap);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(squared, PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE, true);
 
             if (rotatedBitmap != originalBitmap) {
                 rotatedBitmap.recycle();
             }
-            if (resizedBitmap != rotatedBitmap && resizedBitmap != originalBitmap) {
-                originalBitmap.recycle();
+            if (squared != rotatedBitmap && squared != originalBitmap && squared != resizedBitmap) {
+                squared.recycle();
             }
+            if (originalBitmap != resizedBitmap) originalBitmap.recycle();
 
             byte[] imageData = compressImage(resizedBitmap, JPEG_QUALITY);
             resizedBitmap.recycle();
@@ -95,24 +97,13 @@ public class ImageUtils {
         return rotatedImg;
     }
 
-    private static Bitmap resizeImage(Bitmap image, int maxSize) {
+    private static Bitmap cropCenterSquare(Bitmap image) {
         int width = image.getWidth();
         int height = image.getHeight();
-
-        if (width <= maxSize && height <= maxSize) {
-            return image;
-        }
-
-        float bitmapRatio = (float) width / (float) height;
-        if (bitmapRatio > 1) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
-        } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
-        }
-
-        return Bitmap.createScaledBitmap(image, width, height, true);
+        int size = Math.min(width, height);
+        int x = (width - size) / 2;
+        int y = (height - size) / 2;
+        return Bitmap.createBitmap(image, x, y, size, size);
     }
 
     private static byte[] compressImage(Bitmap bitmap, int quality) {
