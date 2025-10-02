@@ -1,13 +1,7 @@
 #!/bin/sh
 set -e
 
-LOG_DIR="$HOME/.samsara"
-LOG="$LOG_DIR/bootstrap.log"
-DEBUG_LOG="$LOG_DIR/debug.log"
-mkdir -p "$LOG_DIR"
-
-# Initialize logs with timestamp
-echo "=== SamsaraServer Bootstrap Started at $(date) ===" > "$LOG"
+# Console-only mode: no file logs
 
 ERR_NO_INTERNET=1
 ERR_PKG_UPDATE=2
@@ -18,12 +12,11 @@ ERR_DPKG_LOCKED=6
 ERR_INSUFFICIENT_SPACE=7
 ERR_SCRIPT_VALIDATION=8
 
-SPIN_CHARS='-\\|/'
 spinner_pid=0
 bootstrap_had_errors=0
 
 debug_log() {
-    echo "[DEBUG $(date '+%H:%M:%S')] $*" >> "$DEBUG_LOG"
+    echo "[DEBUG $(date '+%H:%M:%S')] $*"
 }
 
 error_exit() {
@@ -31,14 +24,12 @@ error_exit() {
     local err_code=$1
     local err_msg="$2"
     bootstrap_had_errors=1
-    echo "[!] FATAL: $err_msg" | tee -a "$LOG"
+    echo "[!] FATAL: $err_msg"
     debug_log "FATAL ERROR: $err_msg (exit code: $err_code)"
-    
-    printf "\n=== ERROR SUMMARY ===\n"
-    printf "Error: %s\n" "$err_msg"
-    printf "Check logs: %s\n" "$LOG" 
-    printf "Debug info: %s\n" "$DEBUG_LOG"
-    printf "=====================\n"
+    echo
+    echo "=== ERROR SUMMARY ==="
+    echo "Error: $err_msg"
+    echo "====================="
     
     exit $err_code
 }
@@ -55,8 +46,13 @@ validate_environment() {
     fi
     
     debug_log "Environment validation passed"
-    echo "PREFIX: $PREFIX" >> "$LOG"
-    echo "HOME: $HOME" >> "$LOG"
+    echo "PREFIX: $PREFIX"
+    echo "HOME: $HOME"
+}
+
+ensure_noninteractive() {
+    export DEBIAN_FRONTEND=noninteractive
+    export APT_LISTCHANGES_FRONTEND=none
 }
 
 ensure_ipv4_only() {
@@ -65,74 +61,125 @@ ensure_ipv4_only() {
     echo 'Acquire::ForceIPv4 "true";' > "$CONF_DIR/99force-ipv4" 2>/dev/null || true
 }
 
+ensure_apt_network_tuning() {
+    CONF_DIR="$PREFIX/etc/apt/apt.conf.d"
+    mkdir -p "$CONF_DIR"
+    cat > "$CONF_DIR/50samsara-network" <<-'EOF'
+Acquire::ForceIPv4 "true";
+Acquire::Retries "1";
+Acquire::http::Timeout "10";
+Acquire::https::Timeout "10";
+Acquire::ConnectTimeout "5";
+Acquire::Languages "none";
+APT::Get::Assume-Yes "true";
+APT::Install-Recommends "false";
+EOF
+}
+
+ensure_runtime_libs() {
+    # #COMPLETION_DRIVE: Ensure apt-get can start by providing required runtime libs
+    # #SUGGEST_VERIFY: After calling, run `apt-get -v` to confirm no missing .so errors
+    if [ -n "$PREFIX" ] && [ -d "$PREFIX/lib" ]; then
+        if [ ! -e "$PREFIX/lib/liblz4.so.1" ] && [ -e "$PREFIX/lib/liblz4.so" ]; then
+            ln -sf "$PREFIX/lib/liblz4.so" "$PREFIX/lib/liblz4.so.1" 2>/dev/null || true
+            echo "[INFO] Linked liblz4.so.1 -> liblz4.so"
+        fi
+    fi
+}
+
+apt_update_quick() {
+    # Use apt-get with explicit timeouts to avoid hangs
+    if command -v apt-get >/dev/null 2>&1; then
+        if apt-get \
+            -o Dpkg::Options::=--force-confnew \
+            -o Dpkg::Options::=--force-confold \
+            -o Acquire::http::Timeout=10 -o Acquire::https::Timeout=10 -o Acquire::ConnectTimeout=5 -o Acquire::Retries=1 \
+            update; then
+            return 0
+        fi
+        return 1
+    fi
+    pkg update -y
+}
+
+ensure_dpkg_clean() {
+    # Attempt to recover from interrupted dpkg states in a bounded manner
+    attempts=0
+    while [ $attempts -lt 2 ]; do
+        attempts=$((attempts+1))
+        echo "[INFO] Checking dpkg state (attempt $attempts)"
+        dpkg --configure -a || true
+        if command -v apt-get >/dev/null 2>&1; then
+            if apt-get -o Acquire::Retries=1 -s upgrade 2>&1 | grep -q "dpkg was interrupted"; then
+                echo "[INFO] Fixing interrupted dpkg: attempting -f install and reconfigure"
+                apt-get -o Dpkg::Options::=--force-confnew -o Dpkg::Options::=--force-confold -f -y install || 
+                dpkg --configure -a || true
+                continue
+            fi
+        fi
+        break
+    done
+}
+
 switch_termux_mirrors_and_update() {
     start_spinner "Switching Termux mirrors"
     SRC_FILE="$PREFIX/etc/apt/sources.list"
     mkdir -p "$(dirname "$SRC_FILE")"
-    [ -f "$SRC_FILE" ] && cp "$SRC_FILE" "$LOG_DIR/sources.list.bak" 2>/dev/null || true
+    [ -f "$SRC_FILE" ] && cp "$SRC_FILE" "$SRC_FILE.bak" 2>/dev/null || true
 
-    MIRRORS="https://packages.termux.dev/apt/termux-main https://grimler.se/termux/apt/termux-main https://mirror.alpix.eu/termux/apt/termux-main"
+    MIRRORS="https://packages.termux.dev/apt/termux-main https://mirror.termux.dev/apt/termux-main https://grimler.se/termux/apt/termux-main"
     for MIR in $MIRRORS; do
+        printf "\n[INFO] Trying Termux mirror: %s\n" "$MIR"
         printf "deb %s stable main\n" "$MIR" > "$SRC_FILE"
-        if pkg update -y >>"$LOG" 2>&1; then
+        if apt_update_quick; then
             task_success "Switched repo and updated"
             return 0
         fi
     done
     task_fail "All mirrors failed"
+    # Restore original sources if backup exists
+    if [ -f "$SRC_FILE.bak" ]; then
+        cp "$SRC_FILE.bak" "$SRC_FILE" 2>/dev/null || true
+    fi
     return 1
 }
 
 start_spinner() {
-	printf "\r[*] %s " "$1"
-	(
-		i=0
-		while true; do
-			i=$(( (i + 1) % 4 ))
-			c=$(printf %s "$SPIN_CHARS" | cut -c $((i+1)))
-			printf "\r[*] %s %s" "$1" "$c"
-			sleep 0.1
-		done
-	) &
-	spinner_pid=$!
+    echo "[*] $1"
 }
 
 stop_spinner() {
-	if [ "$spinner_pid" -ne 0 ]; then
-		kill "$spinner_pid" 2>/dev/null || true
-		wait "$spinner_pid" 2>/dev/null || true
-		spinner_pid=0
-	fi
+    :
 }
 
 task_success() {
-	stop_spinner
-	printf "\r[✓] %s\n" "$1"
+    stop_spinner
+    echo "[✓] $1"
 }
 
 task_fail() {
-	stop_spinner
-	printf "\r[!] %s\n" "$1"
+    stop_spinner
+    echo "[!] $1"
     bootstrap_had_errors=1
 }
 
 check_internet() {
     if ping -c 1 -W 3 8.8.8.8 >/dev/null 2>&1 || ping -c 1 -W 3 1.1.1.1 >/dev/null 2>&1; then
-        echo "Internet: ping test OK" >> "$LOG"
+        echo "Internet: ping test OK"
         return 0
     fi
     
     if command -v pkg >/dev/null 2>&1 && pkg list-all >/dev/null 2>&1; then
-        echo "Internet: pkg access OK" >> "$LOG"
+        echo "Internet: pkg access OK"
         return 0
     fi
     
     if command -v curl >/dev/null 2>&1 && curl -s --connect-timeout 5 --max-time 10 "https://packages.termux.org" >/dev/null 2>&1; then
-        echo "Internet: curl test OK" >> "$LOG"
+        echo "Internet: curl test OK"
         return 0
     fi
     
-    echo "Internet: all tests failed" >> "$LOG"
+    echo "Internet: all tests failed"
     return 1
 }
 
@@ -149,7 +196,7 @@ check_dpkg_locked() {
     if ! pkg upgrade --dry-run >/dev/null 2>&1; then
         local pkg_error=$(pkg upgrade --dry-run 2>&1)
         if echo "$pkg_error" | grep -q "dpkg.*configure.*-a"; then
-            echo "dpkg interruption detected: $pkg_error" >> "$LOG"
+            echo "dpkg interruption detected: $pkg_error"
             return 0
         fi
     fi
@@ -161,21 +208,21 @@ fix_dpkg_state() {
     start_spinner "Fixing dpkg state"
     
     if command -v dpkg >/dev/null 2>&1; then
-        echo "Running dpkg --configure -a to fix interrupted state" >> "$LOG"
+        echo "Running dpkg --configure -a to fix interrupted state"
         
-        if dpkg --configure -a >>"$LOG" 2>&1; then
+        if dpkg --configure -a; then
             task_success "dpkg state fixed"
             
             if pkg upgrade --dry-run >/dev/null 2>&1; then
-                echo "pkg upgrade test successful after dpkg fix" >> "$LOG"
+                echo "pkg upgrade test successful after dpkg fix"
                 return 0
             else
-                echo "WARNING: pkg upgrade still has issues after dpkg fix" >> "$LOG"
+                echo "WARNING: pkg upgrade still has issues after dpkg fix"
                 return 1
             fi
         else
             task_fail "Failed to fix dpkg state"
-            echo "dpkg --configure -a failed" >> "$LOG"
+            echo "dpkg --configure -a failed"
             return 1
         fi
     else
@@ -198,12 +245,16 @@ update_packages() {
 	fi
     
     ensure_ipv4_only
-    if pkg update -y >>"$LOG" 2>&1; then
+    ensure_noninteractive
+    ensure_runtime_libs
+    ensure_dpkg_clean
+    ensure_apt_network_tuning
+    if apt_update_quick; then
         task_success "Package repositories updated"
     else
 		if check_dpkg_locked; then
 			if fix_dpkg_state; then
-				if pkg update -y >>"$LOG" 2>&1; then
+				if apt_update_quick; then
 					task_success "Package repositories updated (after fixing dpkg)"
 					return 0
 				fi
@@ -212,7 +263,7 @@ update_packages() {
         if switch_termux_mirrors_and_update; then
             return 0
         fi
-        error_exit $ERR_PKG_UPDATE "Failed to update package repositories"
+        error_exit $ERR_Set_PKG_UPDATE "Passed new package failed" 
 	fi
 }
 
@@ -226,7 +277,7 @@ upgrade_packages() {
         fi
     fi
     
-	if pkg upgrade -y >>"$LOG" 2>&1; then
+	if pkg upgrade -y; then
 		task_success "Packages upgraded"
         return 0
 	else
@@ -234,7 +285,7 @@ upgrade_packages() {
             task_fail "dpkg interruption detected - attempting fix"
             
             if fix_dpkg_state; then
-                if pkg upgrade -y >>"$LOG" 2>&1; then
+				if pkg upgrade -y; then
                     task_success "Packages upgraded (after dpkg fix)"
                     return 0
                 fi
@@ -242,9 +293,6 @@ upgrade_packages() {
         fi
         
         task_fail "Package upgrade failed - continuing without upgrade"
-        echo "=== UPGRADE FAILED ===" >> "$LOG"
-        echo "Continuing without upgrade" >> "$LOG"
-        echo "=== END UPGRADE FAILURE ===" >> "$LOG"
         return 1
 	fi
 }
@@ -261,6 +309,8 @@ install_proot() {
     fi
     
     # Check and fix dpkg state before installation
+    ensure_noninteractive
+    ensure_dpkg_clean
     if check_dpkg_locked; then
         debug_log "dpkg issues detected, fixing before proot-distro install"
         if ! fix_dpkg_state; then
@@ -270,7 +320,7 @@ install_proot() {
     fi
     
     debug_log "Running pkg install proot-distro"
-	if pkg install -y proot-distro >>"$LOG" 2>&1; then
+    if pkg install -y proot-distro; then
 		if command -v proot-distro >/dev/null 2>&1; then
 			task_success "proot-distro installed"
             debug_log "proot-distro installation successful"
@@ -284,13 +334,14 @@ install_proot() {
         debug_log "proot-distro installation failed with exit code: $install_exit_code"
         
         # Check if it's the dpkg interruption issue
-        if pkg install --dry-run proot-distro 2>&1 | grep -q "dpkg.*configure.*-a"; then
+        if apt-get -s install proot-distro 2>&1 | grep -q "dpkg was interrupted"; then
             debug_log "dpkg interruption detected during proot-distro install"
             task_fail "dpkg interruption detected - attempting fix"
             
+            ensure_dpkg_clean
             if fix_dpkg_state; then
                 debug_log "Retrying proot-distro install after dpkg fix"
-                if pkg install -y proot-distro >>"$LOG" 2>&1; then
+                if pkg install -y proot-distro; then
                     if command -v proot-distro >/dev/null 2>&1; then
                         task_success "proot-distro installed (after dpkg fix)"
                         debug_log "proot-distro installation succeeded after dpkg fix"
@@ -302,20 +353,14 @@ install_proot() {
         
         # Try basic package update and retry
         debug_log "Updating package cache and retrying"
-        if pkg update >>"$LOG" 2>&1 && pkg install -y proot-distro >>"$LOG" 2>&1; then
+        if apt_update_quick && pkg install -y proot-distro; then
             if command -v proot-distro >/dev/null 2>&1; then
                 task_success "proot-distro installed (after update)"
                 debug_log "Installation succeeded after package update"
                 return 0
             fi
         fi
-        
-        echo "=== PROOT-DISTRO INSTALL FAILED ===" >> "$LOG"
-        echo "Exit code: $install_exit_code" >> "$LOG"
-        echo "Last 20 lines:" >> "$LOG"
-        tail -20 "$LOG" >> "$LOG" 2>/dev/null
-        echo "=== END INSTALL ERROR ===" >> "$LOG"
-        
+
         error_exit $ERR_PKG_INSTALL "proot-distro installation failed - check dpkg state manually"
 	fi
 }
@@ -326,8 +371,8 @@ check_disk_space() {
 		AVAILABLE_KB=$(df "$PREFIX" 2>/dev/null | awk 'NR==2 {print $4}' 2>/dev/null)
 		if [ -n "$AVAILABLE_KB" ] && [ "$AVAILABLE_KB" -gt 0 ]; then
 			AVAILABLE_MB=$((AVAILABLE_KB / 1024))
-			[ "$AVAILABLE_MB" -ge "$REQUIRED_MB" ] && return 0
-			printf "Insufficient disk space: %d MB available, %d MB required\n" "$AVAILABLE_MB" "$REQUIRED_MB" >&2
+            [ "$AVAILABLE_MB" -ge "$REQUIRED_MB" ] && return 0
+            echo "Insufficient disk space: $AVAILABLE_MB MB available, $REQUIRED_MB MB required" >&2
 			return 1
 		fi
 	fi
@@ -347,7 +392,7 @@ setup_alpine() {
 		fi
         
         debug_log "Running proot-distro install alpine"
-		if proot-distro install alpine >>"$LOG" 2>&1; then
+        if proot-distro install alpine; then
 			if [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
 				task_success "Alpine Linux installed"
                 debug_log "Alpine Linux installation and verification successful"
@@ -363,7 +408,7 @@ setup_alpine() {
 		start_spinner "Updating Alpine packages"
         debug_log "Alpine found, updating existing installation"
         
-		if proot-distro login alpine -- sh -lc 'apk update >/dev/null 2>&1 && apk upgrade >/dev/null 2>&1' >>"$LOG" 2>&1; then
+        if proot-distro login alpine -- sh -lc 'apk update && apk upgrade -U -a'; then
 			task_success "Alpine packages updated"
             debug_log "Alpine packages updated successfully"
 		else
@@ -391,7 +436,7 @@ copy_scripts() {
     
 	if [ -n "$TO_COPY" ]; then
         debug_log "Copying scripts to Alpine: $TO_COPY"
-		if tar -C "$HOME/scripts" -cf - $TO_COPY | proot-distro login alpine -- sh -lc '
+        if tar -C "$HOME/scripts" -cf - $TO_COPY | proot-distro login alpine -- sh -lc '
 		set -e
 		mkdir -p /root/scripts
 		tar -C /root/scripts -xpf -
@@ -399,7 +444,7 @@ copy_scripts() {
 		chmod 0755 /root/scripts/setup || true
 		mkdir -p /usr/local/bin
 		cp -f /root/scripts/setup /usr/local/bin/setup || install -m 0755 /root/scripts/setup /usr/local/bin/setup
-		' >>"$LOG" 2>&1; then
+        '; then
 			task_success "Setup scripts installed"
             debug_log "Scripts successfully installed to Alpine"
 		else
@@ -415,17 +460,21 @@ copy_scripts() {
 trap 'stop_spinner' EXIT INT TERM
 
 # Start with environment validation
-printf "\n======================================\n"
-printf "    SamsaraServer Alpine Bootstrap    \n"
-printf "======================================\n"
+echo
+echo "======================================"
+echo "    SamsaraServer Alpine Bootstrap    "
+echo "======================================"
+echo
 validate_environment
+ensure_noninteractive
+ensure_runtime_libs
 
 update_packages
 
 # Try upgrade, but continue if it fails
 if ! upgrade_packages; then
-    printf "\n[WARNING] Package upgrade failed, continuing with current packages\n"
-    echo "WARNING: Proceeding without package upgrade" >> "$LOG"
+    echo
+    echo "[WARNING] Package upgrade failed, continuing with current packages"
 fi
 
 install_proot
@@ -433,42 +482,44 @@ setup_alpine
 copy_scripts
 
 debug_log "Bootstrap completed successfully"
-printf "\n======================================\n"
-printf "      Bootstrap Process Complete      \n"
-printf "======================================\n"
+echo
+echo "======================================"
+echo "      Bootstrap Process Complete      "
+echo "======================================"
 
 # Clear screen if no errors occurred
 if [ "$bootstrap_had_errors" -eq 0 ]; then
-    printf "\n[SYSTEM] Bootstrap successful - preparing environment...\n"
-    sleep 1
+    echo
+    echo "[SYSTEM] Bootstrap successful - preparing environment..."
     clear
-    printf "\n"
-    printf "╔══════════════════════════════════════╗\n"
-    printf "║          SamsaraServer Ready         ║\n"
-    printf "╚══════════════════════════════════════╝\n"
-    printf "\n"
-    printf "NEXT STEP: Execute 'setup' command to configure SSH server\n"
-    printf "          and complete server initialization\n"
-    printf "\n"
+    echo
+    echo "╔══════════════════════════════════════╗"
+    echo "║          SamsaraServer Ready         ║"
+    echo "╚══════════════════════════════════════╝"
+    echo
+    echo "NEXT STEP: Execute 'setup' command to configure SSH server"
+    echo "          and complete server initialization"
+    echo
 else
-    printf "\n[WARNING] Bootstrap completed with warnings or errors\n"
-    printf "Log Files: %s\n" "$LOG"
-    printf "Debug Info: %s\n" "$DEBUG_LOG"
-    printf "\nPlease review logs before proceeding\n"
+    echo
+    echo "[WARNING] Bootstrap completed with warnings or errors"
+    echo
+    echo "Please review logs before proceeding"
 fi
 
 # Launch Alpine or stay in Termux shell
 if command -v proot-distro >/dev/null 2>&1 && [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
-    printf "[SYSTEM] Initializing Alpine Linux environment...\n"
-    printf "────────────────────────────────────────\n"
+    echo "[SYSTEM] Initializing Alpine Linux environment..."
+    echo "────────────────────────────────────────"
     exec proot-distro login alpine -- /bin/sh -l
 else
-    printf "\n[ERROR] Alpine Linux environment unavailable\n"
-    printf "────────────────────────────────────────\n"
-    printf "Manual Recovery Steps:\n"
-    printf "  1. Install proot-distro: pkg install proot-distro\n"
-    printf "  2. Install Alpine: proot-distro install alpine\n"
-    printf "  3. Restart SamsaraServer application\n"
-    printf "\n"
+    echo
+    echo "[ERROR] Alpine Linux environment unavailable"
+    echo "────────────────────────────────────────"
+    echo "Manual Recovery Steps:"
+    echo "  1. Install proot-distro: pkg install proot-distro"
+    echo "  2. Install Alpine: proot-distro install alpine"
+    echo "  3. Restart SamsaraServer application"
+    echo
     exec /bin/sh -l
 fi
