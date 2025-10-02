@@ -2,15 +2,16 @@ package com.termux.app;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.termux.R;
 import com.termux.app.database.SupabaseConfig;
 import com.termux.app.database.repository.UserRepository;
@@ -18,14 +19,23 @@ import com.termux.app.database.managers.AuthManager;
 
 public class login_page extends Activity {
     private static final String TAG = "LoginPage";
+    private static final String PREFS_NAME = "SamsaraLoginPrefs";
+    private static final String KEY_REMEMBER_ME = "remember_me";
+    private static final String KEY_EMAIL_USERNAME = "email_username";
+    private static final String KEY_PASSWORD = "password";
+
     private UserRepository userRepository;
     private EditText emailUsernameBox;
     private EditText passwordBox;
+    private CheckBox rememberMeCheckBox;
+    private SharedPreferences loginPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_page);
+
+        loginPrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         try {
             SupabaseConfig.initialize(this);
@@ -38,6 +48,7 @@ public class login_page extends Activity {
         }
 
         initializeViews();
+        loadSavedCredentials();
         setupClickListeners();
     }
 
@@ -54,6 +65,39 @@ public class login_page extends Activity {
 
         emailUsernameBox = findViewById(R.id.EmailUsernameBox);
         passwordBox = findViewById(R.id.PasswordBox);
+        rememberMeCheckBox = findViewById(R.id.RememberMeCheckBox);
+    }
+
+    private void loadSavedCredentials() {
+        boolean rememberMe = loginPrefs.getBoolean(KEY_REMEMBER_ME, false);
+        if (rememberMe) {
+            String savedUsername = loginPrefs.getString(KEY_EMAIL_USERNAME, "");
+            String savedPassword = loginPrefs.getString(KEY_PASSWORD, "");
+
+            // Pre-fill the form with saved credentials
+            emailUsernameBox.setText(savedUsername);
+            passwordBox.setText(savedPassword);
+            rememberMeCheckBox.setChecked(true);
+
+            // No automatic login - user must click the login button themselves
+            Toast.makeText(this, "Credentials loaded. Click Login to continue.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveCredentials(String emailOrUsername, String password) {
+        SharedPreferences.Editor editor = loginPrefs.edit();
+        editor.putBoolean(KEY_REMEMBER_ME, true);
+        editor.putString(KEY_EMAIL_USERNAME, emailOrUsername);
+        editor.putString(KEY_PASSWORD, password);
+        editor.apply();
+    }
+
+    private void clearSavedCredentials() {
+        SharedPreferences.Editor editor = loginPrefs.edit();
+        editor.remove(KEY_REMEMBER_ME);
+        editor.remove(KEY_EMAIL_USERNAME);
+        editor.remove(KEY_PASSWORD);
+        editor.apply();
     }
 
     private void setupClickListeners() {
@@ -116,6 +160,14 @@ public class login_page extends Activity {
                     setFormEnabled(true);
                     if (user != null) {
                         Log.d(TAG, "User data retrieved successfully: " + user.getUsername());
+
+                        // Handle Remember Me functionality
+                        if (rememberMeCheckBox.isChecked()) {
+                            saveCredentials(emailOrUsername, password);
+                        } else {
+                            clearSavedCredentials();
+                        }
+
                         AuthManager.getInstance(this).loginUser(user);
                         Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(login_page.this, home_page.class);

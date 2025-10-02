@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background">
@@ -231,7 +232,7 @@
         app:layout_constraintTop_toTopOf="@+id/LoginGithubGtn" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/RememberMeCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -253,7 +254,7 @@
         android:src="@drawable/login_5"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/checkBox" />
+        app:layout_constraintTop_toBottomOf="@id/RememberMeCheckBox" />
 
     <TextView
         android:id="@+id/tvLogin2"
@@ -326,7 +327,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/SignupBtn2"
         app:layout_constraintEnd_toEndOf="@+id/SignupBtn2"
         app:layout_constraintHorizontal_bias="0.719"
-        app:layout_constraintStart_toStartOf="@+id/guideline_middle"
+        app:layout_constraintStart_toStartOf="@+id/SignupBtn2"
         app:layout_constraintTop_toTopOf="@+id/SignupBtn2"
         app:layout_constraintVertical_bias="0.615" />
 
