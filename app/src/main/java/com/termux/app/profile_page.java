@@ -12,6 +12,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.io.File;
+import com.yalantis.ucrop.UCrop;
 
 import com.squareup.picasso.Picasso;
 import com.termux.R;
@@ -21,6 +23,7 @@ import com.termux.app.database.models.SamsaraUser;
 import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.utils.ImageUtils;
 import com.termux.app.utils.ImagePickerHelper;
+import com.termux.app.utils.CircleTransform;
 
 public class profile_page extends Activity implements ImagePickerHelper.ImagePickerCallback {
     private static final String TAG = "ProfilePage";
@@ -64,6 +67,15 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
         signInOutText = findViewById(R.id.tvSignInOut);
         signInOutButton = findViewById(R.id.SignInOutBtn);
         profilePictureView = findViewById(R.id.imgProfilePic);
+        try {
+            profilePictureView.setBackgroundResource(R.drawable.account_2);
+            float density = getResources().getDisplayMetrics().density;
+            int pad = (int) (density * 4f);
+            profilePictureView.setPadding(pad, pad, pad, pad);
+            profilePictureView.setClipToOutline(false);
+            profilePictureView.setScaleX(0.75f);
+            profilePictureView.setScaleY(0.75f);
+        } catch (Exception ignored) { }
         
         imagePickerHelper = new ImagePickerHelper(this, this);
         setFieldsEnabled(false);
@@ -83,79 +95,60 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
         saveButton.setOnClickListener(v -> saveUserData());
 
         signInOutButton.setOnClickListener(v -> handleSignInOut());
-        
+
         profilePictureView.setOnClickListener(v -> {
-            if (authManager.isLoggedIn()) {
-                imagePickerHelper.showImagePickerDialog();
+            if (!authManager.isLoggedIn()) {
+                Toast.makeText(this, "Please sign in first", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Please sign in to change profile picture", Toast.LENGTH_SHORT).show();
+                imagePickerHelper.showImagePickerDialog();
             }
         });
-    }
-
-    private void loadUserData() {
-        if (authManager.isLoggedIn()) {
-            SamsaraUser currentUser = authManager.getCurrentUser();
-            if (currentUser != null) {
-                usernameBox.setText(currentUser.getUsername());
-                emailBox.setText(currentUser.getEmail());
-                passwordBox.setText("••••••••");
-                loadProfilePicture(currentUser.getProfilePictureUrl());
-            }
-        } else {
-            usernameBox.setText("");
-            emailBox.setText("");
-            passwordBox.setText("");
-            loadDefaultProfilePicture();
-        }
-    }
-    
-    private void loadProfilePicture(String filename) {
-        if (filename != null && !filename.isEmpty()) {
-            if (profilePictureView == null) {
-                Log.e(TAG, "Profile picture view is null");
-                return;
-            }
-            
-            if (userRepository == null) {
-                Log.e(TAG, "UserRepository is null, cannot load profile picture");
-                loadDefaultProfilePicture();
-                return;
-            }
-            
-            String imageUrl = userRepository.getProfilePictureUrl(filename);
-            if (imageUrl == null || imageUrl.isEmpty()) {
-                Log.e(TAG, "Failed to construct profile picture URL for filename: " + filename);
-                loadDefaultProfilePicture();
-                return;
-            }
-            
-            int size = com.termux.app.database.utils.ImageUtils.PROFILE_IMAGE_SIZE;
-            Picasso.get()
-                .load(imageUrl)
-                .resize(size, size)
-                .centerCrop()
-                .placeholder(R.drawable.account_2)
-                .error(R.drawable.account_2)
-                .into(profilePictureView, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {
-                        
-                    }
-                    
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e(TAG, "Failed to load profile picture: " + e.getMessage());
-                        loadDefaultProfilePicture();
-                    }
-                });
-        } else {
-            loadDefaultProfilePicture();
-        }
     }
     
     private void loadDefaultProfilePicture() {
         profilePictureView.setImageResource(R.drawable.account_2);
+    }
+
+    private void loadProfilePicture(String filename) {
+        if (TextUtils.isEmpty(filename)) {
+            loadDefaultProfilePicture();
+            return;
+        }
+        try {
+            String url = userRepository.getProfilePictureUrl(filename);
+            float density = getResources().getDisplayMetrics().density;
+            int insetPx = Math.max(1, (int) (density * 4f));
+            Picasso.get()
+                .load(url)
+                .resize(ImageUtils.PROFILE_IMAGE_SIZE, ImageUtils.PROFILE_IMAGE_SIZE)
+                .centerCrop()
+                .transform(new CircleTransform(insetPx))
+                .placeholder(R.drawable.account_2)
+                .error(R.drawable.account_2)
+                .into(profilePictureView);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to load profile picture: " + e.getMessage());
+            loadDefaultProfilePicture();
+        }
+    }
+
+    private void loadUserData() {
+        if (authManager.isLoggedIn()) {
+            SamsaraUser user = authManager.getCurrentUser();
+            if (user != null) {
+                usernameBox.setText(user.getUsername() != null ? user.getUsername() : "");
+                emailBox.setText(user.getEmail() != null ? user.getEmail() : "");
+                String filename = user.getProfilePictureUrl();
+                if (!TextUtils.isEmpty(filename)) {
+                    loadProfilePicture(filename);
+                } else {
+                    loadDefaultProfilePicture();
+                }
+            }
+        } else {
+            clearFields();
+            loadDefaultProfilePicture();
+        }
     }
 
     private void updateSignInOutButton() {
@@ -328,6 +321,63 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imagePickerHelper.handleActivityResult(requestCode, resultCode, data);
+        if (requestCode == UCrop.REQUEST_CROP) {
+            if (resultCode == RESULT_OK && data != null) {
+                Uri resultUri = UCrop.getOutput(data);
+                if (resultUri != null) {
+                    handleCroppedImage(resultUri);
+                } else {
+                    Toast.makeText(this, "Failed to retrieve cropped image", Toast.LENGTH_SHORT).show();
+                }
+            } else if (resultCode == UCrop.RESULT_ERROR && data != null) {
+                Throwable cropError = UCrop.getError(data);
+                Toast.makeText(this, "Crop error: " + (cropError != null ? cropError.getMessage() : "Unknown"), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void handleCroppedImage(Uri imageUri) {
+        SamsaraUser currentUser = authManager.getCurrentUser();
+        if (currentUser == null || currentUser.getId() == null) {
+            Toast.makeText(this, "User session invalid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(this, "Processing image...", Toast.LENGTH_SHORT).show();
+        new Thread(() -> {
+            byte[] imageData = ImageUtils.processImageFromUri(this, imageUri);
+            if (imageData == null) {
+                runOnUiThread(() -> Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show());
+                return;
+            }
+            if (!ImageUtils.isValidImageSize(imageData)) {
+                runOnUiThread(() -> Toast.makeText(this, "Image size must be less than 5MB", Toast.LENGTH_SHORT).show());
+                return;
+            }
+            runOnUiThread(() -> Toast.makeText(this, "Uploading image...", Toast.LENGTH_SHORT).show());
+            userRepository.uploadProfilePicture(currentUser.getId(), imageData)
+                .thenCompose(filename -> {
+                    if (filename != null && filename.matches("\\d+_\\d+\\.jpg")) {
+                        return userRepository.updateUserProfilePicture(currentUser.getId(), filename)
+                            .thenApply(success -> (success != null && success) ? filename : null);
+                    }
+                    return java.util.concurrent.CompletableFuture.completedFuture(null);
+                })
+                .thenAccept(filename -> runOnUiThread(() -> {
+                    if (filename != null && !filename.isEmpty()) {
+                        currentUser.setProfilePictureUrl(filename);
+                        authManager.loginUser(currentUser);
+                        loadProfilePicture(filename);
+                        Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Failed to update profile picture", Toast.LENGTH_SHORT).show();
+                    }
+                }))
+                .exceptionally(throwable -> {
+                    Log.e(TAG, "Error updating profile picture", throwable);
+                    runOnUiThread(() -> Toast.makeText(this, "Error: " + throwable.getMessage(), Toast.LENGTH_LONG).show());
+                    return null;
+                });
+        }).start();
     }
 
     @Override
@@ -343,68 +393,45 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
             return;
         }
 
-        SamsaraUser currentUser = authManager.getCurrentUser();
-        if (currentUser == null) {
-            Toast.makeText(this, "User session expired", Toast.LENGTH_SHORT).show();
+        if (imageUri == null) {
+            Toast.makeText(this, "Invalid image selected", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Toast.makeText(this, "Processing image...", Toast.LENGTH_SHORT).show();
+        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "profile_crop_" + System.currentTimeMillis() + ".jpg"));
 
-        new Thread(() -> {
-            if (imageUri == null) {
-                Log.e(TAG, "Image URI is null");
-                runOnUiThread(() -> Toast.makeText(this, "Invalid image selected", Toast.LENGTH_SHORT).show());
-                return;
+        int targetPx;
+        try {
+            float density = getResources().getDisplayMetrics().density;
+            int basePx = (int) (182f * density);
+            int viewMin = 0;
+            if (profilePictureView != null) {
+                int w = profilePictureView.getWidth();
+                int h = profilePictureView.getHeight();
+                if (w > 0 && h > 0) viewMin = Math.min(w, h);
             }
-            
-            if (currentUser == null || currentUser.getId() == null) {
-                Log.e(TAG, "Current user or user ID is null");
-                runOnUiThread(() -> Toast.makeText(this, "User session invalid", Toast.LENGTH_SHORT).show());
-                return;
-            }
-            
-            byte[] imageData = ImageUtils.processImageFromUri(this, imageUri);
-            
-            if (imageData == null) {
-                runOnUiThread(() -> Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show());
-                return;
-            }
-            
-            if (!ImageUtils.isValidImageSize(imageData)) {
-                runOnUiThread(() -> Toast.makeText(this, "Image size must be less than 5MB", Toast.LENGTH_SHORT).show());
-                return;
-            }
+            int ref = (viewMin > 0) ? viewMin : basePx;
+            targetPx = Math.max(64, Math.min(2048, (int) (ref * 0.75f)));
+        } catch (Exception e) {
+            targetPx = 384; // 512 * 0.75 fallback
+        }
 
-            Log.d(TAG, "✓ Image processing and validation successful, starting upload...");
-            runOnUiThread(() -> Toast.makeText(this, "Uploading image...", Toast.LENGTH_SHORT).show());
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionQuality(85);
+        options.setCircleDimmedLayer(true);
+        options.setShowCropFrame(false);
+        options.setShowCropGrid(false);
+        try {
+            float density = getResources().getDisplayMetrics().density;
+            int inset = (int) (density * 10f);
+            if (targetPx > inset * 2) targetPx = targetPx - (inset * 2);
+        } catch (Exception ignored) { }
 
-            userRepository.uploadProfilePicture(currentUser.getId(), imageData)
-                .thenCompose(filename -> {
-                    if (filename != null && filename.matches("\\d+_\\d+\\.jpg")) {
-                        return userRepository.updateUserProfilePicture(currentUser.getId(), filename)
-                            .thenApply(success -> (success != null && success) ? filename : null);
-                    }
-                    return java.util.concurrent.CompletableFuture.completedFuture(null);
-                })
-                .thenAccept(filename -> {
-                    runOnUiThread(() -> {
-                        if (filename != null && !filename.isEmpty()) {
-                            currentUser.setProfilePictureUrl(filename);
-                            authManager.loginUser(currentUser);
-                            loadProfilePicture(filename);
-                            Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(this, "Failed to update profile picture", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                })
-                .exceptionally(throwable -> {
-                    Log.e(TAG, "Error updating profile picture", throwable);
-                    runOnUiThread(() -> Toast.makeText(this, "Error: " + throwable.getMessage(), Toast.LENGTH_LONG).show());
-                    return null;
-                });
-        }).start();
+        UCrop.of(imageUri, destinationUri)
+            .withAspectRatio(1, 1)
+            .withMaxResultSize(targetPx, targetPx)
+            .withOptions(options)
+            .start(this);
     }
 
     @Override

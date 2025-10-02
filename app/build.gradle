@@ -40,6 +40,9 @@ android {
         // Image loading library
         implementation "com.squareup.picasso:picasso:2.8"
 
+    // Interactive image cropper
+    implementation 'com.github.yalantis:ucrop:2.2.8'
+
         implementation project(":terminal-view")
         implementation project(":termux-shared")
     }
