@@ -310,43 +310,6 @@
         app:layout_constraintStart_toStartOf="@+id/documentationBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvDocs" />
 
-    <ImageButton
-        android:id="@+id/terminalBtn2"
-        android:layout_width="@dimen/padding_na"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="@dimen/padding_xl"
-        android:backgroundTint="#00FFFFFF"
-        android:scaleType="fitXY"
-        android:src="@drawable/home_8"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/documentationBtn" />
-
-    <TextView
-        android:id="@+id/tvEnvironment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_xxl"
-        android:text="Environment Ready"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
-        app:layout_constraintStart_toStartOf="@+id/terminalBtn2"
-        app:layout_constraintTop_toTopOf="@+id/terminalBtn2" />
-
-    <TextView
-        android:id="@+id/tvInitialize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_sm"
-        android:text="Tap terminal to initialize"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/tvEnvironment" />
-
     <!-- Navbar Include -->
 
     <include

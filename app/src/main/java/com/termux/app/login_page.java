@@ -15,7 +15,6 @@ import com.termux.R;
 import com.termux.app.database.SupabaseConfig;
 import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.managers.AuthManager;
-import java.util.concurrent.CompletableFuture;
 
 public class login_page extends Activity {
     private static final String TAG = "LoginPage";
@@ -44,12 +43,16 @@ public class login_page extends Activity {
 
     private void initializeViews() {
         TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
-        tvForgotPassword.setText(Html.fromHtml(tvForgotPassword.getText().toString()));
+        if (tvForgotPassword != null) {
+            tvForgotPassword.setText(Html.fromHtml(tvForgotPassword.getText().toString()));
+        }
 
-        TextView tvSignUp2 = findViewById(R.id.tvSignUp2);
-        tvSignUp2.setText(Html.fromHtml(tvSignUp2.getText().toString()));
+        TextView tvRegister2 = findViewById(R.id.tvRegister2);
+        if (tvRegister2 != null) {
+            tvRegister2.setText(Html.fromHtml(tvRegister2.getText().toString()));
+        }
 
-        emailUsernameBox = findViewById(R.id.UsernameBox);
+        emailUsernameBox = findViewById(R.id.EmailUsernameBox);
         passwordBox = findViewById(R.id.PasswordBox);
     }
 
@@ -103,7 +106,7 @@ public class login_page extends Activity {
                     }
                 } else {
                     Log.d(TAG, "Authentication failed");
-                    CompletableFuture<com.termux.app.database.models.SamsaraUser> future = new CompletableFuture<>();
+                    java.util.concurrent.CompletableFuture<com.termux.app.database.models.SamsaraUser> future = new java.util.concurrent.CompletableFuture<>();
                     future.complete(null);
                     return future;
                 }

@@ -94,7 +94,7 @@
         android:layout_marginStart="@dimen/padding_na"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="@dimen/padding_na"
-        android:text="Sign in or create an account "
+        android:text="Login or create an account "
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -128,10 +128,10 @@
         app:layout_constraintBottom_toBottomOf="@+id/SignUpView" />
 
     <TextView
-        android:id="@+id/tvSignUp"
+        android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="Register"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/SignUpView"
         app:layout_constraintEnd_toEndOf="@+id/guideline_end"
@@ -141,10 +141,10 @@
         app:layout_constraintVertical_bias="0.512" />
 
     <TextView
-        android:id="@+id/tvSignIn"
+        android:id="@+id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign In"
+        android:text="Login"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/SignInBtn"
         app:layout_constraintEnd_toEndOf="@+id/SignInBtn"
@@ -161,6 +161,7 @@
         android:paddingLeft="15dp"
         android:scaleType="fitXY"
         android:textColorHint="#a2a2a2"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/SignUpView" />
@@ -176,6 +177,7 @@
         android:inputType="textEmailAddress"
         android:paddingLeft="15dp"
         android:textColorHint="#a2a2a2"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/UsernameBox" />
@@ -191,6 +193,7 @@
         android:inputType="textPassword"
         android:paddingLeft="15dp"
         android:textColorHint="#a2a2a2"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/EmailPhoneBox" />
@@ -206,6 +209,7 @@
         android:inputType="textPassword"
         android:paddingLeft="15dp"
         android:textColorHint="#a2a2a2"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/PasswordBox" />
@@ -262,7 +266,7 @@
         android:id="@+id/tvSignUpGithub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up with github"
+        android:text="Register with github"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/SignInGithubBtn"
         app:layout_constraintEnd_toEndOf="@+id/SignInGithubBtn"
@@ -301,15 +305,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Sign In"
+        android:text="Login"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/SignInBtn2"
         app:layout_constraintEnd_toEndOf="@+id/SignInBtn2"
-        app:layout_constraintHorizontal_bias="0.962"
+        app:layout_constraintHorizontal_bias="0.950"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/SignInGithubBtn"
-        app:layout_constraintVertical_bias="0.714" />
+        app:layout_constraintVertical_bias="0.571" />
 
     <TextView
         android:id="@+id/tvAlreadyHaveAnAccount"

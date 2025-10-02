@@ -96,7 +96,7 @@
         android:layout_marginStart="@dimen/padding_na"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="@dimen/padding_na"
-        android:text="Sign in or create an account"
+        android:text="Login or create an account"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -117,10 +117,10 @@
         app:layout_constraintTop_toBottomOf="@id/tvSignInCreateAccount" />
 
     <TextView
-        android:id="@+id/tvSignIn3"
+        android:id="@+id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign in"
+        android:text="Login"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/SignUpView"
         app:layout_constraintEnd_toEndOf="@+id/guideline_middle"
@@ -142,10 +142,10 @@
         app:layout_constraintTop_toTopOf="@+id/SignUpView" />
 
     <TextView
-        android:id="@+id/tvSignUp"
+        android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="Register"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/SignUpBtn"
         app:layout_constraintEnd_toEndOf="@+id/SignUpBtn"
@@ -153,7 +153,7 @@
         app:layout_constraintTop_toTopOf="@+id/SignUpBtn" />
 
     <EditText
-        android:id="@+id/UsernameBox"
+        android:id="@+id/EmailUsernameBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -162,6 +162,7 @@
         android:inputType="textEmailAddress"
         android:paddingLeft="15dp"
         android:textColorHint="#a2a2a2"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -179,9 +180,10 @@
         android:paddingLeft="15dp"
         android:scaleType="fitXY"
         android:textColorHint="#a2a2a2"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/UsernameBox" />
+        app:layout_constraintTop_toBottomOf="@+id/EmailUsernameBox" />
 
     <ImageButton
         android:id="@+id/LoginBiometricsBtn"
@@ -254,10 +256,10 @@
         app:layout_constraintTop_toBottomOf="@id/checkBox" />
 
     <TextView
-        android:id="@+id/tvSignIn2"
+        android:id="@+id/tvLogin2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SIGN IN "
+        android:text="Login"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/SignInBtn"
         app:layout_constraintEnd_toEndOf="@+id/SignInBtn"
@@ -275,7 +277,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSignIn2" />
+        app:layout_constraintTop_toBottomOf="@+id/tvLogin2" />
 
     <TextView
         android:id="@+id/tvForgotPassword"
@@ -302,18 +304,6 @@
         app:layout_constraintVertical_bias="0.700"
         android:src="@drawable/line_2" />
 
-    <ImageView
-        android:id="@+id/Line"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/line_1"
-        app:layout_constraintBottom_toBottomOf="@+id/SignupBtn2"
-        app:layout_constraintEnd_toEndOf="@+id/SignupBtn2"
-        app:layout_constraintHorizontal_bias="0.732"
-        app:layout_constraintStart_toStartOf="@+id/guideline_middle"
-        app:layout_constraintTop_toTopOf="@+id/SignupBtn2"
-        app:layout_constraintVertical_bias="0.9" />
-
     <Button
         android:id="@+id/SignupBtn2"
         android:layout_width="86dp"
@@ -327,10 +317,10 @@
         app:layout_constraintTop_toBottomOf="@+id/SignInBtn" />
 
     <TextView
-        android:id="@+id/tvSignUp2"
+        android:id="@+id/tvRegister2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="Register"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/SignupBtn2"
@@ -339,6 +329,19 @@
         app:layout_constraintStart_toStartOf="@+id/guideline_middle"
         app:layout_constraintTop_toTopOf="@+id/SignupBtn2"
         app:layout_constraintVertical_bias="0.615" />
+
+
+    <ImageView
+        android:id="@+id/Line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/line_1"
+        app:layout_constraintBottom_toBottomOf="@+id/SignupBtn2"
+        app:layout_constraintEnd_toEndOf="@+id/SignupBtn2"
+        app:layout_constraintHorizontal_bias="0.70"
+        app:layout_constraintStart_toStartOf="@+id/guideline_middle"
+        app:layout_constraintTop_toTopOf="@+id/SignupBtn2"
+        app:layout_constraintVertical_bias="0.9" />
 
     <TextView
         android:id="@+id/tvNoAccount"
@@ -363,7 +366,7 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/tvSignUp2" />
+        app:layout_constraintTop_toBottomOf="@+id/tvRegister2" />
 
     <TextView
         android:id="@+id/tvContinueWithoutAccount"

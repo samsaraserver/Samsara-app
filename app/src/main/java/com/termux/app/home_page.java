@@ -54,14 +54,5 @@ public class home_page extends Activity {
             startActivity(intent);
             finish();
         });
-
-        ImageButton terminalbutton = findViewById(R.id.terminalBtn2);
-
-        terminalbutton.setOnClickListener(view -> {
-            Intent intent = new Intent(home_page.this, TermuxActivity.class);
-            SamsaraIntents.putEnv(intent, SamsaraIntents.ENV_TERMUX);
-            startActivity(intent);
-            finish();
-        });
     }
 }
