@@ -42,6 +42,21 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
+    <!-- Add guidelines for vertical centering -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.98" />
+
     <ImageView
         android:id="@+id/TopBar"
         android:layout_width="0dp"
@@ -50,7 +65,7 @@
         android:src="@drawable/top_bar_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/guideline_vertical_top" />
 
     <ImageView
         android:id="@+id/SamsaraLogo"
@@ -197,21 +212,21 @@
         app:layout_constraintEnd_toEndOf="@+id/monitorBtn"
         app:layout_constraintTop_toTopOf="@+id/monitorBtn" />
 
+
     <TextView
         android:id="@+id/tvMonitor2"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lg"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/padding_lg"
         android:text="CPU, memory, network and temperature stats"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/monitorBtn"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/monitorBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvMonitor" />
-
 
     <ImageButton
         android:id="@+id/configurationBtn"
@@ -230,7 +245,7 @@
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="30dp"
         android:text="Configuration"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/configurationBtn"
@@ -240,14 +255,14 @@
         android:id="@+id/tvConfig2"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lg"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/padding_lg"
         android:text="View and manage your server settings"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/configurationBtn"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/configurationBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvConfig" />
 
@@ -268,8 +283,8 @@
         android:id="@+id/tvProject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="44dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="55dp"
         android:text="Projects"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/ProjectBtn"
@@ -279,14 +294,14 @@
         android:id="@+id/tvProject2"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lg"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/padding_lg"
         android:text="Install or manage community server packages"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/ProjectBtn"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/ProjectBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvProject" />
 
@@ -303,11 +318,13 @@
         app:layout_constraintStart_toEndOf="@+id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@+id/configurationBtn" />
 
+    <!-- Navbar Include -->
+
     <TextView
         android:id="@+id/tvDocs"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="20dp"
         android:text="Documentation"
         android:textColor="#FFFFFF"
@@ -318,25 +335,23 @@
         android:id="@+id/tvDocs2"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lg"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/padding_lg"
         android:text="Access guides and forms"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/documentationBtn"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/documentationBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvDocs" />
-
-    <!-- Navbar Include -->
 
     <include
         android:id="@+id/navbar_include"
         layout="@layout/navbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_vertical_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

@@ -177,9 +177,9 @@
 
     <ImageButton
         android:id="@+id/LoginBiometricsBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_width="194dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="Biometrics login"
         android:src="@drawable/login_4"
@@ -194,21 +194,21 @@
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/LoginBiometricsBtn"
         app:layout_constraintEnd_toStartOf="@+id/LoginGithubGtn"
-        app:layout_constraintHorizontal_bias="0.857"
+        app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="@+id/guideline_start"
         app:layout_constraintTop_toTopOf="@+id/LoginBiometricsBtn"
-        app:layout_constraintVertical_bias="0.488" />
+        app:layout_constraintVertical_bias="0.487" />
 
     <ImageButton
         android:id="@+id/LoginGithubGtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_width="190dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="17dp"
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="Login with GitHub"
         android:src="@drawable/login_4"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@id/PasswordBox" />
 

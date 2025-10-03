@@ -47,14 +47,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.08" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7" />
+        app:layout_constraintGuide_percent="0.85" />
 
     <ImageView
         android:id="@+id/TopBar"
@@ -78,22 +78,23 @@
         android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="30dp"
         android:text="System Monitor"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
         app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
-        app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
-        android:layout_marginStart="@dimen/padding_md"
-        android:layout_marginTop="@dimen/padding_xl" />
+        app:layout_constraintTop_toTopOf="@id/SamsaraLogo" />
 
     <ImageView
         android:id="@+id/DiskMonitoringPanel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
         android:scaleType="fitXY"
-        android:layout_marginTop="@dimen/padding_md"
         android:src="@drawable/monitor_1"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/TopBar" />
 
@@ -169,10 +170,11 @@
         android:id="@+id/ProcessMonitoringPanel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:scaleType="fitXY"
-        android:layout_marginTop="@dimen/padding_md"
         android:src="@drawable/monitor_3"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/DiskMonitoringPanel" />
 
@@ -312,10 +314,11 @@
         android:id="@+id/NetworkActivityPanel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:scaleType="fitXY"
-        android:layout_marginTop="@dimen/padding_md"
         android:src="@drawable/monitor_4"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/ProcessMonitoringPanel" />
 
@@ -328,8 +331,7 @@
         android:layout_marginStart="@dimen/padding_md"
         android:layout_marginTop="@dimen/padding_sm"
         app:layout_constraintStart_toStartOf="@id/NetworkActivityPanel"
-        app:layout_constraintTop_toTopOf="@id/NetworkActivityPanel"
-        />
+        app:layout_constraintTop_toTopOf="@id/NetworkActivityPanel" />
 
     <ImageView
         android:id="@+id/Line3"
