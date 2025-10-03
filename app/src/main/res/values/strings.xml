@@ -339,5 +339,6 @@
     <string name="login_or_create_an_account">Login or create an account</string>
     <string name="email_or_username">Email or Username</string>
     <string name="email_address">Email Address</string>
+    <string name="forgot_password">Forgot Password</string>
 
 </resources>

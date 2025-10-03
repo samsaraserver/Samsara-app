@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.03" />
+        app:layout_constraintGuide_percent="0.0" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_end"
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.53" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
@@ -116,7 +116,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvSignInOrCreateAccount" />
 
     <ImageButton
-        android:id="@+id/SignInBtn"
+        android:id="@+id/LoginBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:backgroundTint="#00FFFFFF"
@@ -146,10 +146,10 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/SignInBtn"
-        app:layout_constraintEnd_toEndOf="@+id/SignInBtn"
-        app:layout_constraintStart_toStartOf="@+id/SignInBtn"
-        app:layout_constraintTop_toTopOf="@+id/SignInBtn" />
+        app:layout_constraintBottom_toBottomOf="@+id/LoginBtn"
+        app:layout_constraintEnd_toEndOf="@+id/LoginBtn"
+        app:layout_constraintStart_toStartOf="@+id/LoginBtn"
+        app:layout_constraintTop_toTopOf="@+id/LoginBtn" />
 
     <EditText
         android:id="@+id/UsernameBox"
@@ -255,7 +255,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_sm"
-        android:layout_marginBottom="@dimen/padding_lg"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/login_5"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -273,57 +272,41 @@
         app:layout_constraintStart_toStartOf="@+id/SignInGithubBtn"
         app:layout_constraintTop_toTopOf="@+id/SignInGithubBtn" />
 
-
-    <ImageView
-        android:id="@+id/Line"
+    <ImageButton
+        android:id="@+id/LoginBtn2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/line_1"
-        app:layout_constraintBottom_toBottomOf="@+id/SignInBtn2"
-        app:layout_constraintEnd_toEndOf="@+id/SignInBtn2"
-        app:layout_constraintHorizontal_bias="0.454"
-        app:layout_constraintStart_toStartOf="@+id/SignInBtn2"
-        app:layout_constraintTop_toTopOf="@+id/SignInBtn2"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/SignInBtn2"
-        android:layout_width="61dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="64dp"
-        android:background="@android:color/transparent"
-        android:visibility="visible"
+        android:layout_marginTop="150dp"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/line_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tvAlreadyHaveAnAccount"
-        app:layout_constraintTop_toBottomOf="@+id/SignInGithubBtn"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintHorizontal_bias="0.723"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.789" />
 
     <TextView
-        android:id="@+id/tvSignUp2"
+        android:id="@+id/tvLogin2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="Login"
         android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/SignInBtn2"
-        app:layout_constraintEnd_toEndOf="@+id/SignInBtn2"
-        app:layout_constraintHorizontal_bias="0.950"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/SignInGithubBtn"
-        app:layout_constraintVertical_bias="0.571" />
+        app:layout_constraintBottom_toBottomOf="@+id/LoginBtn2"
+        app:layout_constraintEnd_toEndOf="@+id/LoginBtn2"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="@+id/LoginBtn2"
+        app:layout_constraintTop_toTopOf="@+id/LoginBtn2" />
 
     <TextView
         android:id="@+id/tvAlreadyHaveAnAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:text="Already have an account?"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.377"
+        app:layout_constraintHorizontal_bias="0.390"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/SignInGithubBtn" />
 

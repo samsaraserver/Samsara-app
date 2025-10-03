@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -101,11 +102,18 @@ public class login_page extends Activity {
     }
 
     private void setupClickListeners() {
-        ImageButton signUpButton = findViewById(R.id.SignUpBtn);
+        ImageButton RegisterButton = findViewById(R.id.RegisterBtn);
         Intent registerIntent = new Intent(login_page.this, register_page.class);
-        signUpButton.setOnClickListener(view -> {
+        RegisterButton.setOnClickListener(view -> {
             startActivity(registerIntent);
             finish();
+        });
+
+        ImageButton Register2Button = findViewById(R.id. RegisterBtn2);
+        Intent registerIntent2 = new Intent(login_page.this, register_page.class);
+        Register2Button.setOnClickListener(view -> {
+                startActivity(registerIntent2);
+                finish();
         });
 
         ImageButton loginButton = findViewById(R.id.SignInBtn);

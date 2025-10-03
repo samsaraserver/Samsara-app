@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -48,9 +49,6 @@ public class register_page extends Activity {
     }
 
     private void initializeViews() {
-        TextView tvSignUp2 = findViewById(R.id.tvSignUp2);
-        tvSignUp2.setText(Html.fromHtml(tvSignUp2.getText().toString()));
-
 
         usernameBox = findViewById(R.id.UsernameBox);
         emailBox = findViewById(R.id.EmailPhoneBox);
@@ -59,8 +57,8 @@ public class register_page extends Activity {
     }
 
     private void setupClickListeners() {
-        ImageButton backButton = findViewById(R.id.SignInBtn);
-        backButton.setOnClickListener(view -> {
+        ImageButton LoginButton = findViewById(R.id.LoginBtn);
+        LoginButton.setOnClickListener(view -> {
             Intent intent = new Intent(register_page.this, login_page.class);
             startActivity(intent);
             finish();
@@ -69,6 +67,13 @@ public class register_page extends Activity {
         ImageButton createAccountButton = findViewById(R.id.CreateAccountBtn);
         createAccountButton.setOnClickListener(view -> {
             handleCreateAccount();
+        });
+
+        ImageButton LoginButton2 = findViewById(R.id.LoginBtn2);
+        LoginButton2.setOnClickListener(view -> {
+            Intent intent = new Intent(register_page.this, login_page.class);
+            startActivity(intent);
+            finish();
         });
 
         ImageButton githubButton = findViewById(R.id.SignInGithubBtn);
