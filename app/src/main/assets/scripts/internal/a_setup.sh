@@ -60,6 +60,7 @@ setup_ssh() {
     info "Configuring SSH server"
     CFG=/etc/ssh/sshd_config
     mkdir -p /etc/ssh
+    install -d -o root -g root -m 0755 /var/empty 2>/dev/null || true
     if [ -f /etc/ssh/sshd_config ]; then
         cp /etc/ssh/sshd_config "/etc/ssh/sshd_config.bak.$(date +%Y%m%d_%H%M%S)" 2>/dev/null || true
     fi
@@ -145,12 +146,53 @@ start_sshd() {
     if command -v rc-update >/dev/null 2>&1 && command -v rc-service >/dev/null 2>&1; then
         rc-update add sshd default >/dev/null 2>&1 || true
         if [ -f /etc/conf.d/sshd ]; then
-            if grep -q '^SSHD_OPTS=' /etc/conf.d/sshd 2>/dev/null; then
-                sed -i "s#^SSHD_OPTS=.*#SSHD_OPTS='-p $PORT'#" /etc/conf.d/sshd || true
+            if grep -q '^command_args=' /etc/conf.d/sshd 2>/dev/null; then
+                sed -i "s#^command_args=.*#command_args='-f /etc/ssh/sshd_config -p $PORT -E /var/log/sshd.log'#" /etc/conf.d/sshd || true
             else
-                echo "SSHD_OPTS='-p $PORT'" >> /etc/conf.d/sshd
+                sed -i '/^SSHD_OPTS=/d' /etc/conf.d/sshd 2>/dev/null || true
+                printf "command_args='-f /etc/ssh/sshd_config -p %s -E /var/log/sshd.log'\n" "$PORT" >> /etc/conf.d/sshd
             fi
+        else
+            printf "command_args='-f /etc/ssh/sshd_config -p %s -E /var/log/sshd.log'\n" "$PORT" > /etc/conf.d/sshd
         fi
+        rc-update add local default >/dev/null 2>&1 || true
+        mkdir -p /etc/local.d 2>/dev/null || true
+        cat > /etc/local.d/samsara.start <<'EOS'
+#!/bin/sh
+# #COMPLETION_DRIVE: Ensure sshd is running at runlevel start
+# #SUGGEST_VERIFY: rc-service sshd status returns started after login
+tries=0
+while [ $tries -lt 3 ]; do
+    if command -v ss >/dev/null 2>&1; then
+        ss -ltn 2>/dev/null | awk '{print $4}' | grep -E '(:|^)222$' -q && exit 0
+    fi
+    if command -v rc-service >/dev/null 2>&1; then
+        rc-service sshd status >/dev/null 2>&1 || rc-service sshd start >/dev/null 2>&1 || true
+    fi
+    sleep 1
+    tries=$((tries+1))
+done
+if ! ss -ltn 2>/dev/null | awk '{print $4}' | grep -E '(:|^)222$' -q; then
+    nohup /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config -p 222 -o StrictModes=no -o PasswordAuthentication=yes >>/var/log/samsara-sshd.log 2>&1 &
+fi
+EOS
+        chmod 0755 /etc/local.d/samsara.start 2>/dev/null || true
+        mkdir -p /etc/profile.d /run/samsara 2>/dev/null || true
+        cat > /etc/profile.d/samsara_openrc.sh <<'EOS'
+# #COMPLETION_DRIVE: Start OpenRC default runlevel on interactive login under proot
+# #SUGGEST_VERIFY: After new login, rc-status shows services in default runlevel
+if [ -z "$SAMSARA_OPENRC_BOOTED" ]; then
+    export SAMSARA_OPENRC_BOOTED=1
+    if command -v openrc >/dev/null 2>&1; then
+        mkdir -p /run/openrc 2>/dev/null || true
+        [ -f /run/openrc/softlevel ] || echo default > /run/openrc/softlevel 2>/dev/null || true
+        openrc default >/dev/null 2>&1 || true
+    fi
+    if command -v rc-service >/dev/null 2>&1; then
+        rc-service sshd status >/dev/null 2>&1 || rc-service sshd start >/dev/null 2>&1 || true
+    fi
+fi
+EOS
         rc-service sshd restart >/dev/null 2>&1 || rc-service sshd start >/dev/null 2>&1 || true
         sleep 1
         if is_port_listening "$PORT"; then
@@ -159,8 +201,7 @@ start_sshd() {
         info "OpenRC start failed, falling back to direct sshd"
     fi
 
-    if PROOT_NO_SECCOMP=1 /usr/sbin/sshd -e -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes >/dev/null 2>&1 || \
-       /usr/sbin/sshd -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes >/dev/null 2>&1; then
+    if nohup env PROOT_NO_SECCOMP=1 /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes >>/var/log/samsara-sshd.log 2>&1 & then
         sleep 1
         is_port_listening "$PORT" && return 0
         fail "SSH server not listening on port $PORT"
@@ -173,6 +214,37 @@ ensure_config_dir() {
     # #COMPLETION_DRIVE: Ensure config directory exists and do not overwrite user config
     # #SUGGEST_VERIFY: Check /root/.config/samsara after setup
     mkdir -p /root/.config/samsara || true
+}
+
+install_samsara_init() {
+    cat > /usr/local/bin/samsara-init <<'EOS'
+#!/bin/sh
+set -e
+# #COMPLETION_DRIVE: Ensure baseline services are running on every Alpine session without requiring full OpenRC boot
+# #SUGGEST_VERIFY: After login, ss -ltn | grep :222 shows sshd listening; rc-service sshd status returns started if OpenRC available
+
+PORT=222
+
+if command -v openrc >/dev/null 2>&1; then
+    mkdir -p /run/openrc 2>/dev/null || true
+    [ -f /run/openrc/softlevel ] || echo default > /run/openrc/softlevel 2>/dev/null || true
+    openrc default >/dev/null 2>&1 || true
+fi
+
+if command -v rc-service >/dev/null 2>&1; then
+    rc-service sshd status >/dev/null 2>&1 || rc-service sshd start >/dev/null 2>&1 || true
+fi
+
+if command -v ss >/dev/null 2>&1; then
+    if ! ss -ltn 2>/dev/null | awk '{print $4}' | grep -E "(:|^)${PORT}$" -q; then
+        nohup /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes >>/var/log/samsara-sshd.log 2>&1 &
+        sleep 1
+    fi
+fi
+
+exec /bin/sh -l
+EOS
+    chmod 0755 /usr/local/bin/samsara-init || true
 }
 
 summary() {
@@ -192,6 +264,7 @@ main() {
     setup_ssh
     start_sshd
     ensure_config_dir
+    install_samsara_init
     info "Alpine setup complete"
     summary
 }

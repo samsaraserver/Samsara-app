@@ -13,4 +13,4 @@ if [ ! -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
     exec /bin/sh -l
 fi
 
-exec proot-distro login alpine -- /bin/sh -l
+exec proot-distro login alpine -- /usr/local/bin/samsara-init

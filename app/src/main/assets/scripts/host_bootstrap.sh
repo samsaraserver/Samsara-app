@@ -379,7 +379,6 @@ setup_alpine() {
         if proot-distro list 2>/dev/null | grep -E '^alpine\b' >/dev/null 2>&1; then
             alpine_installed=1
         else
-            # Probe by attempting a no-op login
             if proot-distro login alpine -- true >/dev/null 2>&1; then
                 alpine_installed=1
             fi
@@ -397,7 +396,6 @@ setup_alpine() {
 
         debug_log "Running proot-distro install alpine"
         if proot-distro install alpine; then
-            # Verify with list or login instead of path-only checks
             if proot-distro list 2>/dev/null | grep -E '^alpine\b' >/dev/null 2>&1 || \
                proot-distro login alpine -- true >/dev/null 2>&1; then
                 task_success "Alpine Linux installed"
