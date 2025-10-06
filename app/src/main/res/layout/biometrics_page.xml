@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7" />
+        app:layout_constraintGuide_begin="550dp" />
 
     <!--text-->
 
@@ -116,11 +116,22 @@
         android:id="@+id/BiometricsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/biometrics_3"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start" />
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom" />
+
+    <ImageButton
+        android:id="@+id/CancelBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="68dp"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/biometrics_3"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom" />
 
     <TextView
         android:id="@+id/tvGetStarted"
@@ -141,5 +152,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/CancelBtn"
+        app:layout_constraintEnd_toEndOf="@+id/CancelBtn"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="@+id/CancelBtn"
+        app:layout_constraintTop_toBottomOf="@+id/BiometricsBtn"
+        app:layout_constraintVertical_bias="0.53" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
