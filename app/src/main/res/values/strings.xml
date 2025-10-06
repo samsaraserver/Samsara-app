@@ -340,5 +340,6 @@
     <string name="email_or_username">Email or Username</string>
     <string name="email_address">Email Address</string>
     <string name="forgot_password">Forgot Password</string>
+    <string name="press_the_show_ip_button">Press the Show IP button</string>
 
 </resources>
