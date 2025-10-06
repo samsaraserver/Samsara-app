@@ -142,3 +142,4 @@ public class biometrics_page extends FragmentActivity {
             .show();
     }
 }
+
