@@ -364,6 +364,52 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         }
     }
 
+    private void createTermuxSession() {
+        TermuxService service = getTermuxService();
+        if (service == null) {
+            Logger.logError(LOG_TAG, "TermuxService is null, cannot create Termux session");
+            Toast.makeText(this, "Service not available - restart app", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // #COMPLETION_DRIVE: Ensure required scripts are extracted and t_start is executed for Termux startup
+        // #SUGGEST_VERIFY: Confirm $HOME/scripts/t_start.sh exists in session and prints the hint
+        String setupScript =
+            "set -e ; " +
+            "echo '[*] SamsaraServer Termux Startup' ; " +
+            "mkdir -p \"$HOME/scripts\" || { echo '[!] Failed to create scripts directory'; exit 1; } ; " +
+            // Extract startup and setup assets for Termux
+            extractAssetsScript("scripts/t_start.sh") +
+            extractAssetsScript("scripts/t_setup.sh") +
+            extractAssetsScript("scripts/internal/samsara_dashboard.html") +
+            extractAssetsScript("settings/samsara_config.json") +
+            // Validate presence
+            "[ -f \"$HOME/scripts/t_start.sh\" ] || { echo '[!] t_start.sh missing'; exit 1; } ; " +
+            "chmod +x \"$HOME/scripts/t_start.sh\" || true ; " +
+            // Hand off to t_start
+            "exec /bin/sh \"$HOME/scripts/t_start.sh\"";
+
+        String workingDirectory = getProperties().getDefaultWorkingDirectory();
+        String[] arguments = {"-c", setupScript};
+
+        Logger.logInfo(LOG_TAG, "Creating Termux session with t_start; cwd: " + workingDirectory);
+        TermuxSession newTermuxSession = service.createTermuxSession("/system/bin/sh", arguments, null, workingDirectory, false, "Termux");
+        if (newTermuxSession == null) {
+            Logger.logError(LOG_TAG, "Failed to create TermuxSession for Termux startup");
+            Toast.makeText(this, "Failed to start Termux session", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
+        if (newTerminalSession == null) {
+            Logger.logError(LOG_TAG, "TerminalSession is null for Termux startup");
+            Toast.makeText(this, "Terminal session failed to initialize", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mTermuxTerminalSessionActivityClient.setCurrentSession(newTerminalSession);
+        getDrawer().closeDrawers();
+    }
     @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         Logger.logVerbose(LOG_TAG, "onSaveInstanceState");
@@ -408,7 +454,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                         if (SamsaraIntents.isOpenAlpineAction(intent)) {
                             createAlpineSession();
                         } else if (SamsaraIntents.isOpenTermuxAction(intent)) {
-                            mTermuxTerminalSessionActivityClient.addNewSession(launchFailsafe, null);
+                            createTermuxSession();
                         } else if (SamsaraIntents.ENV_ALPINE.equals(samsaraEnv)) {
                             createAlpineSession();
                         } else {
@@ -435,7 +481,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             if (!mIsActivityRecreated && intent != null && Intent.ACTION_RUN.equals(intent.getAction())) {
                 // Android 7.1 app shortcut from res/xml/shortcuts.xml.
                 boolean isFailSafe = intent.getBooleanExtra(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
-                mTermuxTerminalSessionActivityClient.addNewSession(isFailSafe, null);
+                if (SamsaraIntents.isOpenTermuxAction(intent) || SamsaraIntents.ENV_TERMUX.equals(SamsaraIntents.getEnv(intent))) {
+                    createTermuxSession();
+                } else {
+                    mTermuxTerminalSessionActivityClient.addNewSession(isFailSafe, null);
+                }
             } else {
                 mTermuxTerminalSessionActivityClient.setCurrentSession(mTermuxTerminalSessionActivityClient.getCurrentStoredSessionOrLast());
             }
@@ -1067,13 +1117,21 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             "echo '[*] Timestamp: '$(date) ; " +
             "echo '[*] Preparing scripts and bootstrapper' ; " +
             "mkdir -p \"$HOME/scripts\" || { echo '[!] Failed to create scripts directory'; exit 1; } ; " +
-            // Extract unified in-Alpine setup script
-            extractAssetsScript("scripts/internal/setup") +
+            // Extract Alpine setup script (a_setup.sh)
+            extractAssetsScript("scripts/internal/a_setup.sh") +
+            // Extract Termux setup script for user to run when in Termux mode
+            extractAssetsScript("scripts/t_setup.sh") +
+            // Extract configuration JSON for both environments
+            extractAssetsScript("settings/samsara_config.json") +
+            // Extract dashboard HTML for local hosting in Alpine
+            extractAssetsScript("scripts/internal/samsara_dashboard.html") +
             // Extract host bootstrapper with spinner
             extractAssetsScript("scripts/host_bootstrap.sh") +
-            // Verify both scripts exist before proceeding
-            "[ -f \"$HOME/scripts/setup\" ] || { echo '[!] Setup script missing'; exit 1; } ; " +
+            // Verify scripts exist before proceeding
+            "[ -f \"$HOME/scripts/a_setup.sh\" ] || { echo '[!] Alpine setup script missing'; exit 1; } ; " +
+            "[ -f \"$HOME/scripts/samsara_dashboard.html\" ] || { echo '[!] Dashboard HTML missing'; exit 1; } ; " +
             "[ -f \"$HOME/scripts/host_bootstrap.sh\" ] || { echo '[!] Bootstrap script missing'; exit 1; } ; " +
+            "[ -f \"$HOME/scripts/samsara_config.json\" ] || { echo '[!] Config JSON missing'; } ; " +
             "echo '[*] All scripts extracted successfully' ; " +
             // Run the host-side bootstrapper which hides noise and copies scripts to Alpine
             "echo '[*] Starting host bootstrap process' ; " +
