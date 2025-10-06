@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.text.Html;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import com.termux.R;
 
@@ -18,10 +22,13 @@ public class home_page extends Activity {
 
         NavbarHelper.setupNavbar(this);
 
-        //TextView textViewUnderline = findViewById(R.id.tvIP);
+        TextView textViewUnderline = findViewById(R.id.tvIP2);
+        ImageButton IPButton = findViewById(R.id.ipBtn);
 
-        //String ipAddress = getDeviceIpAddress(); // Implement this method
-        //textViewUnderline.setText(Html.fromHtml("<u>" + ipAddress + "</u>"));
+        IPButton.setOnClickListener(view -> {
+            String ipAddress = getDeviceIpAddress();
+            textViewUnderline.setText(Html.fromHtml("<u>" + ipAddress + "</u>"));
+            });
 
         ImageButton monitorBtn = findViewById(R.id.monitorBtn);
 
@@ -54,5 +61,39 @@ public class home_page extends Activity {
             startActivity(intent);
             finish();
         });
+    }
+
+    // Method to get the device's IP address
+    private String getDeviceIpAddress() {
+        try {
+            // Get all network interfaces
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+
+            // Iterate through all interfaces
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+
+                // Skip loopback and interfaces that are down
+                if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+                    continue;
+                }
+
+                Enumeration<java.net.InetAddress> addresses = networkInterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    java.net.InetAddress addr = addresses.nextElement();
+
+                    // Skip IPv6 addresses and loopback addresses
+                    if (addr.isLoopbackAddress() || addr.getHostAddress().contains(":")) {
+                        continue;
+                    }
+
+                    return addr.getHostAddress();
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        return "IP not available";
     }
 }
