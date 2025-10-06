@@ -84,7 +84,6 @@ public class biometrics_page extends FragmentActivity {
 
         switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
             case BiometricManager.BIOMETRIC_SUCCESS:
-                // Biometric features are available
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
                 showToast("No biometric features available on this device");
