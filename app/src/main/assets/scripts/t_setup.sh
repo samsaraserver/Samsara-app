@@ -78,7 +78,6 @@ ensure_services() {
     sv_enable="${PREFIX}/bin/sv-enable"
     [ -x "$sv_enable" ] || fail "termux-services not installed properly"
     mkdir -p "$SV_DIR"
-    # Enable sshd service (provided by termux-services)
     if [ ! -d "$SV_DIR/sshd" ]; then
         ln -sf "$PREFIX/var/service-available/sshd" "$SV_DIR/sshd" 2>/dev/null || true
     fi
