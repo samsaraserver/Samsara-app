@@ -1,9 +1,11 @@
 package com.termux.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -24,6 +26,7 @@ import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.utils.ImageUtils;
 import com.termux.app.utils.ImagePickerHelper;
 import com.termux.app.utils.CircleTransform;
+import androidx.core.content.ContextCompat;
 
 public class profile_page extends Activity implements ImagePickerHelper.ImagePickerCallback {
     private static final String TAG = "ProfilePage";
@@ -37,6 +40,8 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
     private ImageView profilePictureView;
     private ImagePickerHelper imagePickerHelper;
     private boolean isEditMode = false;
+    private String newPasswordForDisplay = null;
+    private boolean shouldShowPasswordPopup = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +143,8 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
             if (user != null) {
                 usernameBox.setText(user.getUsername() != null ? user.getUsername() : "");
                 emailBox.setText(user.getEmail() != null ? user.getEmail() : "");
+                // Show masked password instead of hash
+                passwordBox.setText(user.getPasswordHash() != null ? "••••••••" : "");
                 String filename = user.getProfilePictureUrl();
                 if (!TextUtils.isEmpty(filename)) {
                     loadProfilePicture(filename);
@@ -185,9 +192,12 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
         
         if (isEditMode) {
             passwordBox.setText("");
-            passwordBox.setHint("Enter new password (optional)");
+            passwordBox.setHint("Enter new password");
             Toast.makeText(this, "Edit mode enabled", Toast.LENGTH_SHORT).show();
         } else {
+            // Reset flags when exiting edit mode
+            newPasswordForDisplay = null;
+            shouldShowPasswordPopup = false;
             loadUserData();
             Toast.makeText(this, "Edit mode disabled", Toast.LENGTH_SHORT).show();
         }
@@ -208,8 +218,22 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
         String email = emailBox.getText().toString().trim();
         String password = passwordBox.getText().toString();
 
+
+        if ("••••••••".equals(password)) {
+            password = "";
+        }
+
         if (!validateInput(username, email, password)) {
             return;
+        }
+
+        // Store the new password for one-time display if it was changed
+        if (!TextUtils.isEmpty(password)) {
+            newPasswordForDisplay = password;
+            shouldShowPasswordPopup = true;
+        } else {
+            newPasswordForDisplay = null;
+            shouldShowPasswordPopup = false;
         }
 
         SamsaraUser currentUser = authManager.getCurrentUser();
@@ -247,6 +271,14 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
                 authManager.loginUser(updatedUser);
 
                 Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+
+
+                if (shouldShowPasswordPopup && newPasswordForDisplay != null) {
+                    showPasswordPopup(newPasswordForDisplay);
+                    newPasswordForDisplay = null;
+                    shouldShowPasswordPopup = false;
+                }
+
                 isEditMode = false;
                 loadUserData();
             } else {
@@ -254,6 +286,25 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
                 setFieldsEnabled(true);
             }
         });
+    }
+
+    private void showPasswordPopup(String password) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("New Password")
+               .setMessage("Your new password is:\n\n" + password +
+                          "\n\nPlease save this password in a secure location. This popup will only appear once.")
+               .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+               .setCancelable(false);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        new Handler().postDelayed(() -> {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            // Auto-dismiss after 10 seconds
+        }, 10000);
     }
 
     private void handleSaveError(Throwable throwable) {
@@ -304,10 +355,12 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
         passwordBox.setEnabled(enabled);
     }
 
+
     private void clearFields() {
         usernameBox.setText("");
         emailBox.setText("");
         passwordBox.setText("");
+
     }
 
     @Override
@@ -315,6 +368,7 @@ public class profile_page extends Activity implements ImagePickerHelper.ImagePic
         super.onResume();
         loadUserData();
         updateSignInOutButton();
+
     }
 
     @Override
