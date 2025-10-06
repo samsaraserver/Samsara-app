@@ -42,6 +42,19 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_home_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.18" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_home_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65" />
+
     <!-- Add guidelines for vertical centering -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_vertical_top"
@@ -94,7 +107,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="132dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="@dimen/padding_na"
         android:scaleType="fitXY"
         android:src="@drawable/home_3"
@@ -190,11 +203,12 @@
 
     <ImageButton
         android:id="@+id/monitorBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
         android:layout_marginTop="8dp"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         android:src="@drawable/home_4"
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
         app:layout_constraintHorizontal_bias="1.0"
@@ -206,10 +220,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="6dp"
         android:text="System Monitor"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/monitorBtn"
+        app:layout_constraintStart_toStartOf="@+id/guideline_home_left"
         app:layout_constraintTop_toTopOf="@+id/monitorBtn" />
 
 
@@ -230,10 +244,11 @@
 
     <ImageButton
         android:id="@+id/configurationBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         android:src="@drawable/home_5"
         app:layout_constraintEnd_toStartOf="@+id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
@@ -245,10 +260,10 @@
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="30dp"
         android:text="Configuration"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/configurationBtn"
+        android:layout_marginStart="6dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_home_right"
         app:layout_constraintTop_toTopOf="@+id/configurationBtn" />
 
     <TextView
@@ -268,11 +283,12 @@
 
     <ImageButton
         android:id="@+id/ProjectBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
         android:layout_marginTop="12dp"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         android:src="@drawable/home_6"
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
         app:layout_constraintHorizontal_bias="1.0"
@@ -284,10 +300,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="55dp"
+        android:layout_marginStart="6dp"
         android:text="Projects"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/ProjectBtn"
+        app:layout_constraintStart_toStartOf="@+id/guideline_home_left"
         app:layout_constraintTop_toTopOf="@+id/ProjectBtn" />
 
     <TextView
@@ -307,14 +323,15 @@
 
     <ImageButton
         android:id="@+id/documentationBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
         android:layout_marginTop="12dp"
+        android:scaleType="fitXY"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/home_7"
         app:layout_constraintEnd_toEndOf="@+id/guideline_end"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@+id/configurationBtn" />
 
@@ -325,10 +342,10 @@
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="20dp"
         android:text="Documentation"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/documentationBtn"
+        android:layout_marginStart="6dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_home_right"
         app:layout_constraintTop_toTopOf="@+id/documentationBtn" />
 
     <TextView

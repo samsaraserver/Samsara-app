@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <!-- Guidelines -->
+    <!-- Add guidelines for proportional margins -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -23,6 +23,20 @@
         app:layout_constraintGuide_percent="0.97" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.47" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_mright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.53" />
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_middle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,14 +48,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.08" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="669dp" />
+        app:layout_constraintGuide_percent="0.85" />
 
     <!-- Top bar and logo -->
     <ImageView
@@ -95,7 +109,7 @@
         android:id="@+id/SignUpView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:contentDescription="Decorative"
         android:scaleType="fitXY"
         android:src="@drawable/login_6"
@@ -144,7 +158,7 @@
         android:id="@+id/EmailUsernameBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/account_3"
         android:hint="Email or Username"
         android:inputType="textEmailAddress"
@@ -177,14 +191,16 @@
 
     <ImageButton
         android:id="@+id/LoginBiometricsBtn"
-        android:layout_width="194dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         android:contentDescription="Biometrics login"
         android:src="@drawable/login_4"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/PasswordBox" />
+        app:layout_constraintTop_toBottomOf="@id/PasswordBox"
+        app:layout_constraintEnd_toEndOf="@id/guideline_middle"/>
 
     <TextView
         android:id="@+id/LoginBiometrics"
@@ -193,22 +209,21 @@
         android:text="Login with biometrics"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/LoginBiometricsBtn"
-        app:layout_constraintEnd_toStartOf="@+id/LoginGithubGtn"
-        app:layout_constraintHorizontal_bias="0.476"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@+id/LoginBiometricsBtn"
+        app:layout_constraintStart_toStartOf="@+id/LoginBiometricsBtn"
         app:layout_constraintTop_toTopOf="@+id/LoginBiometricsBtn"
-        app:layout_constraintVertical_bias="0.487" />
+        />
 
     <ImageButton
         android:id="@+id/LoginGithubGtn"
-        android:layout_width="190dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="17dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         android:contentDescription="Login with GitHub"
         android:src="@drawable/login_4"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@id/PasswordBox" />
 
@@ -232,7 +247,7 @@
         android:buttonTint="#FFFFFF"
         android:text="Remember Me"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/EmailUsernameBox"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/LoginBiometricsBtn" />
 
     <ImageButton
@@ -261,17 +276,12 @@
 
     <ImageButton
         android:id="@+id/ForgotPasswordBtn"
-        android:layout_width="148dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="14dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/tvNoAccount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SignInBtn"
-        android:src="@drawable/line_6" />
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/SignInBtn" />
 
     <TextView
         android:id="@+id/tvForgotPassword"
@@ -281,25 +291,21 @@
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/ForgotPasswordBtn"
         app:layout_constraintEnd_toEndOf="@+id/ForgotPasswordBtn"
-        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="@+id/ForgotPasswordBtn"
-        app:layout_constraintTop_toTopOf="@+id/ForgotPasswordBtn"
-        app:layout_constraintVertical_bias="0.6" />
+        app:layout_constraintTop_toTopOf="@+id/ForgotPasswordBtn" />
 
     <!-- Continue without account -->
 
     <ImageButton
         android:id="@+id/RegisterBtn2"
-        android:layout_width="87dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="42dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="Register decorative"
-        android:src="@drawable/line_4"
+        app:layout_constraintBottom_toBottomOf="@id/tvNoAccount"
+        app:layout_constraintStart_toEndOf="@id/tvNoAccount"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.225"
-        app:layout_constraintStart_toStartOf="@id/guideline_middle"
-        app:layout_constraintTop_toBottomOf="@+id/SignInBtn" />
+        app:layout_constraintTop_toTopOf="@+id/tvNoAccount" />
 
     <TextView
         android:id="@+id/tvRegister2"
@@ -307,6 +313,7 @@
         android:layout_height="wrap_content"
         android:text="Register"
         android:textColor="#FFFFFF"
+        app:layout_constraintHorizontal_bias="0.03"
         app:layout_constraintBottom_toBottomOf="@id/RegisterBtn2"
         app:layout_constraintEnd_toEndOf="@id/RegisterBtn2"
         app:layout_constraintStart_toStartOf="@id/RegisterBtn2"
@@ -316,14 +323,13 @@
         android:id="@+id/tvNoAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Don't have an account?"
+        app:layout_constraintHorizontal_bias="0.45"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.371"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.708" />
+        app:layout_constraintStart_toStartOf="@+id/ForgotPasswordBtn"
+        app:layout_constraintTop_toBottomOf="@id/ForgotPasswordBtn" />
 
     <ImageButton
         android:id="@+id/ContinueWithoutAccountBtn"

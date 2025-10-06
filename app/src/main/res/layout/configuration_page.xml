@@ -440,9 +440,10 @@
 
         <ImageButton
             android:id="@+id/ExportBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_lg"
+            android:scaleType="fitXY"
             android:backgroundTint="#00FFFFFF"
             android:src="@drawable/configuration_9"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -464,9 +465,10 @@
 
         <ImageButton
             android:id="@+id/ImportBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:backgroundTint="#00FFFFFF"
+            android:scaleType="fitXY"
             android:src="@drawable/configuration_9"
             app:layout_constraintEnd_toEndOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_middle"
@@ -488,10 +490,11 @@
 
         <ImageButton
             android:id="@+id/ResetBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_sm"
             android:backgroundTint="#00FFFFFF"
+            android:scaleType="fitXY"
             android:src="@drawable/configuration_9"
             app:layout_constraintEnd_toEndOf="@+id/ExportBtn"
             app:layout_constraintStart_toStartOf="@id/ExportBtn"
@@ -511,9 +514,10 @@
 
         <ImageButton
             android:id="@+id/SaveBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_sm"
+            android:scaleType="fitXY"
             android:backgroundTint="#00FFFFFF"
             android:src="@drawable/configuration_9"
             app:layout_constraintEnd_toEndOf="@+id/ImportBtn"
@@ -594,9 +598,10 @@
 
         <ImageButton
             android:id="@+id/imageView14"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_lg"
+            android:scaleType="fitXY"
             android:backgroundTint="#00FFFFFF"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -621,10 +626,8 @@
                 android:text="Browse"
                 app:layout_constraintBottom_toBottomOf="@+id/InstallDir3"
                 app:layout_constraintEnd_toEndOf="@+id/InstallDir3"
-                app:layout_constraintHorizontal_bias="0.55"
                 app:layout_constraintStart_toStartOf="@+id/InstallDir3"
-                app:layout_constraintTop_toTopOf="@+id/InstallDir3"
-                app:layout_constraintVertical_bias="0.393" />
+                app:layout_constraintTop_toTopOf="@+id/InstallDir3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

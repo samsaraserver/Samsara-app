@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background">
+
     <!-- Add guidelines for proportional margins -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.0" />
+        app:layout_constraintGuide_percent="0.03" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_end"
@@ -39,21 +40,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.53" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.08" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="624dp" />
+        app:layout_constraintGuide_percent="0.85" />
 
     <ImageView
         android:id="@+id/TopBar"
@@ -234,6 +235,7 @@
         android:layout_marginTop="@dimen/padding_sm"
         android:layout_marginBottom="@dimen/padding_lg"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/CheckBoxTermsAndConditions"
@@ -257,6 +259,7 @@
         android:layout_marginTop="@dimen/padding_sm"
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/login_5"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/CreateAccountBtn" />
@@ -274,17 +277,14 @@
 
     <ImageButton
         android:id="@+id/LoginBtn2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="0dp"
         android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/line_8"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.723"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.789" />
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toEndOf="@+id/tvAlreadyHaveAnAccount"
+        app:layout_constraintTop_toTopOf="@+id/tvAlreadyHaveAnAccount"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAlreadyHaveAnAccount"/>
 
     <TextView
         android:id="@+id/tvLogin2"
@@ -292,9 +292,9 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:textColor="#FFFFFF"
+        app:layout_constraintHorizontal_bias="0.03"
         app:layout_constraintBottom_toBottomOf="@+id/LoginBtn2"
         app:layout_constraintEnd_toEndOf="@+id/LoginBtn2"
-        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="@+id/LoginBtn2"
         app:layout_constraintTop_toTopOf="@+id/LoginBtn2" />
 
@@ -306,7 +306,6 @@
         android:text="Already have an account?"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.390"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/SignInGithubBtn" />
 
