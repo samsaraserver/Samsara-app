@@ -218,9 +218,10 @@
         android:backgroundTint="#00FFFFFF"
         android:scaleType="fitXY"
         android:src="@drawable/account_4"
+        android:layout_marginTop="@dimen/padding_lg"
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
+        app:layout_constraintTop_toBottomOf="@id/PasswordBox"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -242,9 +243,10 @@
         android:backgroundTint="#00FFFFFF"
         android:scaleType="fitXY"
         android:src="@drawable/account_4"
+        android:layout_marginTop="@dimen/padding_lg"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@+id/guideline_middle"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
+        app:layout_constraintTop_toBottomOf="@id/PasswordBox"
         tools:ignore="ContentDescription" />
 
     <TextView
