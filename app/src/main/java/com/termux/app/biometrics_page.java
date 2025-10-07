@@ -3,6 +3,7 @@ package com.termux.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -11,135 +12,324 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import com.termux.R;
+import com.termux.app.database.managers.AuthManager;
+import com.termux.app.database.models.SamsaraUser;
 import java.util.concurrent.Executor;
 import android.app.AlertDialog;
 
 public class biometrics_page extends FragmentActivity {
 
+    private static final String TAG = "BiometricsPage";
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
     private ImageButton biometricsButton;
     private ImageButton cancelButton;
+    private BiometricHelper biometricHelper;
+    private SamsaraUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.biometrics_page);
 
-        initializeViews();
-        setupBiometrics();
-        setupClickListeners();
-        checkBiometricAvailability();
+        try {
+            setContentView(R.layout.biometrics_page);
+
+            // Check if user is logged in
+            AuthManager authManager = AuthManager.getInstance(this);
+            currentUser = authManager.getCurrentUser();
+
+            if (currentUser == null) {
+                Log.e(TAG, "No user is currently logged in");
+                Toast.makeText(this, "You must be logged in to set up biometric authentication", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
+
+            initializeViews();
+            checkBiometricAvailability();
+            initializeBiometricHelper();
+            setupBiometrics();
+            setupClickListeners();
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onCreate: " + e.getMessage(), e);
+            Toast.makeText(this, "Error setting up biometrics page", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
     private void initializeViews() {
-        biometricsButton = findViewById(R.id.BiometricsBtn);
-        cancelButton = findViewById(R.id.CancelBtn);
-    }
+        try {
+            biometricsButton = findViewById(R.id.BiometricsBtn);
+            cancelButton = findViewById(R.id.CancelBtn);
 
-    private void setupBiometrics() {
-        Executor executor = ContextCompat.getMainExecutor(this);
-
-        biometricPrompt = new BiometricPrompt(this, executor,
-            new BiometricPrompt.AuthenticationCallback() {
-
-                @Override
-                public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-                    super.onAuthenticationError(errorCode, errString);
-                    showToast("Authentication error: " + errString);
-                }
-
-                @Override
-                public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                    super.onAuthenticationSucceeded(result);
-                    showToast("Authentication succeeded!");
-                    handleSuccessfulAuthentication();
-                }
-
-                @Override
-                public void onAuthenticationFailed() {
-                    super.onAuthenticationFailed();
-                    showToast("Authentication failed");
-                }
-            });
-
-        promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Biometric Authentication")
-                .setSubtitle("Use your biometric credential to authenticate")
-                .setNegativeButtonText("Cancel")
-                .build();
-    }
-
-    private void setupClickListeners() {
-        biometricsButton.setOnClickListener(v -> startBiometricAuthentication());
-
-        cancelButton.setOnClickListener(v -> {
-            showToast("Biometric authentication cancelled");
+            if (biometricsButton == null || cancelButton == null) {
+                Log.e(TAG, "Required UI elements not found in layout");
+                Toast.makeText(this, "UI setup error", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing views: " + e.getMessage(), e);
             finish();
-        });
+        }
     }
 
     private void checkBiometricAvailability() {
         BiometricManager biometricManager = BiometricManager.from(this);
 
-        switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
+        switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
             case BiometricManager.BIOMETRIC_SUCCESS:
+                Log.d(TAG, "App can authenticate using biometrics.");
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
-                showToast("No biometric features available on this device");
-                biometricsButton.setEnabled(false);
+                showToast("No biometric features available on this device.");
+                disableBiometricsSetup();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
-                showToast("Biometric features are currently unavailable");
-                biometricsButton.setEnabled(false);
+                showToast("Biometric features are currently unavailable.");
+                disableBiometricsSetup();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
-                showToast("No biometric credentials are enrolled");
-                showEnrollmentDialog();
-                biometricsButton.setEnabled(false);
+                showBiometricEnrollmentDialog();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED:
-                showToast("Security update required for biometric authentication");
-                biometricsButton.setEnabled(false);
+                showToast("Security update required for biometric authentication.");
+                disableBiometricsSetup();
                 break;
             case BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED:
-                showToast("Biometric authentication is not supported");
-                biometricsButton.setEnabled(false);
+                showToast("Biometric authentication is not supported.");
+                disableBiometricsSetup();
                 break;
             case BiometricManager.BIOMETRIC_STATUS_UNKNOWN:
-                showToast("Biometric status unknown");
-                biometricsButton.setEnabled(false);
-                break;
-            default:
-                showToast("Unknown biometric status");
-                biometricsButton.setEnabled(false);
+                showToast("Biometric status unknown.");
+                disableBiometricsSetup();
                 break;
         }
     }
 
-    private void startBiometricAuthentication() {
-        biometricPrompt.authenticate(promptInfo);
+    private void initializeBiometricHelper() {
+        try {
+            biometricHelper = new BiometricHelper(this, new BiometricHelper.AuthenticationCallback() {
+                @Override
+                public void onAuthenticationSuccessful(String username, String email, String password, String userId) {
+                    // This callback is not used in setup mode, but we need to handle it gracefully
+                    Log.d(TAG, "Authentication successful in setup mode (not expected)");
+                }
+
+                @Override
+                public void onAuthenticationFailed() {
+                    showToast("Biometric authentication failed");
+                }
+
+                @Override
+                public void onAuthenticationError(int errorCode, CharSequence errString) {
+                    if (errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON && errorCode != BiometricPrompt.ERROR_USER_CANCELED) {
+                        showToast("Authentication error: " + errString);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing BiometricHelper: " + e.getMessage(), e);
+            showToast("Error setting up biometric authentication");
+            disableBiometricsSetup();
+        }
+    }
+
+    private void setupBiometrics() {
+        try {
+            Executor executor = ContextCompat.getMainExecutor(this);
+
+            biometricPrompt = new BiometricPrompt(this, executor,
+                new BiometricPrompt.AuthenticationCallback() {
+
+                    @Override
+                    public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                        super.onAuthenticationError(errorCode, errString);
+                        if (errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON && errorCode != BiometricPrompt.ERROR_USER_CANCELED) {
+                            showToast("Authentication error: " + errString);
+                        }
+                    }
+
+                    @Override
+                    public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                        super.onAuthenticationSucceeded(result);
+                        showToast("Biometric authentication verified!");
+                        handleSuccessfulAuthentication();
+                    }
+
+                    @Override
+                    public void onAuthenticationFailed() {
+                        super.onAuthenticationFailed();
+                        showToast("Biometric authentication failed. Try again.");
+                    }
+                });
+
+            // Setup the PromptInfo
+            promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("Setup Biometric Login")
+                    .setSubtitle("Verify your identity to enable biometric login")
+                    .setDescription("Place your finger on the sensor or look at the camera to set up biometric authentication for future logins.")
+                    .setNegativeButtonText("Cancel")
+                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                    .build();
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up biometrics: " + e.getMessage(), e);
+            showToast("Error setting up biometric prompt");
+            disableBiometricsSetup();
+        }
+    }
+
+    private void setupClickListeners() {
+        try {
+            if (biometricsButton != null) {
+                biometricsButton.setOnClickListener(view -> {
+                    try {
+                        startBiometricSetup();
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error starting biometric setup: " + e.getMessage(), e);
+                        showToast("Error starting biometric setup");
+                    }
+                });
+            }
+
+            if (cancelButton != null) {
+                cancelButton.setOnClickListener(view -> {
+                    finish();
+                });
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up click listeners: " + e.getMessage(), e);
+        }
+    }
+
+    private void startBiometricSetup() {
+        if (biometricPrompt != null && promptInfo != null) {
+            Log.d(TAG, "Starting biometric setup authentication");
+            biometricPrompt.authenticate(promptInfo);
+        } else {
+            Log.e(TAG, "BiometricPrompt or PromptInfo is null");
+            showToast("Biometric setup is not properly initialized");
+        }
     }
 
     private void handleSuccessfulAuthentication() {
-        finish();
+        try {
+            // Store the user's credentials for biometric login
+            if (biometricHelper != null && currentUser != null) {
+                // We need to get the user's password from somewhere - this is the tricky part
+                // For setup mode, we'll need to ask the user to enter their password
+                showPasswordDialog();
+            } else {
+                Log.e(TAG, "BiometricHelper or currentUser is null");
+                showToast("Setup error - please try again");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in handleSuccessfulAuthentication: " + e.getMessage(), e);
+            showToast("Error completing biometric setup");
+        }
+    }
+
+    private void showPasswordDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Password");
+        builder.setMessage("Please enter your password to complete biometric setup:");
+
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
+        builder.setPositiveButton("Setup", (dialog, which) -> {
+            String password = input.getText().toString();
+            if (!password.isEmpty()) {
+                completeBiometricSetup(password);
+            } else {
+                showToast("Password is required for biometric setup");
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+    private void completeBiometricSetup(String password) {
+        try {
+            if (biometricHelper != null && currentUser != null) {
+                String username = currentUser.getUsername();
+                String email = currentUser.getEmail();
+                String userId = String.valueOf(currentUser.getId());
+
+                Log.d(TAG, "Completing biometric setup for user: " + username);
+                biometricHelper.storeCredentials(username, email, password, userId);
+
+                showToast("Biometric login setup complete!");
+
+                // Return to previous screen
+                finish();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error completing biometric setup: " + e.getMessage(), e);
+            showToast("Error completing biometric setup");
+        }
+    }
+
+    private void showBiometricEnrollmentDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No Biometrics Enrolled")
+                .setMessage("You need to enroll biometric credentials (fingerprint, face, etc.) in your device settings before you can use biometric login.")
+                .setPositiveButton("Go to Settings", (dialog, which) -> {
+                    Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
+                    enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                            BiometricManager.Authenticators.BIOMETRIC_STRONG);
+                    try {
+                        startActivity(enrollIntent);
+                    } catch (Exception e) {
+                        // Fallback to security settings
+                        startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS));
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> finish())
+                .setCancelable(false)
+                .show();
+    }
+
+    private void disableBiometricsSetup() {
+        if (biometricsButton != null) {
+            biometricsButton.setEnabled(false);
+            biometricsButton.setAlpha(0.5f);
+        }
     }
 
     private void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        runOnUiThread(() -> {
+            try {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.e(TAG, "Error showing toast: " + e.getMessage(), e);
+            }
+        });
     }
 
-    private void showEnrollmentDialog() {
-        new AlertDialog.Builder(this)
-            .setTitle("Enroll Biometrics")
-            .setMessage("To use biometric authentication, please enroll your biometrics in the device settings.")
-            .setPositiveButton("Settings", (dialog, which) -> {
-                // Open the device settings for biometric enrollment
-                Intent intent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
-                startActivity(intent);
-            })
-            .setNegativeButton("Cancel", null)
-            .show();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            // Clean up BiometricHelper to prevent memory leaks
+            if (biometricHelper != null) {
+                biometricHelper.cleanup();
+                biometricHelper = null;
+            }
+
+            // Clean up other resources
+            biometricPrompt = null;
+            promptInfo = null;
+            currentUser = null;
+
+            // Clear UI references
+            biometricsButton = null;
+            cancelButton = null;
+
+            Log.d(TAG, "biometrics_page cleanup completed");
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onDestroy: " + e.getMessage(), e);
+        }
     }
 }
-
