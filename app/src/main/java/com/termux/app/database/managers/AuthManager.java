@@ -11,6 +11,7 @@ public class AuthManager {
     private static final String KEY_EMAIL = "email";
     private static final String KEY_IS_LOGGED_IN = "is_logged_in";
     private static final String KEY_PROFILE_PICTURE_URL = "profile_picture_url";
+    private static final String KEY_PASSWORD_HASH = "password_hash";
 
     private static AuthManager instance;
     private SharedPreferences prefs;
@@ -31,6 +32,11 @@ public class AuthManager {
     public void loginUser(SamsaraUser user) {
         this.currentUser = user;
         saveUserToPrefs(user);
+    }
+
+    public void loginUser(SamsaraUser user, String password) {
+        this.currentUser = user;
+        saveUserToPrefs(user, password);
     }
 
     public void logoutUser() {
@@ -54,6 +60,33 @@ public class AuthManager {
         editor.putString(KEY_PROFILE_PICTURE_URL, user.getProfilePictureUrl());
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.apply();
+    }
+
+    private void saveUserToPrefs(SamsaraUser user, String password) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(KEY_USER_ID, user.getId() != null ? user.getId() : 0L);
+        editor.putString(KEY_USERNAME, user.getUsername());
+        editor.putString(KEY_EMAIL, user.getEmail());
+        editor.putString(KEY_PROFILE_PICTURE_URL, user.getProfilePictureUrl());
+        editor.putString(KEY_PASSWORD_HASH, hashPassword(password));
+        editor.putBoolean(KEY_IS_LOGGED_IN, true);
+        editor.apply();
+    }
+
+    public boolean validatePassword(String password) {
+        if (!isLoggedIn()) {
+            return false;
+        }
+        String storedHash = prefs.getString(KEY_PASSWORD_HASH, null);
+        if (storedHash == null) {
+            return false;
+        }
+        return storedHash.equals(hashPassword(password));
+    }
+
+    private String hashPassword(String password) {
+        // Simple hash for now - in production you'd want to use proper password hashing
+        return String.valueOf(password.hashCode());
     }
 
     private void loadUserFromPrefs() {

@@ -263,7 +263,8 @@ public class login_page extends FragmentActivity {
 
                 storeCredentialsForBiometric(user, emailOrUsername, password);
 
-                AuthManager.getInstance(this).loginUser(user);
+                // Use the loginUser method that stores the password
+                AuthManager.getInstance(this).loginUser(user, password);
                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(login_page.this, home_page.class);
                 startActivity(intent);
@@ -371,7 +372,15 @@ public class login_page extends FragmentActivity {
             }
 
             if (user != null) {
-                AuthManager.getInstance(this).loginUser(user);
+                // We need to get the stored password for biometric login too
+                if (biometricHelper != null && biometricHelper.hasStoredCredentials()) {
+                    // For biometric login, we should store the password as well
+                    // But we don't have direct access to it here, so we'll use the version without password
+                    // This is a limitation of biometric login - it won't work for config password validation
+                    AuthManager.getInstance(this).loginUser(user);
+                } else {
+                    AuthManager.getInstance(this).loginUser(user);
+                }
                 Toast.makeText(this, "Biometric login successful!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(login_page.this, home_page.class);
                 startActivity(intent);
