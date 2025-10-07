@@ -1,6 +1,5 @@
 package com.termux.app;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
@@ -16,7 +15,9 @@ import android.os.Build;
 import android.os.Environment;
 import java.util.Locale;
 
-public class monitor_page extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class monitor_page extends AppCompatActivity {
     private TextView tvReadWrite2;
     private TextView tvDiskUtil2;
     private TextView tvCPU2;

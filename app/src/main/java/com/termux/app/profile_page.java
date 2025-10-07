@@ -1,6 +1,5 @@
 package com.termux.app;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +16,8 @@ import android.widget.Toast;
 import java.io.File;
 import com.yalantis.ucrop.UCrop;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.squareup.picasso.Picasso;
 import com.termux.R;
 import com.termux.app.database.SupabaseConfig;
@@ -28,7 +29,7 @@ import com.termux.app.utils.ImagePickerHelper;
 import com.termux.app.utils.CircleTransform;
 import androidx.core.content.ContextCompat;
 
-public class profile_page extends Activity implements ImagePickerHelper.ImagePickerCallback {
+public class profile_page extends AppCompatActivity implements ImagePickerHelper.ImagePickerCallback {
     private static final String TAG = "ProfilePage";
     private AuthManager authManager;
     private UserRepository userRepository;

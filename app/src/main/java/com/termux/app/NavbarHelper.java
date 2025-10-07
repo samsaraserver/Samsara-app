@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
+import android.util.Log;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import androidx.biometric.BiometricPrompt;
+import androidx.fragment.app.FragmentActivity;
 
 import com.termux.R;
-import com.termux.shared.shell.command.ExecutionCommand;
-import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_SERVICE;
 
 public class NavbarHelper {
+
+    private static final String TAG = "NavbarHelper";
 
     public static void setupNavbar(Activity activity) {
         ImageButton homeButton = activity.findViewById(R.id.navbar_home);
@@ -76,6 +80,19 @@ public class NavbarHelper {
                 }
             });
         }
+    }
+
+    private static void showConfigFallbackOptions(Activity activity) {
+        // Show dialog with config options when biometrics are not available
+        new AlertDialog.Builder(activity)
+                .setTitle("Configuration Access")
+                .setMessage("Choose how to access configuration:")
+                .setNegativeButton("Online Wiki", (dialog, which) -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wiki.termux.com/wiki/Configuration"));
+                    activity.startActivity(browserIntent);
+                })
+                .setNeutralButton("Cancel", null)
+                .show();
     }
 
     private static void launchTermux(Activity activity) {
