@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -70,7 +72,7 @@ public class UserRepository {
     public CompletableFuture<SamsaraUser> getUserByEmail(String email) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String url = baseUrl + TABLE_NAME + "?email=eq." + email + "&select=*";
+                String url = baseUrl + TABLE_NAME + "?" + buildIlikeFilter("email", email) + "&select=*";
                 
                 Request request = new Request.Builder()
                     .url(url)
@@ -103,7 +105,7 @@ public class UserRepository {
     public CompletableFuture<SamsaraUser> getUserByUsername(String username) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String url = baseUrl + TABLE_NAME + "?username=eq." + username + "&select=*";
+                String url = baseUrl + TABLE_NAME + "?" + buildIlikeFilter("username", username) + "&select=*";
                 
                 Request request = new Request.Builder()
                     .url(url)
@@ -154,6 +156,19 @@ public class UserRepository {
         }, executorService);
     }
     
+    private String buildIlikeFilter(String column, String value) {
+        if (value == null) {
+            return column + "=ilike.";
+        }
+        try {
+            String encodedValue = URLEncoder.encode(value, StandardCharsets.UTF_8.name());
+            return column + "=ilike." + encodedValue;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to encode filter value", e);
+            return column + "=ilike." + value;
+        }
+    }
+
     public CompletableFuture<Boolean> checkUsernameExists(String username) {
         return CompletableFuture.supplyAsync(() -> {
             try {

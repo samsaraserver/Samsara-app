@@ -266,7 +266,12 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
                 SamsaraUser updatedUser = authManager.getCurrentUser();
                 updatedUser.setUsername(username);
                 updatedUser.setEmail(email);
-                authManager.loginUser(updatedUser);
+                String updatedPassword = newPasswordForDisplay;
+                if (!TextUtils.isEmpty(updatedPassword)) {
+                    authManager.loginUser(updatedUser, updatedPassword);
+                } else {
+                    authManager.loginUser(updatedUser);
+                }
 
                 Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
 

@@ -121,7 +121,7 @@ public class register_page extends Activity {
                 runOnUiThread(() -> {
                     setFormEnabled(true);
                     if (user != null) {
-                        AuthManager.getInstance(this).loginUser(user);
+                        AuthManager.getInstance(this).loginUser(user, password);
                         Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
                         
                         NavbarHelper.navigateToActivity(register_page.this, home_page.class);

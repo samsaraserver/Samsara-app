@@ -370,9 +370,9 @@ public class login_page extends FragmentActivity {
                                     }
 
                                     final SamsaraUser finalUser = user;
-                                    runOnUiThread(() -> handleBiometricUserResult(finalUser, null));
+                                    runOnUiThread(() -> handleBiometricUserResult(finalUser, null, password));
                                 } catch (Exception e) {
-                                    runOnUiThread(() -> handleBiometricUserResult(null, e));
+                                    runOnUiThread(() -> handleBiometricUserResult(null, e, null));
                                 }
                             }).start();
                         } else {
@@ -395,7 +395,7 @@ public class login_page extends FragmentActivity {
         }).start();
     }
 
-    private void handleBiometricUserResult(SamsaraUser user, Throwable userThrowable) {
+    private void handleBiometricUserResult(SamsaraUser user, Throwable userThrowable, String password) {
         runOnUiThread(() -> {
             setFormEnabled(true);
             if (userThrowable != null) {
@@ -405,12 +405,8 @@ public class login_page extends FragmentActivity {
             }
 
             if (user != null) {
-                // We need to get the stored password for biometric login too
-                if (biometricHelper != null && biometricHelper.hasStoredCredentials()) {
-                    // For biometric login, we should store the password as well
-                    // But we don't have direct access to it here, so we'll use the version without password
-                    // This is a limitation of biometric login - it won't work for config password validation
-                    AuthManager.getInstance(this).loginUser(user);
+                if (!TextUtils.isEmpty(password)) {
+                    AuthManager.getInstance(this).loginUser(user, password);
                 } else {
                     AuthManager.getInstance(this).loginUser(user);
                 }

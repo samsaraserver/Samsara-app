@@ -2,9 +2,11 @@ package com.termux.app.database.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import com.termux.app.database.models.SamsaraUser;
 
 public class AuthManager {
+    private static final String TAG = "AuthManager";
     private static final String PREFS_NAME = "samsara_auth";
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USERNAME = "username";
@@ -16,9 +18,11 @@ public class AuthManager {
     private static AuthManager instance;
     private SharedPreferences prefs;
     private SamsaraUser currentUser;
+    private final Context appContext;
 
     private AuthManager(Context context) {
-        prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        this.appContext = context.getApplicationContext();
+        prefs = this.appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         loadUserFromPrefs();
     }
 
@@ -42,6 +46,7 @@ public class AuthManager {
     public void logoutUser() {
         this.currentUser = null;
         clearUserFromPrefs();
+        clearSavedCredentials();
     }
 
     public boolean isLoggedIn() {
@@ -103,5 +108,17 @@ public class AuthManager {
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.apply();
+    }
+
+    private void clearSavedCredentials() {
+        try {
+            SharedPreferences loginPrefs = appContext.getSharedPreferences("SamsaraLoginPrefs", Context.MODE_PRIVATE);
+            loginPrefs.edit().clear().apply();
+
+            SharedPreferences biometricPrefs = appContext.getSharedPreferences("BiometricLoginPrefs", Context.MODE_PRIVATE);
+            biometricPrefs.edit().clear().apply();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to clear stored credentials on logout", e);
+        }
     }
 }
