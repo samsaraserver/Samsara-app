@@ -92,7 +92,6 @@ public class BiometricHelper {
 
         BiometricManager biometricManager = BiometricManager.from(activity);
 
-        // Try BIOMETRIC_STRONG first, then fallback to BIOMETRIC_WEAK
         int canAuthenticateStrong = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG);
         if (canAuthenticateStrong == BiometricManager.BIOMETRIC_SUCCESS) {
             Log.d(TAG, "BIOMETRIC_STRONG available");
@@ -105,7 +104,6 @@ public class BiometricHelper {
             return true;
         }
 
-        // Also try with device credential as backup
         int canAuthenticateWithCredential = biometricManager.canAuthenticate(
             BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL);
         boolean isAvailable = canAuthenticateWithCredential == BiometricManager.BIOMETRIC_SUCCESS;
@@ -140,7 +138,6 @@ public class BiometricHelper {
                 return;
             }
 
-            // Determine which authenticator to use based on availability
             BiometricManager biometricManager = BiometricManager.from(activity);
             int authenticators;
             String subtitle;
@@ -154,7 +151,6 @@ public class BiometricHelper {
                 subtitle = "Use your biometric or device credential";
                 Log.d(TAG, "Using BIOMETRIC_WEAK");
             } else {
-                // Use biometric with device credential as fallback
                 authenticators = BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL;
                 subtitle = "Use your biometric or device PIN/password";
                 Log.d(TAG, "Using BIOMETRIC_WEAK with DEVICE_CREDENTIAL");
@@ -165,7 +161,6 @@ public class BiometricHelper {
                     .setSubtitle(subtitle)
                     .setAllowedAuthenticators(authenticators);
 
-            // Only add negative button if not using device credential (which has its own cancel)
             if ((authenticators & BiometricManager.Authenticators.DEVICE_CREDENTIAL) == 0) {
                 promptBuilder.setNegativeButtonText("Cancel");
             }

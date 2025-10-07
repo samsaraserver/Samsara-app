@@ -83,7 +83,6 @@ public class NavbarHelper {
     }
 
     private static void showConfigFallbackOptions(Activity activity) {
-        // Show dialog with config options when biometrics are not available
         new AlertDialog.Builder(activity)
                 .setTitle("Configuration Access")
                 .setMessage("Choose how to access configuration:")
