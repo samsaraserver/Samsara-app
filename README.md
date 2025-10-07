@@ -1,9 +1,10 @@
 # Samsara Server
-
 [![Maintainability Rating](https://sonarcube.samsaraserver.space/api/project_badges/measure?project=Samsara-server&metric=sqale_rating&token=sqb_f1c814e55b2b022b69df00e731feb80af8c5d8ae)](https://sonarcube.samsaraserver.space/dashboard?id=Samsara-server)
 [![Vulnerabilities](https://sonarcube.samsaraserver.space/api/project_badges/measure?project=Samsara-server&metric=vulnerabilities&token=sqb_f1c814e55b2b022b69df00e731feb80af8c5d8ae)](https://sonarcube.samsaraserver.space/dashboard?id=Samsara-server)
 
 Repurpose your old Android devices into powerful Linux servers with a sleek interface and zero command-line complexity.
+
+<img width="217" height="205" alt="Logo-detailed-no-background_1" src="https://github.com/user-attachments/assets/67748b4d-0057-4dd0-b02e-7b86ce544dd0" /> 
 
 ## About
 
