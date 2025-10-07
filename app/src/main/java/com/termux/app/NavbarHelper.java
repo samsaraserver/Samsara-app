@@ -36,11 +36,9 @@ public class NavbarHelper {
 
         if (configButton != null) {
             configButton.setOnClickListener(view -> {
-                // Check if activity is FragmentActivity for biometric support
                 if (activity instanceof FragmentActivity) {
                     showBiometricPromptForConfig((FragmentActivity) activity);
                 } else {
-                    // Fallback to direct access if not FragmentActivity
                     showConfigFallbackOptions(activity);
                 }
             });
@@ -97,16 +95,12 @@ public class NavbarHelper {
                     @Override
                     public void onAuthenticationError(int errorCode, CharSequence errString) {
                         super.onAuthenticationError(errorCode, errString);
-                        Log.d(TAG, "Authentication error: " + errString);
-                        // Show fallback options when biometric fails
                         showConfigFallbackOptions(activity);
                     }
 
                     @Override
                     public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
                         super.onAuthenticationSucceeded(result);
-                        Log.d(TAG, "Authentication succeeded");
-                        // Navigate to configuration page on successful authentication
                         Intent intent = new Intent(activity, configuration_page.class);
                         activity.startActivity(intent);
                         if (!(activity instanceof configuration_page)) {
@@ -117,7 +111,6 @@ public class NavbarHelper {
                     @Override
                     public void onAuthenticationFailed() {
                         super.onAuthenticationFailed();
-                        Log.d(TAG, "Authentication failed");
                         Toast.makeText(activity, "Authentication failed. Try again.", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -126,7 +119,6 @@ public class NavbarHelper {
     }
 
     private static void showConfigFallbackOptions(Activity activity) {
-        // Show dialog with config options when biometrics are not available
         new AlertDialog.Builder(activity)
             .setTitle("Configuration Access")
             .setMessage("Choose how to access configuration:")

@@ -1,6 +1,9 @@
 package com.termux.app;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -22,6 +25,18 @@ import com.termux.R;
 public class home_page extends AppCompatActivity {
     private static final String TAG = "HomePage";
 
+    private static void showConfigFallbackOptions(Activity activity) {
+        new AlertDialog.Builder(activity)
+            .setTitle("Configuration Access")
+            .setMessage("Choose how to access configuration:")
+            .setNegativeButton("Online Wiki", (dialog, which) -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wiki.termux.com/wiki/Configuration"));
+                activity.startActivity(browserIntent);
+            })
+            .setNeutralButton("Cancel", null)
+            .show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +48,14 @@ public class home_page extends AppCompatActivity {
         ImageButton ipButton = findViewById(R.id.ipBtn);
 
         ipButton.setOnClickListener(view -> {
-            String ipAddress = getDeviceIpAddress();
-            ipTextView.setText(Html.fromHtml("<u>" + ipAddress + "</u>"));
+            if (ipTextView.getText().toString().equals("IP not available") ||
+                    ipTextView.getText().toString().isEmpty() ||
+                    !ipTextView.getText().toString().contains(".")) {
+                String ipAddress = getDeviceIpAddress();
+                ipTextView.setText(Html.fromHtml("<u>" + ipAddress + "</u>"));
+            } else {
+                ipTextView.setText("Show IP");
+            }
         });
 
         ImageButton monitorBtn = findViewById(R.id.monitorBtn);
@@ -48,9 +69,13 @@ public class home_page extends AppCompatActivity {
         ImageButton configurationBtn = findViewById(R.id.configurationBtn);
 
         configurationBtn.setOnClickListener(view -> {
-            // Use biometric authentication without fallback options
-            showBiometricPromptForConfig();
+            if (this instanceof FragmentActivity) {
+                showBiometricPromptForConfig();
+            } else {
+                showConfigFallbackOptions(this);
+            }
         });
+
 
         ImageButton projectButton = findViewById(R.id.ProjectBtn);
 
@@ -83,7 +108,7 @@ public class home_page extends AppCompatActivity {
                     public void onAuthenticationError(int errorCode, CharSequence errString) {
                         super.onAuthenticationError(errorCode, errString);
                         Log.d(TAG, "Authentication error: " + errString);
-                        Toast.makeText(home_page.this, "Authentication cancelled or unavailable", Toast.LENGTH_SHORT).show();
+                        showConfigFallbackOptions(home_page.this);
                     }
 
                     @Override
