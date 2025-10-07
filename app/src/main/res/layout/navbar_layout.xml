@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
-    <!-- Background image behind nav items -->
     <ImageView
         android:id="@+id/navbackground"
         android:layout_width="0dp"
@@ -17,8 +15,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Navigation Row -->
     <LinearLayout
         android:id="@+id/nav_container"
         android:layout_width="0dp"
@@ -32,7 +28,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Home -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -59,7 +54,6 @@
                 android:gravity="center" />
         </LinearLayout>
 
-        <!-- Config -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -86,7 +80,6 @@
                 android:gravity="center" />
         </LinearLayout>
 
-        <!-- Center (Main button) -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -104,7 +97,6 @@
 
         </LinearLayout>
 
-        <!-- Docs -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -131,7 +123,6 @@
                 android:gravity="center" />
         </LinearLayout>
 
-        <!-- Profile -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -42,24 +42,20 @@ public class monitor_page extends AppCompatActivity {
         setContentView(R.layout.monitor_page);
         NavbarHelper.setupNavbar(this);
 
-        //track read write and disk utilization
         tvReadWrite2 = findViewById(R.id.tvReadWrite2);
         tvDiskUtil2 = findViewById(R.id.tvDiskUtil2);
 
-        //track cpu, memory, threads, handles
         tvCPU2 = findViewById(R.id.tvCPU2);
         tvCpuTemp2 = findViewById(R.id.tvCpuTemp2);
         tvMemoryUsage2 = findViewById(R.id.tvMemoryUsage2);
         tvThreadCount2 = findViewById(R.id.tvThreadCount2);
         tvHandles2 = findViewById(R.id.tvHandles2);
 
-        //track network bandwidth, packet loss, latency, active connections
         tvBandwidthUsage2 = findViewById(R.id.tvBandwidthUsage2);
         tvPacketLoss2 = findViewById(R.id.tvPacketLoss2);
         tvNetworkLatency2 = findViewById(R.id.tvNetworkLatency2);
         tvActiveConnections2 = findViewById(R.id.tvActiveConnections2);
 
-        // Initialize monitors
         diskMonitor = new MonitorDisk();
         systemMonitor = new MonitorSystem();
         networkMonitor = new MonitorNetwork();
@@ -167,7 +163,6 @@ public class monitor_page extends AppCompatActivity {
                 }
             }
 
-            // Update disk utilization
             try {
                 String dataPath;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -201,17 +196,14 @@ public class monitor_page extends AppCompatActivity {
         private long lastCpuUpdateTime = 0;
 
         void updateStats() {
-            // CPU usage calculation
             try {
                 BufferedReader reader = new BufferedReader(new FileReader("/proc/stat"));
                 String cpuLine = reader.readLine();
                 reader.close();
 
                 if (cpuLine != null && cpuLine.startsWith("cpu")) {
-                    // Split the CPU stats line into components
                     String[] values = cpuLine.split("\\s+");
                     if (values.length >= 8) {
-                        // Extract CPU time values
                         long user = Long.parseLong(values[1]);
                         long nice = Long.parseLong(values[2]);
                         long system = Long.parseLong(values[3]);
@@ -220,7 +212,6 @@ public class monitor_page extends AppCompatActivity {
                         long irq = Long.parseLong(values[6]);
                         long softirq = Long.parseLong(values[7]);
 
-                        // Calculate CPU usage with previous values
                         if (lastCpuUpdateTime > 0) {
                             long userDiff = user - lastCpuStats[0];
                             long niceDiff = nice - lastCpuStats[1];
@@ -230,20 +221,16 @@ public class monitor_page extends AppCompatActivity {
                             long irqDiff = irq - lastCpuStats[5];
                             long softirqDiff = softirq - lastCpuStats[6];
 
-                            // Total time spent by CPU
                             long totalCpuTime = userDiff + niceDiff + systemDiff + idleDiff + iowaitDiff + irqDiff + softirqDiff;
 
-                            // Active time
                             long activeCpuTime = totalCpuTime - idleDiff - iowaitDiff;
 
                             if (totalCpuTime > 0) {
                                 int cpuUsagePercent = (int) ((activeCpuTime * 100.0) / totalCpuTime);
                                 tvCPU2.setText(cpuUsagePercent + "%");
-                                Log.d("MonitorPage", "CPU Usage: " + cpuUsagePercent + "%");
                             }
                         }
 
-                        // Save current values for next calculation
                         lastCpuStats[0] = user;
                         lastCpuStats[1] = nice;
                         lastCpuStats[2] = system;
@@ -260,7 +247,6 @@ public class monitor_page extends AppCompatActivity {
             }
 
             try {
-                // Try several potential temperature sources in order
                 String[] tempSources = {
                     "/sys/class/thermal/thermal_zone0/temp",
                     "/sys/class/thermal/thermal_zone1/temp",
@@ -291,7 +277,6 @@ public class monitor_page extends AppCompatActivity {
                                     if (temp > 0 && temp < 150) {
                                         final float finalTemp = temp;
                                         handler.post(() -> tvCpuTemp2.setText(String.format(Locale.US, "%.1f°C", finalTemp)));
-                                        Log.d("MonitorPage", "CPU Temp: " + temp + "°C from " + tempPath);
                                         tempFound = true;
                                         break;
                                     }
@@ -306,7 +291,6 @@ public class monitor_page extends AppCompatActivity {
                 }
 
                 if (!tempFound) {
-                    // Alternative method: try to read from the shell
                     try {
                         Process process = Runtime.getRuntime().exec("cat /sys/class/thermal/thermal_zone*/temp");
                         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -340,7 +324,6 @@ public class monitor_page extends AppCompatActivity {
                 handler.post(() -> tvCpuTemp2.setText("N/A"));
             }
 
-            // Memory Usage
             try {
                 ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
                 ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -354,10 +337,8 @@ public class monitor_page extends AppCompatActivity {
                 tvMemoryUsage2.setText("--");
             }
 
-            // Thread Count
             tvThreadCount2.setText(String.valueOf(Thread.getAllStackTraces().size()));
 
-            // Handles
             try {
                 File fdDir = new File("/proc/self/fd");
                 if (fdDir.exists()) {
@@ -366,7 +347,6 @@ public class monitor_page extends AppCompatActivity {
                         tvHandles2.setText(String.valueOf(fds.length));
                     }
                 } else {
-                    // Fallback to reading file-nr
                     BufferedReader reader = new BufferedReader(new FileReader("/proc/sys/fs/file-nr"));
                     String[] parts = reader.readLine().trim().split("\\s+");
                     reader.close();
@@ -390,14 +370,13 @@ public class monitor_page extends AppCompatActivity {
         private static final long METRICS_INTERVAL_MS = 5000;
 
         void updateStats() {
-            // Bandwidth Usage
             long now = System.currentTimeMillis();
             long rxBytes = TrafficStats.getTotalRxBytes();
             long txBytes = TrafficStats.getTotalTxBytes();
 
             float duration = (now - lastUpdateTime) / 1000f;
             if (lastUpdateTime > 0 && duration > 0) {
-                float downloadSpeed = (rxBytes - lastRxBytes) / duration / 1024; // KB/s
+                float downloadSpeed = (rxBytes - lastRxBytes) / duration / 1024;
                 float uploadSpeed = (txBytes - lastTxBytes) / duration / 1024;
                 tvBandwidthUsage2.setText(String.format(Locale.US, "↓%.1f KB/s ↑%.1f KB/s", downloadSpeed, uploadSpeed));
             }
@@ -406,11 +385,9 @@ public class monitor_page extends AppCompatActivity {
             lastTxBytes = txBytes;
             lastUpdateTime = now;
 
-            // Network statistics
             int connectionCount = getConnectionCount();
             tvActiveConnections2.setText(String.valueOf(connectionCount));
 
-            // Measure network latency and packet loss (throttled)
             if (now - lastMetricsCheckMs >= METRICS_INTERVAL_MS) {
                 lastMetricsCheckMs = now;
                 measureNetworkMetrics();
@@ -481,26 +458,20 @@ public class monitor_page extends AppCompatActivity {
             }).start();
         }
 
-        // Unified connection count across protocols
         private int getConnectionCount() {
             int systemWide = getSystemWideCount();
             if (systemWide >= 0) return systemWide;
 
             int total = 0;
             try {
-                // TCP (exclude LISTEN)
                 total += countTcpConnections("/proc/net/tcp");
                 total += countTcpConnections("/proc/net/tcp6");
-                // UDP
                 total += countSimpleSocketTable("/proc/net/udp");
                 total += countSimpleSocketTable("/proc/net/udp6");
-                // UDPLITE
                 total += countSimpleSocketTable("/proc/net/udplite");
                 total += countSimpleSocketTable("/proc/net/udplite6");
-                // RAW
                 total += countSimpleSocketTable("/proc/net/raw");
                 total += countSimpleSocketTable("/proc/net/raw6");
-                // UNIX
                 total += countUnixSockets("/proc/net/unix");
             } catch (IOException e) {
                 Log.e("MonitorPage", "Error counting connections: " + e.getMessage());
@@ -518,7 +489,6 @@ public class monitor_page extends AppCompatActivity {
                     foundAny = true;
                 }
             } catch (Exception e) {
-                Log.d("MonitorPage", "sockstat v4 not available: " + e.getMessage());
             }
             try {
                 Integer v6 = parseSockstatSum("/proc/net/sockstat6");
@@ -527,19 +497,15 @@ public class monitor_page extends AppCompatActivity {
                     foundAny = true;
                 }
             } catch (Exception e) {
-                Log.d("MonitorPage", "sockstat v6 not available: " + e.getMessage());
             }
-            // Try to include UNIX domain sockets as well
             try {
                 total += countUnixSockets("/proc/net/unix");
-                foundAny = true; // if readable, we consider we have some data
+                foundAny = true;
             } catch (Exception e) {
-                Log.d("MonitorPage", "unix sockets not available: " + e.getMessage());
             }
             return foundAny ? Math.max(total, 0) : -1;
         }
 
-        // Sum of inuse counts for TCP, UDP, UDPLITE, RAW from a sockstat-like file
         private Integer parseSockstatSum(String path) throws IOException {
             File f = new File(path);
             if (!f.exists() || !f.canRead()) return null;
@@ -591,14 +557,12 @@ public class monitor_page extends AppCompatActivity {
 
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
-                // Skip header
                 reader.readLine();
                 while ((line = reader.readLine()) != null) {
                     try {
                         String[] fields = line.trim().split("\\s+");
                         if (fields.length > 3) {
                             String state = fields[3];
-                            // Exclude LISTEN (0A), count everything else as active or in-transition
                             if (!"0A".equalsIgnoreCase(state)) {
                                 count++;
                             }
@@ -611,7 +575,6 @@ public class monitor_page extends AppCompatActivity {
             return count;
         }
 
-        // For tables like udp, udp6, raw, raw6, udplite, udplite6: count non-header lines
         private int countSimpleSocketTable(String procFile) throws IOException {
             int count = 0;
             File file = new File(procFile);
@@ -620,7 +583,6 @@ public class monitor_page extends AppCompatActivity {
             }
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
-                // Skip header
                 reader.readLine();
                 while ((line = reader.readLine()) != null) {
                     count++;
@@ -639,7 +601,6 @@ public class monitor_page extends AppCompatActivity {
             }
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
-                // Skip header
                 reader.readLine();
                 while ((line = reader.readLine()) != null) {
                     count++;

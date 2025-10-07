@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <!-- Add guidelines for proportional margins -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -136,8 +135,6 @@
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line"
         app:layout_constraintTop_toBottomOf="@id/Line" />
-
-    <!-- CPU Monitoring Panel -->
 
     <TextView
         android:id="@+id/tvDiskUtil"
@@ -313,8 +310,6 @@
         app:layout_constraintTop_toTopOf="@id/tvHandles"
         android:layout_marginStart="@dimen/padding_sm" />
 
-    <!-- Network Monitoring Panel -->
-
 
     <ImageView
         android:id="@+id/NetworkActivityPanel"
@@ -437,8 +432,6 @@
         app:layout_constraintStart_toEndOf="@id/tvActiveConnections"
         app:layout_constraintTop_toTopOf="@id/tvActiveConnections"
         android:layout_marginStart="@dimen/padding_sm"  />
-
-    <!-- Navbar Include -->
 
     <include
         android:id="@+id/navbar_include"

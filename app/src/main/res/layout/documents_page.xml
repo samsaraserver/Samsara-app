@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <!-- Add guidelines for proportional margins -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -56,7 +55,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.90" />
 
-    <!-- Top Nav Bar -->
 
     <ImageView
         android:id="@+id/TopBar"
@@ -78,9 +76,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
-    <!--search bar-->
-
-    <!-- Buttons -->
 
     <TextView
         android:id="@+id/Title"
@@ -134,7 +129,6 @@
         app:srcCompat="@drawable/documentation_3"
         tools:ignore="ContentDescription" />
 
-    <!--Buttons-->
 
     <ImageButton
         android:id="@+id/Fragment1Btn"
@@ -212,7 +206,6 @@
         app:layout_constraintStart_toStartOf="@+id/Fragment3Btn"
         app:layout_constraintTop_toTopOf="@+id/Fragment3Btn" />
 
-    <!-- Fragment Container -->
 
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -225,7 +218,6 @@
 
     </FrameLayout>
 
-    <!-- Navbar Include -->
 
     <include
         android:id="@+id/navbar_include"

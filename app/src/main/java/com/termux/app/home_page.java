@@ -2,12 +2,12 @@ package com.termux.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.text.Html;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.Collections;
 import java.util.Enumeration;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.termux.R;
 
 public class home_page extends AppCompatActivity {
+    private static final String TAG = "HomePage";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,13 +24,13 @@ public class home_page extends AppCompatActivity {
 
         NavbarHelper.setupNavbar(this);
 
-        TextView textViewUnderline = findViewById(R.id.tvIP2);
-        ImageButton IPButton = findViewById(R.id.ipBtn);
+        TextView ipTextView = findViewById(R.id.tvIP2);
+        ImageButton ipButton = findViewById(R.id.ipBtn);
 
-        IPButton.setOnClickListener(view -> {
+        ipButton.setOnClickListener(view -> {
             String ipAddress = getDeviceIpAddress();
-            textViewUnderline.setText(Html.fromHtml("<u>" + ipAddress + "</u>"));
-            });
+            ipTextView.setText(Html.fromHtml("<u>" + ipAddress + "</u>"));
+        });
 
         ImageButton monitorBtn = findViewById(R.id.monitorBtn);
 
@@ -47,9 +48,9 @@ public class home_page extends AppCompatActivity {
             finish();
         });
 
-        ImageButton ProjectBtn = findViewById(R.id.ProjectBtn);
+        ImageButton projectButton = findViewById(R.id.ProjectBtn);
 
-        ProjectBtn.setOnClickListener(view -> {
+        projectButton.setOnClickListener(view -> {
             Intent intent = new Intent(home_page.this, projects_page.class);
             startActivity(intent);
             finish();
@@ -64,17 +65,13 @@ public class home_page extends AppCompatActivity {
         });
     }
 
-    // Method to get the device's IP address
     private String getDeviceIpAddress() {
         try {
-            // Get all network interfaces
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
 
-            // Iterate through all interfaces
             while (networkInterfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = networkInterfaces.nextElement();
 
-                // Skip loopback and interfaces that are down
                 if (networkInterface.isLoopback() || !networkInterface.isUp()) {
                     continue;
                 }
@@ -83,7 +80,6 @@ public class home_page extends AppCompatActivity {
                 while (addresses.hasMoreElements()) {
                     java.net.InetAddress addr = addresses.nextElement();
 
-                    // Skip IPv6 addresses and loopback addresses
                     if (addr.isLoopbackAddress() || addr.getHostAddress().contains(":")) {
                         continue;
                     }
@@ -92,7 +88,7 @@ public class home_page extends AppCompatActivity {
                 }
             }
         } catch (SocketException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to read device IP", e);
         }
 
         return "IP not available";

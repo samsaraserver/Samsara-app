@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-
-
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -22,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <!-- Add guidelines for proportional margins -->
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_start"
             android:layout_width="wrap_content"
@@ -288,15 +285,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/tvMonitoringInterval"
             app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
-        <!--<ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="7dp"
-            app:layout_constraintEnd_toEndOf="@+id/MonitorBox"
-            app:layout_constraintTop_toTopOf="@+id/MonitorBox"
-            android:src="@drawable/configuration_5" />-->
 
         <TextView
             android:id="@+id/tvTempAlert"

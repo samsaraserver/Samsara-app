@@ -3,12 +3,9 @@ package com.termux.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-    import android.text.Html;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -57,8 +54,8 @@ public class register_page extends Activity {
     }
 
     private void setupClickListeners() {
-        ImageButton LoginButton = findViewById(R.id.LoginBtn);
-        LoginButton.setOnClickListener(view -> {
+        ImageButton loginButton = findViewById(R.id.LoginBtn);
+        loginButton.setOnClickListener(view -> {
             Intent intent = new Intent(register_page.this, login_page.class);
             startActivity(intent);
             finish();
@@ -69,8 +66,8 @@ public class register_page extends Activity {
             handleCreateAccount();
         });
 
-        ImageButton LoginButton2 = findViewById(R.id.LoginBtn2);
-        LoginButton2.setOnClickListener(view -> {
+        ImageButton loginSecondaryButton = findViewById(R.id.LoginBtn2);
+        loginSecondaryButton.setOnClickListener(view -> {
             Intent intent = new Intent(register_page.this, login_page.class);
             startActivity(intent);
             finish();
@@ -124,10 +121,8 @@ public class register_page extends Activity {
             })
             .thenCompose(success -> {
                 if (success) {
-                    Log.d(TAG, "User creation successful, fetching user data...");
                     return userRepository.getUserByEmail(email);
                 } else {
-                    Log.e(TAG, "User creation failed");
                     return CompletableFuture.completedFuture(null);
                 }
             })
@@ -135,7 +130,6 @@ public class register_page extends Activity {
                 runOnUiThread(() -> {
                     setFormEnabled(true);
                     if (user != null) {
-                        Log.d(TAG, "User data retrieved successfully: " + user.getUsername());
                         AuthManager.getInstance(this).loginUser(user);
                         Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
                         
@@ -143,7 +137,6 @@ public class register_page extends Activity {
                         startActivity(intent);
                         finish();
                     } else {
-                        Log.e(TAG, "Failed to retrieve user data after creation");
                         Toast.makeText(this, "Account may have been created, but login failed. Please try signing in manually.", Toast.LENGTH_LONG).show();
                     }
                 });

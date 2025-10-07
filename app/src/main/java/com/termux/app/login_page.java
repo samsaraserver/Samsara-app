@@ -53,23 +53,19 @@ public class login_page extends FragmentActivity {
         loadSavedCredentials();
         setupClickListeners();
 
-        // Initialize biometric helper with callback - REMOVED RISKY AUTO-TRIGGER
         biometricHelper = new BiometricHelper(this, new BiometricHelper.AuthenticationCallback() {
             @Override
             public void onAuthenticationSuccessful(String username, String email, String password, String userId) {
-                // Handle successful authentication
                 loginWithStoredCredentials(username, email, password);
             }
 
             @Override
             public void onAuthenticationFailed() {
-                // Handle authentication failure
                 Toast.makeText(login_page.this, "Biometric authentication failed. Please try again or use your password.", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onAuthenticationError(int errorCode, CharSequence errString) {
-                // Handle authentication errors - most likely user cancelled
                 if (errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON && errorCode != BiometricPrompt.ERROR_USER_CANCELED) {
                     Toast.makeText(login_page.this, "Authentication error: " + errString, Toast.LENGTH_LONG).show();
                 }
@@ -93,7 +89,6 @@ public class login_page extends FragmentActivity {
         passwordBox = findViewById(R.id.PasswordBox);
         rememberMeCheckBox = findViewById(R.id.RememberMeCheckBox);
 
-        // REMOVED RISKY FOCUS LISTENERS THAT COULD CAUSE CRASHES
     }
 
     private void loadSavedCredentials() {
@@ -102,7 +97,6 @@ public class login_page extends FragmentActivity {
             String savedUsername = loginPrefs.getString(KEY_EMAIL_USERNAME, "");
             String savedPassword = loginPrefs.getString(KEY_PASSWORD, "");
 
-            // Pre-fill the form with saved credentials
             emailUsernameBox.setText(savedUsername);
             passwordBox.setText(savedPassword);
             rememberMeCheckBox.setChecked(true);
@@ -128,25 +122,24 @@ public class login_page extends FragmentActivity {
     }
 
     private void setupClickListeners() {
-        ImageButton RegisterButton = findViewById(R.id.RegisterBtn);
+        ImageButton registerButton = findViewById(R.id.RegisterBtn);
         Intent registerIntent = new Intent(login_page.this, register_page.class);
-        RegisterButton.setOnClickListener(view -> {
+        registerButton.setOnClickListener(view -> {
             startActivity(registerIntent);
             finish();
         });
 
-        ImageButton Register2Button = findViewById(R.id.RegisterBtn2);
+        ImageButton registerSecondaryButton = findViewById(R.id.RegisterBtn2);
         Intent registerIntent2 = new Intent(login_page.this, register_page.class);
-        Register2Button.setOnClickListener(view -> {
+        registerSecondaryButton.setOnClickListener(view -> {
             startActivity(registerIntent2);
             finish();
         });
 
-        ImageButton BiometricLogin = findViewById(R.id.LoginBiometricsBtn); // Fixed ID mismatch
-        BiometricLogin.setOnClickListener(view -> {
+        ImageButton biometricLoginButton = findViewById(R.id.LoginBiometricsBtn);
+        biometricLoginButton.setOnClickListener(view -> {
             if (biometricHelper != null) {
                 if (biometricHelper.isBiometricAvailable() && biometricHelper.hasStoredCredentials()) {
-                    Log.d(TAG, "Starting biometric authentication from biometric button");
                     biometricHelper.startBiometricAuthentication();
                 } else {
                     Toast.makeText(this, "Biometric authentication not available or no stored credentials.", Toast.LENGTH_LONG).show();
@@ -184,15 +177,11 @@ public class login_page extends FragmentActivity {
         }
 
         if (!biometricHelper.isBiometricAvailable()) {
-            // Hide or disable biometric option if not available
-            ImageButton biometricLoginButton = findViewById(R.id.LoginBiometricsBtn); // Fixed ID mismatch
+            ImageButton biometricLoginButton = findViewById(R.id.LoginBiometricsBtn);
             if (biometricLoginButton != null) {
                 biometricLoginButton.setEnabled(false);
                 biometricLoginButton.setAlpha(0.5f);
-                Log.d(TAG, "Biometric authentication not available, button disabled");
             }
-        } else {
-            Log.d(TAG, "Biometric authentication is available");
         }
     }
 
@@ -207,10 +196,8 @@ public class login_page extends FragmentActivity {
         setFormEnabled(false);
         Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
 
-        // Use simple AsyncTask-style approach for API 21+ compatibility
         new Thread(() -> {
             try {
-                // First authenticate the user
                 userRepository.authenticateUser(emailOrUsername, password)
                     .handle((success, throwable) -> {
                         if (throwable != null) {
@@ -223,8 +210,6 @@ public class login_page extends FragmentActivity {
                         }
 
                         if (success != null && success) {
-                            Log.d(TAG, "Authentication successful, fetching user data...");
-                            // Now fetch user data
                             new Thread(() -> {
                                 try {
                                     SamsaraUser user = null;
@@ -241,7 +226,6 @@ public class login_page extends FragmentActivity {
                                 }
                             }).start();
                         } else {
-                            Log.d(TAG, "Authentication failed");
                             runOnUiThread(() -> {
                                 setFormEnabled(true);
                                 Toast.makeText(this, "Invalid email/username or password", Toast.LENGTH_LONG).show();
@@ -271,16 +255,12 @@ public class login_page extends FragmentActivity {
             }
 
             if (user != null) {
-                Log.d(TAG, "User data retrieved successfully: " + user.getUsername());
-
-                // Handle Remember Me functionality
                 if (rememberMeCheckBox.isChecked()) {
                     saveCredentials(emailOrUsername, password);
                 } else {
                     clearSavedCredentials();
                 }
 
-                // Store credentials securely for biometric authentication
                 storeCredentialsForBiometric(user, emailOrUsername, password);
 
                 AuthManager.getInstance(this).loginUser(user);
@@ -307,19 +287,12 @@ public class login_page extends FragmentActivity {
             return;
         }
 
-        // Always store/update biometric credentials if biometric authentication is available
-        // This ensures credentials are fresh and the biometric button will work
         if (biometricHelper.isBiometricAvailable()) {
             String username = user.getUsername();
             String email = user.getEmail();
             String userId = String.valueOf(user.getId());
 
-            Log.d(TAG, "Storing/updating credentials for biometric authentication - Username: " + username + ", Email: " + email);
-
-            // Store credentials securely for biometric authentication
             biometricHelper.storeCredentials(username, email, password, userId);
-
-            // Inform user that biometric login is now available
             Toast.makeText(this, "Biometric login updated and ready to use!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -328,7 +301,6 @@ public class login_page extends FragmentActivity {
         setFormEnabled(false);
         Toast.makeText(this, "Logging in with biometrics...", Toast.LENGTH_SHORT).show();
 
-        // Determine whether to use email or username for login
         final String loginIdentifier = !TextUtils.isEmpty(email) ? email : username;
 
         if (TextUtils.isEmpty(loginIdentifier) || TextUtils.isEmpty(password)) {
@@ -339,10 +311,8 @@ public class login_page extends FragmentActivity {
             return;
         }
 
-        // Use simple AsyncTask-style approach for API 21+ compatibility
         new Thread(() -> {
             try {
-                // First authenticate the user
                 userRepository.authenticateUser(loginIdentifier, password)
                     .handle((success, throwable) -> {
                         if (throwable != null) {
@@ -356,8 +326,6 @@ public class login_page extends FragmentActivity {
                         }
 
                         if (success != null && success) {
-                            Log.d(TAG, "Biometric login authentication successful, fetching user data...");
-                            // Now fetch user data
                             new Thread(() -> {
                                 try {
                                     SamsaraUser user = null;
@@ -374,7 +342,6 @@ public class login_page extends FragmentActivity {
                                 }
                             }).start();
                         } else {
-                            Log.d(TAG, "Biometric login authentication failed");
                             runOnUiThread(() -> {
                                 setFormEnabled(true);
                                 Toast.makeText(this, "Biometric login failed. Your stored credentials may no longer be valid.",
@@ -404,8 +371,6 @@ public class login_page extends FragmentActivity {
             }
 
             if (user != null) {
-                Log.d(TAG, "User data retrieved successfully via biometric login: " + user.getUsername());
-
                 AuthManager.getInstance(this).loginUser(user);
                 Toast.makeText(this, "Biometric login successful!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(login_page.this, home_page.class);
@@ -444,25 +409,20 @@ public class login_page extends FragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
         try {
-            // Clean up BiometricHelper to prevent memory leaks
             if (biometricHelper != null) {
                 biometricHelper.cleanup();
                 biometricHelper = null;
             }
 
-            // Clean up UserRepository
             if (userRepository != null) {
                 userRepository.shutdown();
                 userRepository = null;
             }
 
-            // Clear UI references to prevent memory leaks
             emailUsernameBox = null;
             passwordBox = null;
             rememberMeCheckBox = null;
             loginPrefs = null;
-
-            Log.d(TAG, "login_page cleanup completed");
         } catch (Exception e) {
             Log.e(TAG, "Error in onDestroy: " + e.getMessage(), e);
         }

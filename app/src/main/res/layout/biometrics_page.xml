@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <!-- Add guidelines for proportional margins -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -56,7 +55,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="550dp" />
 
-    <!--text-->
 
     <TextView
         android:id="@+id/tvTitle"
@@ -71,7 +69,6 @@
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="@id/guideline_top" />
 
-    <!--images-->
 
     <TextView
         android:id="@+id/tvSummary"
@@ -98,7 +95,6 @@
         app:layout_constraintVertical_bias="0.1"
         tools:ignore="ContentDescription" />
 
-    <!--button-->
 
     <ImageView
         android:id="@+id/FingerPrint"
@@ -112,7 +108,6 @@
         app:layout_constraintVertical_bias="0.1"
         tools:ignore="ContentDescription" />
 
-    <!-- Navbar Include -->
 
     <ImageButton
         android:id="@+id/BiometricsBtn"

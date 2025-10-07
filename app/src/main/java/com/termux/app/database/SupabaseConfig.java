@@ -38,8 +38,6 @@ public class SupabaseConfig {
         return SUPABASE_PUBLISHABLE_KEY;
     }
     
-    // Removed service role key method - not safe for mobile apps
-    
     public static String getSupabaseUrl() {
         return SUPABASE_URL;
     }

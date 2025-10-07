@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <!-- Add guidelines for proportional margins -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -57,7 +56,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.85" />
 
-    <!-- Top bar and logo -->
     <ImageView
         android:id="@+id/TopBar"
         android:layout_width="0dp"
@@ -104,7 +102,6 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintTop_toBottomOf="@id/TopBar" />
 
-    <!-- Sign in / Register selector row -->
     <ImageView
         android:id="@+id/SignUpView"
         android:layout_width="0dp"
@@ -153,7 +150,6 @@
         app:layout_constraintTop_toTopOf="@id/RegisterBtn"
         app:layout_constraintBottom_toBottomOf="@id/RegisterBtn" />
 
-    <!-- Form fields -->
     <EditText
         android:id="@+id/EmailUsernameBox"
         android:layout_width="0dp"
@@ -187,7 +183,6 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintTop_toBottomOf="@id/EmailUsernameBox" />
 
-    <!-- Biometrics and social login -->
 
     <ImageButton
         android:id="@+id/LoginBiometricsBtn"
@@ -238,7 +233,6 @@
         app:layout_constraintStart_toStartOf="@id/LoginGithubGtn"
         app:layout_constraintEnd_toEndOf="@id/LoginGithubGtn" />
 
-    <!-- Remember me and sign in -->
     <CheckBox
         android:id="@+id/RememberMeCheckBox"
         android:layout_width="wrap_content"
@@ -295,7 +289,6 @@
         app:layout_constraintStart_toStartOf="@+id/ForgotPasswordBtn"
         app:layout_constraintTop_toTopOf="@+id/ForgotPasswordBtn" />
 
-    <!-- Continue without account -->
 
     <ImageButton
         android:id="@+id/RegisterBtn2"

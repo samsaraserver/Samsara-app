@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <!-- Add guidelines for proportional margins -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -67,8 +66,6 @@
         app:layout_constraintTop_toTopOf="@id/guideline_top"
         tools:ignore="ContentDescription" />
 
-    <!-- App Title -->
-
     <TextView
         android:id="@+id/app_title"
         android:layout_width="wrap_content"
@@ -83,9 +80,6 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/logo_image" />
-
-
-    <!-- App Description -->
 
     <TextView
         android:id="@+id/app_description"
@@ -102,8 +96,6 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/app_title" />
-
-    <!-- Loading Overlay -->
 
     <LinearLayout
         android:id="@+id/loading_overlay"

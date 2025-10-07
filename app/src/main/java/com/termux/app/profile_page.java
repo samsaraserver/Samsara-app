@@ -144,7 +144,6 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
             if (user != null) {
                 usernameBox.setText(user.getUsername() != null ? user.getUsername() : "");
                 emailBox.setText(user.getEmail() != null ? user.getEmail() : "");
-                // Show masked password instead of hash
                 passwordBox.setText(user.getPasswordHash() != null ? "••••••••" : "");
                 String filename = user.getProfilePictureUrl();
                 if (!TextUtils.isEmpty(filename)) {
@@ -196,7 +195,6 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
             passwordBox.setHint("Enter new password");
             Toast.makeText(this, "Edit mode enabled", Toast.LENGTH_SHORT).show();
         } else {
-            // Reset flags when exiting edit mode
             newPasswordForDisplay = null;
             shouldShowPasswordPopup = false;
             loadUserData();
@@ -228,7 +226,6 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
             return;
         }
 
-        // Store the new password for one-time display if it was changed
         if (!TextUtils.isEmpty(password)) {
             newPasswordForDisplay = password;
             shouldShowPasswordPopup = true;
@@ -304,7 +301,6 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-            // Auto-dismiss after 10 seconds
         }, 10000);
     }
 
@@ -468,7 +464,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
             int ref = (viewMin > 0) ? viewMin : basePx;
             targetPx = Math.max(64, Math.min(2048, (int) (ref * 0.75f)));
         } catch (Exception e) {
-            targetPx = 384; // 512 * 0.75 fallback
+            targetPx = 384;
         }
 
         UCrop.Options options = new UCrop.Options();
