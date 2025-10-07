@@ -25,13 +25,7 @@ public class NavbarHelper {
         ImageButton accountButton = activity.findViewById(R.id.navbar_profile);
 
         if (homeButton != null) {
-            homeButton.setOnClickListener(view -> {
-                Intent intent = new Intent(activity, home_page.class);
-                activity.startActivity(intent);
-                if (!(activity instanceof home_page)) {
-                    activity.finish();
-                }
-            });
+            homeButton.setOnClickListener(view -> navigateToActivity(activity, home_page.class));
         }
 
         if (configButton != null) {
@@ -62,24 +56,28 @@ public class NavbarHelper {
         }
 
         if (documentsButton != null) {
-            documentsButton.setOnClickListener(view -> {
-                Intent intent = new Intent(activity, documents_page.class);
-                activity.startActivity(intent);
-                if (!(activity instanceof documents_page)) {
-                    activity.finish();
-                }
-            });
+            documentsButton.setOnClickListener(view -> navigateToActivity(activity, documents_page.class));
         }
 
         if (accountButton != null) {
-            accountButton.setOnClickListener(view -> {
-                Intent intent = new Intent(activity, profile_page.class);
-                activity.startActivity(intent);
-                if (!(activity instanceof profile_page)) {
-                    activity.finish();
-                }
-            });
+            accountButton.setOnClickListener(view -> navigateToActivity(activity, profile_page.class));
         }
+    }
+
+    public static void navigateToActivity(Activity activity, Class<? extends Activity> targetClass) {
+        if (activity == null || targetClass == null) {
+            return;
+        }
+
+        if (activity.getClass() == targetClass) {
+            return;
+        }
+
+        Intent intent = new Intent(activity, targetClass);
+        // #COMPLETION_DRIVE: Assuming reordering the existing target activity maintains history without spawning duplicates
+        // #SUGGEST_VERIFY: Navigate between pages repeatedly and confirm the back button steps through prior pages instead of closing the app
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        activity.startActivity(intent);
     }
 
     private static void showBiometricPromptForConfig(FragmentActivity activity) {
@@ -101,11 +99,7 @@ public class NavbarHelper {
                     @Override
                     public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
                         super.onAuthenticationSucceeded(result);
-                        Intent intent = new Intent(activity, configuration_page.class);
-                        activity.startActivity(intent);
-                        if (!(activity instanceof configuration_page)) {
-                            activity.finish();
-                        }
+                        navigateToActivity(activity, configuration_page.class);
                     }
 
                     @Override
@@ -134,15 +128,19 @@ public class NavbarHelper {
         Intent intent = new Intent(activity, TermuxActivity.class);
         intent.setAction(SamsaraIntents.ACTION_SAMSARA_OPEN_TERMUX);
         SamsaraIntents.putEnv(intent, SamsaraIntents.ENV_TERMUX);
+        // #COMPLETION_DRIVE: Assuming reordering Termux keeps previous UI screens accessible when returning
+        // #SUGGEST_VERIFY: Launch Termux from multiple pages and confirm back returns to originating screen instead of closing the task
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activity.startActivity(intent);
-        activity.finish();
     }
 
     private static void startAlpineSession(Activity activity) {
         Intent termuxIntent = new Intent(activity, TermuxActivity.class);
         termuxIntent.setAction(SamsaraIntents.ACTION_SAMSARA_OPEN_ALPINE);
         SamsaraIntents.putEnv(termuxIntent, SamsaraIntents.ENV_ALPINE);
+        // #COMPLETION_DRIVE: Assuming bringing Alpine session forward reuses the existing Termux activity context without duplicating it
+        // #SUGGEST_VERIFY: Switch between Termux and Alpine options, then inspect activity stack with adb to ensure only one instance exists
+        termuxIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activity.startActivity(termuxIntent);
-        activity.finish();
     }
 }

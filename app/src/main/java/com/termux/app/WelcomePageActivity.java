@@ -1,7 +1,6 @@
 package com.termux.app;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 
@@ -17,9 +16,7 @@ public class WelcomePageActivity extends Activity {
         ImageButton getStartedButton = findViewById(R.id.WelcomeBtn);
         
         getStartedButton.setOnClickListener(view -> {
-            Intent intent = new Intent(WelcomePageActivity.this, login_page.class);
-            startActivity(intent);
-            finish();
+            NavbarHelper.navigateToActivity(WelcomePageActivity.this, login_page.class);
         });
     }
 }

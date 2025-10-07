@@ -61,9 +61,7 @@ public class home_page extends AppCompatActivity {
         ImageButton monitorBtn = findViewById(R.id.monitorBtn);
 
         monitorBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(home_page.this, monitor_page.class);
-            startActivity(intent);
-            finish();
+            NavbarHelper.navigateToActivity(home_page.this, monitor_page.class);
         });
 
         ImageButton configurationBtn = findViewById(R.id.configurationBtn);
@@ -80,17 +78,13 @@ public class home_page extends AppCompatActivity {
         ImageButton projectButton = findViewById(R.id.ProjectBtn);
 
         projectButton.setOnClickListener(view -> {
-            Intent intent = new Intent(home_page.this, projects_page.class);
-            startActivity(intent);
-            finish();
+            NavbarHelper.navigateToActivity(home_page.this, projects_page.class);
         });
 
         ImageButton documentationBtn = findViewById(R.id.documentationBtn);
 
         documentationBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(home_page.this, documents_page.class);
-            startActivity(intent);
-            finish();
+            NavbarHelper.navigateToActivity(home_page.this, documents_page.class);
         });
     }
 
@@ -116,9 +110,7 @@ public class home_page extends AppCompatActivity {
                         super.onAuthenticationSucceeded(result);
                         Log.d(TAG, "Authentication succeeded");
                         // Navigate to configuration page on successful authentication
-                        Intent intent = new Intent(home_page.this, configuration_page.class);
-                        startActivity(intent);
-                        finish();
+                        NavbarHelper.navigateToActivity(home_page.this, configuration_page.class);
                     }
 
                     @Override

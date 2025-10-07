@@ -1,6 +1,5 @@
 package com.termux.app;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
@@ -123,18 +122,10 @@ public class login_page extends FragmentActivity {
 
     private void setupClickListeners() {
         ImageButton registerButton = findViewById(R.id.RegisterBtn);
-        Intent registerIntent = new Intent(login_page.this, register_page.class);
-        registerButton.setOnClickListener(view -> {
-            startActivity(registerIntent);
-            finish();
-        });
+        registerButton.setOnClickListener(view -> NavbarHelper.navigateToActivity(login_page.this, register_page.class));
 
         ImageButton registerSecondaryButton = findViewById(R.id.RegisterBtn2);
-        Intent registerIntent2 = new Intent(login_page.this, register_page.class);
-        registerSecondaryButton.setOnClickListener(view -> {
-            startActivity(registerIntent2);
-            finish();
-        });
+        registerSecondaryButton.setOnClickListener(view -> NavbarHelper.navigateToActivity(login_page.this, register_page.class));
 
         ImageButton biometricLoginButton = findViewById(R.id.LoginBiometricsBtn);
         biometricLoginButton.setOnClickListener(view -> {
@@ -156,10 +147,8 @@ public class login_page extends FragmentActivity {
         }
 
         ImageButton continueWithoutAccountButton = findViewById(R.id.ContinueWithoutAccountBtn);
-        Intent homeIntent = new Intent(login_page.this, home_page.class);
         continueWithoutAccountButton.setOnClickListener(view -> {
-            startActivity(homeIntent);
-            finish();
+            NavbarHelper.navigateToActivity(login_page.this, home_page.class);
         });
 
         ImageButton githubButton = findViewById(R.id.LoginGithubGtn);
@@ -265,9 +254,7 @@ public class login_page extends FragmentActivity {
 
                 AuthManager.getInstance(this).loginUser(user);
                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(login_page.this, home_page.class);
-                startActivity(intent);
-                finish();
+                NavbarHelper.navigateToActivity(login_page.this, home_page.class);
             } else {
                 Toast.makeText(this, "Invalid email/username or password", Toast.LENGTH_LONG).show();
                 passwordBox.setText("");
@@ -373,9 +360,7 @@ public class login_page extends FragmentActivity {
             if (user != null) {
                 AuthManager.getInstance(this).loginUser(user);
                 Toast.makeText(this, "Biometric login successful!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(login_page.this, home_page.class);
-                startActivity(intent);
-                finish();
+                NavbarHelper.navigateToActivity(login_page.this, home_page.class);
             } else {
                 Toast.makeText(this, "Biometric login failed. Your stored credentials may no longer be valid.",
                     Toast.LENGTH_LONG).show();
