@@ -6,70 +6,22 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.03" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.97" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_mleft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.47" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_mright"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.53" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_middle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.08" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7" />
-
     <ImageView
         android:id="@+id/TopBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/top_bar_1"
         android:scaleType="fitXY"
+        android:src="@drawable/top_bar_1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/SamsaraLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_sm"
         android:src="@drawable/samsara_logo_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -84,21 +36,18 @@
         android:text="@string/profile"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_top"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toEndOf="@id/TopBar"
         app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
-        app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
-        app:layout_constraintVertical_bias="0.450" />
+        app:layout_constraintTop_toTopOf="@id/SamsaraLogo" />
 
     <ImageButton
         android:id="@+id/SignInOutBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/account_1"
         app:layout_constraintEnd_toEndOf="@id/TopBar"
         app:layout_constraintTop_toTopOf="@id/TopBar"
-        android:src="@drawable/account_1"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -107,180 +56,237 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_in"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/SignInOutBtn"
-        app:layout_constraintEnd_toEndOf="@+id/SignInOutBtn"
-        app:layout_constraintStart_toStartOf="@+id/SignInOutBtn"
-        app:layout_constraintTop_toTopOf="@+id/SignInOutBtn" />
+        app:layout_constraintBottom_toBottomOf="@id/SignInOutBtn"
+        app:layout_constraintEnd_toEndOf="@id/SignInOutBtn"
+        app:layout_constraintStart_toStartOf="@id/SignInOutBtn"
+        app:layout_constraintTop_toTopOf="@id/SignInOutBtn" />
 
-    <ImageView
-        android:id="@+id/imgProfilePic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_lg"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/TopBar"
-        android:src="@drawable/account_2"
-        tools:ignore="ContentDescription" />
-
-    <TextView
-        android:id="@+id/tvUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/username"
-        android:layout_marginTop="@dimen/padding_xl"
-        android:layout_marginStart="@dimen/padding_sm"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/imgProfilePic"/>
-
-    <EditText
-        android:id="@+id/UserBox"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/profileScroll"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="@string/username"
-        android:textColorHint="#a2a2a2"
-        android:textColor="#FFFFFF"
-        android:scaleType="fitXY"
-        android:paddingStart="15dp"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:background="@drawable/account_3"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/tvUsername"
-        tools:ignore="Autofill" />
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/spacing_xl"
+        app:layout_constraintBottom_toTopOf="@id/navbar_include"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/TopBar">
 
-    <TextView
-        android:id="@+id/tvEmailPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/email_or_phone_number"
-        android:textColor="#FFFFFF"
-        android:layout_marginStart="@dimen/padding_sm"
-        android:layout_marginTop="@dimen/padding_lg"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/UserBox"
-        />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profileContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/EmailPhoneBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:hint="@string/email"
-        android:textColorHint="#a2a2a2"
-        android:textColor="#FFFFFF"
-        android:paddingStart="15dp"
-        android:scaleType="fitXY"
-        android:background="@drawable/account_3"
-        android:layout_marginTop="@dimen/padding_sm"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/tvEmailPhone"
-        tools:ignore="Autofill" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.03" />
 
-    <TextView
-        android:id="@+id/tvPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:freezesText="true"
-        android:text="@string/password"
-        android:textColor="#FFFFFF"
-        android:layout_marginStart="@dimen/padding_sm"
-        android:layout_marginTop="@dimen/padding_lg"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/EmailPhoneBox" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.97" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_mleft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.47" />
 
-    <EditText
-        android:id="@+id/PasswordBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:hint="@string/password"
-        android:textColorHint="#a2a2a2"
-        android:textColor="#FFFFFF"
-        android:paddingStart="15dp"
-        android:scaleType="fitXY"
-        android:background="@drawable/account_3"
-        android:theme="@android:style/Theme.Material.NoActionBar"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/tvPassword"
-        tools:ignore="Autofill" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_mright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.53" />
 
-    <ImageButton
-        android:id="@+id/SetupBiometricsBtn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:scaleType="fitXY"
-        android:src="@drawable/account_4"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
-        tools:ignore="ContentDescription" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_middle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
-    <TextView
-        android:id="@+id/tvSetupBiometrics"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/setup_biometrics"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/SetupBiometricsBtn"
-        app:layout_constraintEnd_toEndOf="@+id/SetupBiometricsBtn"
-        app:layout_constraintStart_toStartOf="@+id/SetupBiometricsBtn"
-        app:layout_constraintTop_toTopOf="@+id/SetupBiometricsBtn" />
+            <ImageView
+                android:id="@+id/imgProfilePic"
+                android:layout_width="@dimen/profile_image_size"
+                android:layout_height="@dimen/profile_image_size"
+                android:layout_marginTop="@dimen/spacing_xxl"
+                android:scaleType="centerCrop"
+                android:src="@drawable/account_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
 
-    <ImageButton
-        android:id="@+id/EditInformationBtn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:scaleType="fitXY"
-        android:src="@drawable/account_4"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@+id/guideline_middle"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
-        tools:ignore="ContentDescription" />
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:text="@string/username"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/imgProfilePic" />
 
-    <TextView
-        android:id="@+id/tvEditInformation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/edit_information"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/EditInformationBtn"
-        app:layout_constraintEnd_toEndOf="@+id/EditInformationBtn"
-        app:layout_constraintStart_toStartOf="@+id/EditInformationBtn"
-        app:layout_constraintTop_toTopOf="@+id/EditInformationBtn" />
+            <EditText
+                android:id="@+id/UserBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:background="@drawable/account_3"
+                android:hint="@string/username"
+                android:inputType="text"
+                android:paddingStart="15dp"
+                android:scaleType="fitXY"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#a2a2a2"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvUsername"
+                tools:ignore="Autofill" />
 
-    <ImageButton
-        android:id="@+id/SaveBtn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:scaleType="fitXY"
-        android:src="@drawable/account_5"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/EditInformationBtn"
-        tools:ignore="ContentDescription" />
+            <TextView
+                android:id="@+id/tvEmailPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:text="@string/email_or_phone_number"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/UserBox" />
 
-    <TextView
-        android:id="@+id/tvSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/save"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/SaveBtn"
-        app:layout_constraintEnd_toEndOf="@+id/SaveBtn"
-        app:layout_constraintStart_toStartOf="@+id/SaveBtn"
-        app:layout_constraintTop_toTopOf="@+id/SaveBtn" />
+            <EditText
+                android:id="@+id/EmailPhoneBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:background="@drawable/account_3"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:paddingStart="15dp"
+                android:scaleType="fitXY"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#a2a2a2"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvEmailPhone"
+                tools:ignore="Autofill" />
+
+            <TextView
+                android:id="@+id/tvPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:freezesText="true"
+                android:text="@string/password"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/EmailPhoneBox" />
+
+            <EditText
+                android:id="@+id/PasswordBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/account_3"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:paddingStart="15dp"
+                android:scaleType="fitXY"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#a2a2a2"
+                android:theme="@android:style/Theme.Material.NoActionBar"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvPassword"
+                tools:ignore="Autofill" />
+
+            <ImageButton
+                android:id="@+id/SetupBiometricsBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:backgroundTint="#00FFFFFF"
+                android:scaleType="fitXY"
+                android:src="@drawable/account_4"
+                app:layout_constraintEnd_toStartOf="@id/guideline_middle"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/PasswordBox"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tvSetupBiometrics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_biometrics"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/SetupBiometricsBtn"
+                app:layout_constraintEnd_toEndOf="@id/SetupBiometricsBtn"
+                app:layout_constraintStart_toStartOf="@id/SetupBiometricsBtn"
+                app:layout_constraintTop_toTopOf="@id/SetupBiometricsBtn" />
+
+            <ImageButton
+                android:id="@+id/EditInformationBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:backgroundTint="#00FFFFFF"
+                android:scaleType="fitXY"
+                android:src="@drawable/account_4"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_middle"
+                app:layout_constraintTop_toBottomOf="@id/PasswordBox"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tvEditInformation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_information"
+                android:textColor="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@id/EditInformationBtn"
+                app:layout_constraintEnd_toEndOf="@id/EditInformationBtn"
+                app:layout_constraintStart_toStartOf="@id/EditInformationBtn"
+                app:layout_constraintTop_toTopOf="@id/EditInformationBtn" />
+
+            <ImageButton
+                android:id="@+id/SaveBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:backgroundTint="#00FFFFFF"
+                android:scaleType="fitXY"
+                android:src="@drawable/account_5"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/EditInformationBtn"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tvSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@id/SaveBtn"
+                app:layout_constraintEnd_toEndOf="@id/SaveBtn"
+                app:layout_constraintStart_toStartOf="@id/SaveBtn"
+                app:layout_constraintTop_toTopOf="@id/SaveBtn" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/navbar_include"
@@ -288,6 +294,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

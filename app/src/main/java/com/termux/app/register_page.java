@@ -1,7 +1,6 @@
 package com.termux.app;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -55,11 +54,7 @@ public class register_page extends Activity {
 
     private void setupClickListeners() {
         ImageButton loginButton = findViewById(R.id.LoginBtn);
-        loginButton.setOnClickListener(view -> {
-            Intent intent = new Intent(register_page.this, login_page.class);
-            startActivity(intent);
-            finish();
-        });
+        loginButton.setOnClickListener(view -> NavbarHelper.navigateToActivity(register_page.this, login_page.class));
 
         ImageButton createAccountButton = findViewById(R.id.CreateAccountBtn);
         createAccountButton.setOnClickListener(view -> {
@@ -67,11 +62,7 @@ public class register_page extends Activity {
         });
 
         ImageButton loginSecondaryButton = findViewById(R.id.LoginBtn2);
-        loginSecondaryButton.setOnClickListener(view -> {
-            Intent intent = new Intent(register_page.this, login_page.class);
-            startActivity(intent);
-            finish();
-        });
+        loginSecondaryButton.setOnClickListener(view -> NavbarHelper.navigateToActivity(register_page.this, login_page.class));
 
         ImageButton githubButton = findViewById(R.id.SignInGithubBtn);
         if (githubButton != null) {
@@ -133,9 +124,7 @@ public class register_page extends Activity {
                         AuthManager.getInstance(this).loginUser(user);
                         Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
                         
-                        Intent intent = new Intent(register_page.this, home_page.class);
-                        startActivity(intent);
-                        finish();
+                        NavbarHelper.navigateToActivity(register_page.this, home_page.class);
                     } else {
                         Toast.makeText(this, "Account may have been created, but login failed. Please try signing in manually.", Toast.LENGTH_LONG).show();
                     }

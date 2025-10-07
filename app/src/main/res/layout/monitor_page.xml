@@ -6,432 +6,437 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.03" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.97" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_mleft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.47" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_mright"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.53" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_middle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
-
-    <ImageView
-        android:id="@+id/TopBar"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/monitorScroll"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/top_bar_1"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/spacing_xl"
+        app:layout_constraintBottom_toTopOf="@id/navbar_include"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="ContentDescription" />
-
-    <ImageView
-        android:id="@+id/SamsaraLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/samsara_logo_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/system_monitor"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/text_xl"
-        app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
-        app:layout_constraintTop_toTopOf="@id/SamsaraLogo" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/monitorContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/DiskMonitoringPanel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/monitor_1"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/TopBar"
-        tools:ignore="ContentDescription" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.03" />
 
-    <TextView
-        android:id="@+id/tvDiskIO"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/disk_io"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/DiskMonitoringPanel"
-        app:layout_constraintTop_toTopOf="@id/DiskMonitoringPanel"
-        android:layout_marginStart="@dimen/padding_md"
-        android:layout_marginTop="@dimen/padding_sm" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.97" />
 
-    <ImageView
-        android:id="@+id/Line"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="@id/DiskMonitoringPanel"
-        app:layout_constraintEnd_toEndOf="@id/DiskMonitoringPanel"
-        app:layout_constraintTop_toBottomOf="@id/tvDiskIO"
-        android:layout_marginStart="@dimen/padding_smd"
-        android:layout_marginEnd="@dimen/padding_smd"
-        android:layout_marginTop="@dimen/padding_sm"
-        app:srcCompat="@drawable/monitor_2"
-        tools:ignore="ContentDescription" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_mleft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.47" />
 
-    <TextView
-        android:id="@+id/tvReadWrite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_md"
-        android:text="@string/read_write_speed"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line"
-        app:layout_constraintTop_toBottomOf="@id/Line" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_mright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.53" />
 
-    <TextView
-        android:id="@+id/tvDiskUtil"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_md"
-        android:text="@string/disk_utilization"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@+id/Line"
-        app:layout_constraintTop_toBottomOf="@id/tvReadWrite" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_middle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
-    <TextView
-        android:id="@+id/tvReadWrite2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvReadWrite"
-        app:layout_constraintTop_toTopOf="@id/tvReadWrite"
-        android:layout_marginStart="@dimen/padding_sm" />
+            <ImageView
+                android:id="@+id/TopBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/top_bar_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tvDiskUtil2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvDiskUtil"
-        app:layout_constraintTop_toTopOf="@id/tvDiskUtil"
-        android:layout_marginStart="@dimen/padding_sm" />
+            <ImageView
+                android:id="@+id/SamsaraLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/samsara_logo_1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/ProcessMonitoringPanel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/monitor_3"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/DiskMonitoringPanel"
-        tools:ignore="ContentDescription" />
+            <TextView
+                android:id="@+id/Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lg"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:text="@string/system_monitor"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/text_xl"
+                app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
+                app:layout_constraintTop_toTopOf="@id/SamsaraLogo" />
 
-    <TextView
-        android:id="@+id/tvProcessMonitoring"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_md"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/process_monitoring"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/ProcessMonitoringPanel"
-        app:layout_constraintTop_toTopOf="@id/ProcessMonitoringPanel" />
+            <ImageView
+                android:id="@+id/DiskMonitoringPanel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:scaleType="fitXY"
+                android:src="@drawable/monitor_1"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/TopBar"
+                tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/Line2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="@id/ProcessMonitoringPanel"
-        app:layout_constraintEnd_toEndOf="@id/ProcessMonitoringPanel"
-        app:layout_constraintTop_toBottomOf="@id/tvProcessMonitoring"
-        android:layout_marginStart="@dimen/padding_smd"
-        android:layout_marginEnd="@dimen/padding_smd"
-        android:layout_marginTop="@dimen/padding_sm"
-        app:srcCompat="@drawable/monitor_2"
-        tools:ignore="ContentDescription" />
+            <TextView
+                android:id="@+id/tvDiskIO"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_md"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/disk_io"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/DiskMonitoringPanel"
+                app:layout_constraintTop_toTopOf="@id/DiskMonitoringPanel" />
 
-    <TextView
-        android:id="@+id/tvCPU"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/cpu_usage"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line2"
-        app:layout_constraintTop_toBottomOf="@id/Line2" />
+            <ImageView
+                android:id="@+id/Line"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_smd"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginEnd="@dimen/padding_smd"
+                android:scaleType="fitXY"
+                app:layout_constraintEnd_toEndOf="@id/DiskMonitoringPanel"
+                app:layout_constraintStart_toStartOf="@id/DiskMonitoringPanel"
+                app:layout_constraintTop_toBottomOf="@id/tvDiskIO"
+                app:srcCompat="@drawable/monitor_2"
+                tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tvCpuTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/cpu_temperature"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line2"
-        app:layout_constraintTop_toBottomOf="@id/tvCPU" />
+            <TextView
+                android:id="@+id/tvReadWrite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_md"
+                android:text="@string/read_write_speed"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line"
+                app:layout_constraintTop_toBottomOf="@id/Line" />
 
-    <TextView
-        android:id="@+id/tvMemoryUsage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/memory_usage"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line2"
-        app:layout_constraintTop_toBottomOf="@id/tvCpuTemp" />
+            <TextView
+                android:id="@+id/tvDiskUtil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_md"
+                android:text="@string/disk_utilization"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line"
+                app:layout_constraintTop_toBottomOf="@id/tvReadWrite" />
 
-    <TextView
-        android:id="@+id/tvThreadCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/thread_count"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line2"
-        app:layout_constraintTop_toBottomOf="@id/tvMemoryUsage" />
+            <TextView
+                android:id="@+id/tvReadWrite2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvReadWrite"
+                app:layout_constraintTop_toTopOf="@id/tvReadWrite" />
 
-    <TextView
-        android:id="@+id/tvHandles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/handles"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line2"
-        app:layout_constraintTop_toBottomOf="@id/tvThreadCount" />
+            <TextView
+                android:id="@+id/tvDiskUtil2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvDiskUtil"
+                app:layout_constraintTop_toTopOf="@id/tvDiskUtil" />
 
-    <TextView
-        android:id="@+id/tvCPU2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvCPU"
-        app:layout_constraintTop_toTopOf="@id/tvCPU"
-        android:layout_marginStart="@dimen/padding_sm" />
+            <ImageView
+                android:id="@+id/ProcessMonitoringPanel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:scaleType="fitXY"
+                android:src="@drawable/monitor_3"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/DiskMonitoringPanel"
+                tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tvCpuTemp2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvCpuTemp"
-        app:layout_constraintTop_toTopOf="@id/tvCpuTemp"
-        android:layout_marginStart="@dimen/padding_sm" />
+            <TextView
+                android:id="@+id/tvProcessMonitoring"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_md"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/process_monitoring"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/ProcessMonitoringPanel"
+                app:layout_constraintTop_toTopOf="@id/ProcessMonitoringPanel" />
 
-    <TextView
-        android:id="@+id/tvMemoryUsage2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvMemoryUsage"
-        app:layout_constraintTop_toTopOf="@id/tvMemoryUsage"
-        android:layout_marginStart="@dimen/padding_sm" />
+            <ImageView
+                android:id="@+id/Line2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_smd"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginEnd="@dimen/padding_smd"
+                android:scaleType="fitXY"
+                app:layout_constraintEnd_toEndOf="@id/ProcessMonitoringPanel"
+                app:layout_constraintStart_toStartOf="@id/ProcessMonitoringPanel"
+                app:layout_constraintTop_toBottomOf="@id/tvProcessMonitoring"
+                app:srcCompat="@drawable/monitor_2"
+                tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tvThreadCount2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvThreadCount"
-        app:layout_constraintTop_toTopOf="@id/tvThreadCount"
-        android:layout_marginStart="@dimen/padding_sm" />
+            <TextView
+                android:id="@+id/tvCPU"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/cpu_usage"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line2"
+                app:layout_constraintTop_toBottomOf="@id/Line2" />
 
-    <TextView
-        android:id="@+id/tvHandles2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvHandles"
-        app:layout_constraintTop_toTopOf="@id/tvHandles"
-        android:layout_marginStart="@dimen/padding_sm" />
+            <TextView
+                android:id="@+id/tvCpuTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/cpu_temperature"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line2"
+                app:layout_constraintTop_toBottomOf="@id/tvCPU" />
+
+            <TextView
+                android:id="@+id/tvMemoryUsage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/memory_usage"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line2"
+                app:layout_constraintTop_toBottomOf="@id/tvCpuTemp" />
+
+            <TextView
+                android:id="@+id/tvThreadCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/thread_count"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line2"
+                app:layout_constraintTop_toBottomOf="@id/tvMemoryUsage" />
+
+            <TextView
+                android:id="@+id/tvHandles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/handles"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line2"
+                app:layout_constraintTop_toBottomOf="@id/tvThreadCount" />
+
+            <TextView
+                android:id="@+id/tvCPU2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvCPU"
+                app:layout_constraintTop_toTopOf="@id/tvCPU" />
+
+            <TextView
+                android:id="@+id/tvCpuTemp2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvCpuTemp"
+                app:layout_constraintTop_toTopOf="@id/tvCpuTemp" />
+
+            <TextView
+                android:id="@+id/tvMemoryUsage2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvMemoryUsage"
+                app:layout_constraintTop_toTopOf="@id/tvMemoryUsage" />
+
+            <TextView
+                android:id="@+id/tvThreadCount2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvThreadCount"
+                app:layout_constraintTop_toTopOf="@id/tvThreadCount" />
+
+            <TextView
+                android:id="@+id/tvHandles2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvHandles"
+                app:layout_constraintTop_toTopOf="@id/tvHandles" />
 
 
-    <ImageView
-        android:id="@+id/NetworkActivityPanel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/monitor_4"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/ProcessMonitoringPanel"
-        tools:ignore="ContentDescription" />
+            <ImageView
+                android:id="@+id/NetworkActivityPanel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:scaleType="fitXY"
+                android:src="@drawable/monitor_4"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/ProcessMonitoringPanel"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tvNetworkActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/network_activity"
-        android:textColor="#FFFFFF"
-        android:layout_marginStart="@dimen/padding_md"
-        android:layout_marginTop="@dimen/padding_sm"
-        app:layout_constraintStart_toStartOf="@id/NetworkActivityPanel"
-        app:layout_constraintTop_toTopOf="@id/NetworkActivityPanel" />
+            <TextView
+                android:id="@+id/tvNetworkActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_md"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/network_activity"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/NetworkActivityPanel"
+                app:layout_constraintTop_toTopOf="@id/NetworkActivityPanel" />
 
-    <ImageView
-        android:id="@+id/Line3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="@id/NetworkActivityPanel"
-        app:layout_constraintEnd_toEndOf="@id/NetworkActivityPanel"
-        app:layout_constraintTop_toBottomOf="@id/tvNetworkActivity"
-        android:layout_marginStart="@dimen/padding_smd"
-        android:layout_marginEnd="@dimen/padding_smd"
-        android:layout_marginTop="@dimen/padding_sm"
-        app:srcCompat="@drawable/monitor_2"
-        tools:ignore="ContentDescription" />
+            <ImageView
+                android:id="@+id/Line3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_smd"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:layout_marginEnd="@dimen/padding_smd"
+                android:scaleType="fitXY"
+                app:layout_constraintEnd_toEndOf="@id/NetworkActivityPanel"
+                app:layout_constraintStart_toStartOf="@id/NetworkActivityPanel"
+                app:layout_constraintTop_toBottomOf="@id/tvNetworkActivity"
+                app:srcCompat="@drawable/monitor_2"
+                tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tvBandwidthUsage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/bandwidth_usage"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line3"
-        app:layout_constraintTop_toBottomOf="@id/Line3" />
+            <TextView
+                android:id="@+id/tvBandwidthUsage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/bandwidth_usage"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line3"
+                app:layout_constraintTop_toBottomOf="@id/Line3" />
 
-    <TextView
-        android:id="@+id/tvPacketLoss"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/packet_loss"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line3"
-        app:layout_constraintTop_toBottomOf="@id/tvBandwidthUsage" />
+            <TextView
+                android:id="@+id/tvPacketLoss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/packet_loss"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line3"
+                app:layout_constraintTop_toBottomOf="@id/tvBandwidthUsage" />
 
-    <TextView
-        android:id="@+id/tvNetworkLatency"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/network_latency"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line3"
-        app:layout_constraintTop_toBottomOf="@id/tvPacketLoss" />
+            <TextView
+                android:id="@+id/tvNetworkLatency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/network_latency"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line3"
+                app:layout_constraintTop_toBottomOf="@id/tvPacketLoss" />
 
-    <TextView
-        android:id="@+id/tvActiveConnections"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_xs"
-        android:layout_marginTop="@dimen/padding_sm"
-        android:text="@string/active_connections"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/Line3"
-        app:layout_constraintTop_toBottomOf="@id/tvNetworkLatency" />
+            <TextView
+                android:id="@+id/tvActiveConnections"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/padding_sm"
+                android:text="@string/active_connections"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/Line3"
+                app:layout_constraintTop_toBottomOf="@id/tvNetworkLatency" />
 
-    <TextView
-        android:id="@+id/tvBandwidthUsage2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvBandwidthUsage"
-        app:layout_constraintTop_toTopOf="@id/tvBandwidthUsage"
-        android:layout_marginStart="@dimen/padding_sm"  />
+            <TextView
+                android:id="@+id/tvBandwidthUsage2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvBandwidthUsage"
+                app:layout_constraintTop_toTopOf="@id/tvBandwidthUsage" />
 
-    <TextView
-        android:id="@+id/tvPacketLoss2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvPacketLoss"
-        app:layout_constraintTop_toTopOf="@id/tvPacketLoss"
-        android:layout_marginStart="@dimen/padding_sm"  />
+            <TextView
+                android:id="@+id/tvPacketLoss2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvPacketLoss"
+                app:layout_constraintTop_toTopOf="@id/tvPacketLoss" />
 
-    <TextView
-        android:id="@+id/tvNetworkLatency2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvNetworkLatency"
-        app:layout_constraintTop_toTopOf="@id/tvNetworkLatency"
-        android:layout_marginStart="@dimen/padding_sm"  />
+            <TextView
+                android:id="@+id/tvNetworkLatency2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvNetworkLatency"
+                app:layout_constraintTop_toTopOf="@id/tvNetworkLatency" />
 
-    <TextView
-        android:id="@+id/tvActiveConnections2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/textview"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@id/tvActiveConnections"
-        app:layout_constraintTop_toTopOf="@id/tvActiveConnections"
-        android:layout_marginStart="@dimen/padding_sm"  />
+            <TextView
+                android:id="@+id/tvActiveConnections2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_sm"
+                android:text="@string/textview"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toEndOf="@id/tvActiveConnections"
+                app:layout_constraintTop_toTopOf="@id/tvActiveConnections" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/navbar_include"

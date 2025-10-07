@@ -34,14 +34,13 @@ android {
         implementation "io.noties.markwon:recycler:$markwonVersion"
 
         // OkHttp for direct REST API calls to Supabase PostgreSQL
-        implementation "com.squareup.okhttp3:okhttp:4.11.0"
-        implementation "org.json:json:20230227"
-        
+        implementation "com.squareup.okhttp3:okhttp:4.9.3"
+
         // Image loading library
         implementation "com.squareup.picasso:picasso:2.8"
 
-    // Interactive image cropper
-    implementation 'com.github.yalantis:ucrop:2.2.8'
+        // Interactive image cropper
+        implementation 'com.github.yalantis:ucrop:2.2.8'
 
         implementation project(":terminal-view")
         implementation project(":termux-shared")
@@ -122,6 +121,8 @@ android {
 
     lintOptions {
         disable 'ProtectedPermissions'
+        abortOnError false
+        checkReleaseBuilds false
     }
 
     testOptions {

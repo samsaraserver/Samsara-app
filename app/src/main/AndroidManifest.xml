@@ -150,7 +150,7 @@
             android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
 
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".app.activities.SettingsActivity"
             android:exported="true"
             android:label="@string/title_activity_termux_settings"
             android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
@@ -269,10 +269,6 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".app.SystemMonitorService"
-            android:enabled="true"
-            android:exported="false" />
 
         <!-- This (or rather, value 2.1 or higher) is needed to make the Samsung Galaxy S8 mark the
         app with "This app is optimized to run in full screen." -->
