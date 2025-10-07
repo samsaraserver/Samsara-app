@@ -1,6 +1,5 @@
 package com.termux.app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -11,9 +10,11 @@ import java.net.SocketException;
 import java.util.Collections;
 import java.util.Enumeration;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.termux.R;
 
-public class home_page extends Activity {
+public class home_page extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

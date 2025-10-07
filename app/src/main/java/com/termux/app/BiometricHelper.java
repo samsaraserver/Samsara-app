@@ -99,8 +99,31 @@ public class BiometricHelper {
         }
 
         BiometricManager biometricManager = BiometricManager.from(activity);
-        int canAuthenticate = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG);
-        return canAuthenticate == BiometricManager.BIOMETRIC_SUCCESS;
+
+        // Try BIOMETRIC_STRONG first, then fallback to BIOMETRIC_WEAK
+        int canAuthenticateStrong = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG);
+        if (canAuthenticateStrong == BiometricManager.BIOMETRIC_SUCCESS) {
+            Log.d(TAG, "BIOMETRIC_STRONG available");
+            return true;
+        }
+
+        int canAuthenticateWeak = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK);
+        if (canAuthenticateWeak == BiometricManager.BIOMETRIC_SUCCESS) {
+            Log.d(TAG, "BIOMETRIC_WEAK available");
+            return true;
+        }
+
+        // Also try with device credential as backup
+        int canAuthenticateWithCredential = biometricManager.canAuthenticate(
+            BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL);
+        boolean isAvailable = canAuthenticateWithCredential == BiometricManager.BIOMETRIC_SUCCESS;
+
+        Log.d(TAG, "Biometric availability check - Strong: " + canAuthenticateStrong +
+                   ", Weak: " + canAuthenticateWeak +
+                   ", With credential: " + canAuthenticateWithCredential +
+                   ", Final result: " + isAvailable);
+
+        return isAvailable;
     }
 
     public boolean hasStoredCredentials() {
@@ -131,14 +154,39 @@ public class BiometricHelper {
                 return;
             }
 
-            BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                    .setTitle("Biometric Login")
-                    .setSubtitle("Log in using your biometric credential")
-                    .setNegativeButtonText("Cancel")
-                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
-                    .build();
+            // Determine which authenticator to use based on availability
+            BiometricManager biometricManager = BiometricManager.from(activity);
+            int authenticators;
+            String subtitle;
 
-            Log.d(TAG, "Starting biometric authentication prompt");
+            if (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS) {
+                authenticators = BiometricManager.Authenticators.BIOMETRIC_STRONG;
+                subtitle = "Use your fingerprint or face to access configuration";
+                Log.d(TAG, "Using BIOMETRIC_STRONG");
+            } else if (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS) {
+                authenticators = BiometricManager.Authenticators.BIOMETRIC_WEAK;
+                subtitle = "Use your biometric or device credential";
+                Log.d(TAG, "Using BIOMETRIC_WEAK");
+            } else {
+                // Use biometric with device credential as fallback
+                authenticators = BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.DEVICE_CREDENTIAL;
+                subtitle = "Use your biometric or device PIN/password";
+                Log.d(TAG, "Using BIOMETRIC_WEAK with DEVICE_CREDENTIAL");
+            }
+
+            BiometricPrompt.PromptInfo.Builder promptBuilder = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("Configuration Access")
+                    .setSubtitle(subtitle)
+                    .setAllowedAuthenticators(authenticators);
+
+            // Only add negative button if not using device credential (which has its own cancel)
+            if ((authenticators & BiometricManager.Authenticators.DEVICE_CREDENTIAL) == 0) {
+                promptBuilder.setNegativeButtonText("Cancel");
+            }
+
+            BiometricPrompt.PromptInfo promptInfo = promptBuilder.build();
+
+            Log.d(TAG, "Starting biometric authentication prompt with authenticators: " + authenticators);
             if (biometricPrompt != null) {
                 biometricPrompt.authenticate(promptInfo);
             } else {
