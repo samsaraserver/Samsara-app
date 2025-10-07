@@ -128,7 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/username"
-        android:layout_marginTop="@dimen/padding_xl"
+        android:layout_marginTop="@dimen/padding_sm"
         android:layout_marginStart="@dimen/padding_sm"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
