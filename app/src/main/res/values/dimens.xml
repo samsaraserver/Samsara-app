@@ -41,6 +41,7 @@
     <dimen name="button_width">160dp</dimen>
     <dimen name="switch_width">60dp</dimen>
     <dimen name="switch_height">55dp</dimen>
+    <dimen name="profile_image_size">140dp</dimen>
 
     <!-- ========= Padding ========= -->
     <dimen name="padding_na">0dp</dimen>

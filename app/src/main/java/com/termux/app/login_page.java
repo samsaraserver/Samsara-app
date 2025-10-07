@@ -100,7 +100,6 @@ public class login_page extends FragmentActivity {
             passwordBox.setText(savedPassword);
             rememberMeCheckBox.setChecked(true);
 
-            Toast.makeText(this, "Credentials loaded. Click Login to continue.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -183,7 +182,6 @@ public class login_page extends FragmentActivity {
         }
 
         setFormEnabled(false);
-        Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
 
         new Thread(() -> {
             try {
