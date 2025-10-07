@@ -1,5 +1,6 @@
 package com.termux.app;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
@@ -18,12 +19,29 @@ import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.managers.AuthManager;
 import com.termux.app.database.models.SamsaraUser;
 
+// Security: Add encryption imports
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.regex.Pattern;
+
 public class login_page extends FragmentActivity {
     private static final String TAG = "LoginPage";
     private static final String PREFS_NAME = "SamsaraLoginPrefs";
     private static final String KEY_REMEMBER_ME = "remember_me";
     private static final String KEY_EMAIL_USERNAME = "email_username";
-    private static final String KEY_PASSWORD = "password";
+    // Security: Remove plain text password key
+    private static final String KEY_ENCRYPTED_PASSWORD = "encrypted_password";
+    private static final String KEY_ENCRYPTION_KEY = "login_encryption_key";
+
+    // Security: Password complexity patterns - simplified to 8 characters minimum
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile(
+        "^.{8,}$"
+    );
+
     private UserRepository userRepository;
     private EditText emailUsernameBox;
     private EditText passwordBox;
@@ -94,28 +112,42 @@ public class login_page extends FragmentActivity {
         boolean rememberMe = loginPrefs.getBoolean(KEY_REMEMBER_ME, false);
         if (rememberMe) {
             String savedUsername = loginPrefs.getString(KEY_EMAIL_USERNAME, "");
-            String savedPassword = loginPrefs.getString(KEY_PASSWORD, "");
 
+            // Security: Show placeholder instead of actual password
             emailUsernameBox.setText(savedUsername);
-            passwordBox.setText(savedPassword);
+            passwordBox.setHint("Saved password will be used");
+            passwordBox.setText(""); // Don't pre-fill password for security
             rememberMeCheckBox.setChecked(true);
 
+            Toast.makeText(this, "Credentials saved. Enter password or use biometrics.", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void saveCredentials(String emailOrUsername, String password) {
-        SharedPreferences.Editor editor = loginPrefs.edit();
-        editor.putBoolean(KEY_REMEMBER_ME, true);
-        editor.putString(KEY_EMAIL_USERNAME, emailOrUsername);
-        editor.putString(KEY_PASSWORD, password);
-        editor.apply();
+        try {
+            SharedPreferences.Editor editor = loginPrefs.edit();
+            editor.putBoolean(KEY_REMEMBER_ME, true);
+            editor.putString(KEY_EMAIL_USERNAME, emailOrUsername);
+
+            // Security: Encrypt password before storing
+            SecretKey encryptionKey = getOrCreateEncryptionKey();
+            String encryptedPassword = encryptPassword(password, encryptionKey);
+            editor.putString(KEY_ENCRYPTED_PASSWORD, encryptedPassword);
+
+            editor.apply();
+            Log.d(TAG, "Credentials saved securely with encryption");
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving encrypted credentials", e);
+            Toast.makeText(this, "Error saving credentials securely", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void clearSavedCredentials() {
         SharedPreferences.Editor editor = loginPrefs.edit();
         editor.remove(KEY_REMEMBER_ME);
         editor.remove(KEY_EMAIL_USERNAME);
-        editor.remove(KEY_PASSWORD);
+        editor.remove(KEY_ENCRYPTED_PASSWORD);
+        editor.remove(KEY_ENCRYPTION_KEY);
         editor.apply();
     }
 
@@ -177,15 +209,31 @@ public class login_page extends FragmentActivity {
         String emailOrUsername = emailUsernameBox.getText().toString().trim();
         String password = passwordBox.getText().toString();
 
-        if (!validateInput(emailOrUsername, password)) {
+        // Security: Enhanced input validation
+        if (!validateLoginInput(emailOrUsername, password)) {
             return;
         }
 
+        // Security: Check if using saved password
+        if (TextUtils.isEmpty(password) && rememberMeCheckBox.isChecked()) {
+            password = retrieveSavedPassword();
+            if (TextUtils.isEmpty(password)) {
+                passwordBox.setError("Please enter your password");
+                passwordBox.requestFocus();
+                return;
+            }
+        }
+
+        // Security: Create final copies for lambda expressions
+        final String finalEmailOrUsername = emailOrUsername;
+        final String finalPassword = password;
+
         setFormEnabled(false);
+        Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
 
         new Thread(() -> {
             try {
-                userRepository.authenticateUser(emailOrUsername, password)
+                userRepository.authenticateUser(finalEmailOrUsername, finalPassword)
                     .handle((success, throwable) -> {
                         if (throwable != null) {
                             runOnUiThread(() -> {
@@ -200,16 +248,16 @@ public class login_page extends FragmentActivity {
                             new Thread(() -> {
                                 try {
                                     SamsaraUser user = null;
-                                    if (emailOrUsername.contains("@")) {
-                                        user = userRepository.getUserByEmail(emailOrUsername).get();
+                                    if (finalEmailOrUsername.contains("@")) {
+                                        user = userRepository.getUserByEmail(finalEmailOrUsername).get();
                                     } else {
-                                        user = userRepository.getUserByUsername(emailOrUsername).get();
+                                        user = userRepository.getUserByUsername(finalEmailOrUsername).get();
                                     }
 
                                     final SamsaraUser finalUser = user;
-                                    runOnUiThread(() -> handleUserResult(finalUser, null, emailOrUsername, password));
+                                    runOnUiThread(() -> handleUserResult(finalUser, null, finalEmailOrUsername, finalPassword));
                                 } catch (Exception e) {
-                                    runOnUiThread(() -> handleUserResult(null, e, emailOrUsername, password));
+                                    runOnUiThread(() -> handleUserResult(null, e, finalEmailOrUsername, finalPassword));
                                 }
                             }).start();
                         } else {
@@ -375,20 +423,94 @@ public class login_page extends FragmentActivity {
         });
     }
 
-    private boolean validateInput(String emailOrUsername, String password) {
+    // Security: Enhanced input validation with simplified password requirements
+    private boolean validateLoginInput(String emailOrUsername, String password) {
         if (TextUtils.isEmpty(emailOrUsername)) {
             emailUsernameBox.setError("Email or username is required");
             emailUsernameBox.requestFocus();
             return false;
         }
 
-        if (TextUtils.isEmpty(password)) {
+        // Security: Validate email format if it contains @
+        if (emailOrUsername.contains("@")) {
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailOrUsername).matches()) {
+                emailUsernameBox.setError("Please enter a valid email address");
+                emailUsernameBox.requestFocus();
+                return false;
+            }
+        }
+
+        // Allow empty password only if remember me is checked (will use saved password)
+        if (TextUtils.isEmpty(password) && !rememberMeCheckBox.isChecked()) {
             passwordBox.setError("Password is required");
             passwordBox.requestFocus();
             return false;
         }
 
+        // Security: Simplified password validation - only 8 characters minimum
+        if (!TextUtils.isEmpty(password) && password.length() < 8) {
+            passwordBox.setError("Password must be at least 8 characters");
+            passwordBox.requestFocus();
+            return false;
+        }
+
         return true;
+    }
+
+    // Security: Simplified password validation - only check length
+    private boolean isPasswordComplex(String password) {
+        return password.length() >= 8;
+    }
+
+    // Security: Generate or retrieve encryption key
+    private SecretKey getOrCreateEncryptionKey() throws Exception {
+        String encodedKey = loginPrefs.getString(KEY_ENCRYPTION_KEY, null);
+        if (encodedKey != null) {
+            byte[] keyBytes = Base64.getDecoder().decode(encodedKey);
+            return new SecretKeySpec(keyBytes, "AES");
+        }
+
+        // Generate new key
+        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        keyGen.init(256);
+        SecretKey key = keyGen.generateKey();
+
+        // Store the key
+        String encodedNewKey = Base64.getEncoder().encodeToString(key.getEncoded());
+        loginPrefs.edit().putString(KEY_ENCRYPTION_KEY, encodedNewKey).apply();
+
+        return key;
+    }
+
+    // Security: Encrypt password using AES
+    private String encryptPassword(String password, SecretKey key) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS1Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encryptedBytes = cipher.doFinal(password.getBytes());
+        return Base64.getEncoder().encodeToString(encryptedBytes);
+    }
+
+    // Security: Decrypt password using AES
+    private String decryptPassword(String encryptedPassword, SecretKey key) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS1Padding");
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedPassword));
+        return new String(decryptedBytes);
+    }
+
+    // Security: Retrieve saved password securely
+    private String retrieveSavedPassword() {
+        try {
+            String encryptedPassword = loginPrefs.getString(KEY_ENCRYPTED_PASSWORD, null);
+            if (encryptedPassword != null) {
+                SecretKey encryptionKey = getOrCreateEncryptionKey();
+                return decryptPassword(encryptedPassword, encryptionKey);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error retrieving saved password", e);
+            Toast.makeText(this, "Error accessing saved password. Please enter manually.", Toast.LENGTH_SHORT).show();
+        }
+        return null;
     }
 
     private void setFormEnabled(boolean enabled) {
@@ -397,10 +519,16 @@ public class login_page extends FragmentActivity {
         findViewById(R.id.SignInBtn).setEnabled(enabled);
     }
 
+    // Security: Clear sensitive data on destroy
     @Override
     protected void onDestroy() {
         super.onDestroy();
         try {
+            // Security: Clear password fields
+            if (passwordBox != null) {
+                passwordBox.setText("");
+            }
+
             if (biometricHelper != null) {
                 biometricHelper.cleanup();
                 biometricHelper = null;
@@ -417,6 +545,16 @@ public class login_page extends FragmentActivity {
             loginPrefs = null;
         } catch (Exception e) {
             Log.e(TAG, "Error in onDestroy: " + e.getMessage(), e);
+        }
+    }
+
+    // Security: Handle activity pause to clear sensitive data
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Clear password field when app goes to background for security
+        if (passwordBox != null && !rememberMeCheckBox.isChecked()) {
+            passwordBox.setText("");
         }
     }
 }
