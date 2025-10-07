@@ -20,6 +20,15 @@ allprojects {
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
+
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == "org.jetbrains.kotlin") {
+                details.useVersion "1.5.10"
+                details.because "Align Kotlin stdlib to avoid mixed runtime versions"
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {
