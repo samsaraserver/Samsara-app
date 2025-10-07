@@ -6,21 +6,26 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.termux.R;
 
 public class home_page extends AppCompatActivity {
     private static final String TAG = "HomePage";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-
 
         NavbarHelper.setupNavbar(this);
 
@@ -43,9 +48,8 @@ public class home_page extends AppCompatActivity {
         ImageButton configurationBtn = findViewById(R.id.configurationBtn);
 
         configurationBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(home_page.this, configuration_page.class);
-            startActivity(intent);
-            finish();
+            // Use biometric authentication without fallback options
+            showBiometricPromptForConfig();
         });
 
         ImageButton projectButton = findViewById(R.id.ProjectBtn);
@@ -63,6 +67,44 @@ public class home_page extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+    }
+
+    private void showBiometricPromptForConfig() {
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric Authentication")
+                .setSubtitle("Authenticate to access configuration")
+                .setNegativeButtonText("Cancel")
+                .build();
+
+        BiometricPrompt biometricPrompt = new BiometricPrompt(this,
+                ContextCompat.getMainExecutor(this),
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationError(int errorCode, CharSequence errString) {
+                        super.onAuthenticationError(errorCode, errString);
+                        Log.d(TAG, "Authentication error: " + errString);
+                        Toast.makeText(home_page.this, "Authentication cancelled or unavailable", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                        super.onAuthenticationSucceeded(result);
+                        Log.d(TAG, "Authentication succeeded");
+                        // Navigate to configuration page on successful authentication
+                        Intent intent = new Intent(home_page.this, configuration_page.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onAuthenticationFailed() {
+                        super.onAuthenticationFailed();
+                        Log.d(TAG, "Authentication failed");
+                        Toast.makeText(home_page.this, "Authentication failed. Try again.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        biometricPrompt.authenticate(promptInfo);
     }
 
     private String getDeviceIpAddress() {

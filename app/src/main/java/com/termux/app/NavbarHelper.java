@@ -7,8 +7,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.termux.R;
@@ -36,10 +36,12 @@ public class NavbarHelper {
 
         if (configButton != null) {
             configButton.setOnClickListener(view -> {
-                Intent intent = new Intent(activity, configuration_page.class);
-                activity.startActivity(intent);
-                if (!(activity instanceof configuration_page)) {
-                    activity.finish();
+                // Check if activity is FragmentActivity for biometric support
+                if (activity instanceof FragmentActivity) {
+                    showBiometricPromptForConfig((FragmentActivity) activity);
+                } else {
+                    // Fallback to direct access if not FragmentActivity
+                    showConfigFallbackOptions(activity);
                 }
             });
         }
@@ -48,16 +50,16 @@ public class NavbarHelper {
             terminalButton.setOnClickListener(view -> {
                 String[] options = new String[]{"Termux (port 333)", "Alpine (port 222)"};
                 new AlertDialog.Builder(activity)
-                        .setTitle("Select environment")
-                        .setItems(options, (dialog, which) -> {
-                            if (which == 0) {
-                                launchTermux(activity);
-                            } else if (which == 1) {
-                                startAlpineSession(activity);
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .show();
+                    .setTitle("Select environment")
+                    .setItems(options, (dialog, which) -> {
+                        if (which == 0) {
+                            launchTermux(activity);
+                        } else if (which == 1) {
+                            startAlpineSession(activity);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
             });
         }
 
@@ -82,16 +84,58 @@ public class NavbarHelper {
         }
     }
 
+    private static void showBiometricPromptForConfig(FragmentActivity activity) {
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric Authentication")
+                .setSubtitle("Authenticate to access configuration")
+                .setNegativeButtonText("Use fallback")
+                .build();
+
+        BiometricPrompt biometricPrompt = new BiometricPrompt(activity,
+                ContextCompat.getMainExecutor(activity),
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationError(int errorCode, CharSequence errString) {
+                        super.onAuthenticationError(errorCode, errString);
+                        Log.d(TAG, "Authentication error: " + errString);
+                        // Show fallback options when biometric fails
+                        showConfigFallbackOptions(activity);
+                    }
+
+                    @Override
+                    public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                        super.onAuthenticationSucceeded(result);
+                        Log.d(TAG, "Authentication succeeded");
+                        // Navigate to configuration page on successful authentication
+                        Intent intent = new Intent(activity, configuration_page.class);
+                        activity.startActivity(intent);
+                        if (!(activity instanceof configuration_page)) {
+                            activity.finish();
+                        }
+                    }
+
+                    @Override
+                    public void onAuthenticationFailed() {
+                        super.onAuthenticationFailed();
+                        Log.d(TAG, "Authentication failed");
+                        Toast.makeText(activity, "Authentication failed. Try again.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        biometricPrompt.authenticate(promptInfo);
+    }
+
     private static void showConfigFallbackOptions(Activity activity) {
+        // Show dialog with config options when biometrics are not available
         new AlertDialog.Builder(activity)
-                .setTitle("Configuration Access")
-                .setMessage("Choose how to access configuration:")
-                .setNegativeButton("Online Wiki", (dialog, which) -> {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wiki.termux.com/wiki/Configuration"));
-                    activity.startActivity(browserIntent);
-                })
-                .setNeutralButton("Cancel", null)
-                .show();
+            .setTitle("Configuration Access")
+            .setMessage("Choose how to access configuration:")
+            .setNegativeButton("Online Wiki", (dialog, which) -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wiki.termux.com/wiki/Configuration"));
+                activity.startActivity(browserIntent);
+            })
+            .setNeutralButton("Cancel", null)
+            .show();
     }
 
     private static void launchTermux(Activity activity) {
