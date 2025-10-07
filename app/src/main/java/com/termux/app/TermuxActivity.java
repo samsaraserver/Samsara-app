@@ -392,7 +392,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         String workingDirectory = getProperties().getDefaultWorkingDirectory();
         String[] arguments = {"-c", setupScript};
 
-        Logger.logInfo(LOG_TAG, "Creating Termux session with t_start; cwd: " + workingDirectory);
         TermuxSession newTermuxSession = service.createTermuxSession("/system/bin/sh", arguments, null, workingDirectory, false, "Termux");
         if (newTermuxSession == null) {
             Logger.logError(LOG_TAG, "Failed to create TermuxSession for Termux startup");
@@ -877,15 +876,21 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 // If permission is granted, then also setup storage symlinks.
                 if(PermissionUtils.checkAndRequestLegacyOrManageExternalStoragePermission(
                     TermuxActivity.this, requestCode, !isPermissionCallback)) {
-                    if (isPermissionCallback)
-                        Logger.logInfoAndShowToast(TermuxActivity.this, LOG_TAG,
-                            getString(com.termux.shared.R.string.msg_storage_permission_granted_on_request));
+                    if (isPermissionCallback) {
+                        runOnUiThread(() ->
+                            Toast.makeText(TermuxActivity.this,
+                                getString(com.termux.shared.R.string.msg_storage_permission_granted_on_request),
+                                Toast.LENGTH_SHORT).show());
+                    }
 
                     TermuxInstaller.setupStorageSymlinks(TermuxActivity.this);
                 } else {
-                    if (isPermissionCallback)
-                        Logger.logInfoAndShowToast(TermuxActivity.this, LOG_TAG,
-                            getString(com.termux.shared.R.string.msg_storage_permission_not_granted_on_request));
+                    if (isPermissionCallback) {
+                        runOnUiThread(() ->
+                            Toast.makeText(TermuxActivity.this,
+                                getString(com.termux.shared.R.string.msg_storage_permission_not_granted_on_request),
+                                Toast.LENGTH_SHORT).show());
+                    }
                 }
             }
         }.start();
@@ -1117,30 +1122,21 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             "echo '[*] Timestamp: '$(date) ; " +
             "echo '[*] Preparing scripts and bootstrapper' ; " +
             "mkdir -p \"$HOME/scripts\" || { echo '[!] Failed to create scripts directory'; exit 1; } ; " +
-            // Extract Alpine setup script (a_setup.sh)
             extractAssetsScript("scripts/internal/a_setup.sh") +
-            // Extract Termux setup script for user to run when in Termux mode
             extractAssetsScript("scripts/t_setup.sh") +
-            // Extract configuration JSON for both environments
             extractAssetsScript("settings/samsara_config.json") +
-            // Extract dashboard HTML for local hosting in Alpine
             extractAssetsScript("scripts/internal/samsara_dashboard.html") +
-            // Extract host bootstrapper with spinner
             extractAssetsScript("scripts/host_bootstrap.sh") +
-            // Verify scripts exist before proceeding
             "[ -f \"$HOME/scripts/a_setup.sh\" ] || { echo '[!] Alpine setup script missing'; exit 1; } ; " +
             "[ -f \"$HOME/scripts/samsara_dashboard.html\" ] || { echo '[!] Dashboard HTML missing'; exit 1; } ; " +
             "[ -f \"$HOME/scripts/host_bootstrap.sh\" ] || { echo '[!] Bootstrap script missing'; exit 1; } ; " +
             "[ -f \"$HOME/scripts/samsara_config.json\" ] || { echo '[!] Config JSON missing'; } ; " +
             "echo '[*] All scripts extracted successfully' ; " +
-            // Run the host-side bootstrapper which hides noise and copies scripts to Alpine
             "echo '[*] Starting host bootstrap process' ; " +
             "exec /bin/sh \"$HOME/scripts/host_bootstrap.sh\"";
         
         String workingDirectory = getProperties().getDefaultWorkingDirectory();
         String[] arguments = {"-c", setupScript};
-        
-        Logger.logInfo(LOG_TAG, "Creating Alpine session with working directory: " + workingDirectory);
         
         TermuxSession newTermuxSession = service.createTermuxSession("/system/bin/sh", arguments, null, workingDirectory, false, "Alpine");
         if (newTermuxSession == null) {
@@ -1155,8 +1151,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             Toast.makeText(this, "Terminal session failed to initialize", Toast.LENGTH_SHORT).show();
             return;
         }
-        
-        Logger.logInfo(LOG_TAG, "Alpine session created successfully");
         mTermuxTerminalSessionActivityClient.setCurrentSession(newTerminalSession);
         getDrawer().closeDrawers();
     }

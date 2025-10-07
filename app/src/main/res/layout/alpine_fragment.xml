@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Add guidelines for proportional margins -->
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_start"
                 android:layout_width="wrap_content"
@@ -75,9 +74,6 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.05" />
 
-            <!-- Background 1 -->
-
-            <!--Background 2-->
 
             <TextView
                 android:id="@+id/tvAlpine"
@@ -117,7 +113,6 @@
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/Background1" />
 
-            <!--content-->
 
             <ImageView
                 android:id="@+id/OverviewIcon"
@@ -251,7 +246,6 @@
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
-            <!-- Install image with overlayed code text -->
             <ImageView
                 android:id="@+id/InstallView"
                 android:layout_width="0dp"
@@ -291,7 +285,6 @@
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start" />
 
-            <!-- Text overlaid on Background2 - BOTTOM -->
 
             <TextView
                 android:id="@+id/tvConfig"

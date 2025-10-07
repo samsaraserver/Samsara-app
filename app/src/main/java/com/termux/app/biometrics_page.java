@@ -33,13 +33,10 @@ public class biometrics_page extends FragmentActivity {
 
         try {
             setContentView(R.layout.biometrics_page);
-
-            // Check if user is logged in
             AuthManager authManager = AuthManager.getInstance(this);
             currentUser = authManager.getCurrentUser();
 
             if (currentUser == null) {
-                Log.e(TAG, "No user is currently logged in");
                 Toast.makeText(this, "You must be logged in to set up biometric authentication", Toast.LENGTH_LONG).show();
                 finish();
                 return;
@@ -78,7 +75,6 @@ public class biometrics_page extends FragmentActivity {
 
         switch (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
             case BiometricManager.BIOMETRIC_SUCCESS:
-                Log.d(TAG, "App can authenticate using biometrics.");
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
                 showToast("No biometric features available on this device.");
@@ -111,8 +107,6 @@ public class biometrics_page extends FragmentActivity {
             biometricHelper = new BiometricHelper(this, new BiometricHelper.AuthenticationCallback() {
                 @Override
                 public void onAuthenticationSuccessful(String username, String email, String password, String userId) {
-                    // This callback is not used in setup mode, but we need to handle it gracefully
-                    Log.d(TAG, "Authentication successful in setup mode (not expected)");
                 }
 
                 @Override
@@ -163,7 +157,6 @@ public class biometrics_page extends FragmentActivity {
                     }
                 });
 
-            // Setup the PromptInfo
             promptInfo = new BiometricPrompt.PromptInfo.Builder()
                     .setTitle("Setup Biometric Login")
                     .setSubtitle("Verify your identity to enable biometric login")
@@ -203,20 +196,15 @@ public class biometrics_page extends FragmentActivity {
 
     private void startBiometricSetup() {
         if (biometricPrompt != null && promptInfo != null) {
-            Log.d(TAG, "Starting biometric setup authentication");
             biometricPrompt.authenticate(promptInfo);
         } else {
-            Log.e(TAG, "BiometricPrompt or PromptInfo is null");
             showToast("Biometric setup is not properly initialized");
         }
     }
 
     private void handleSuccessfulAuthentication() {
         try {
-            // Store the user's credentials for biometric login
             if (biometricHelper != null && currentUser != null) {
-                // We need to get the user's password from somewhere - this is the tricky part
-                // For setup mode, we'll need to ask the user to enter their password
                 showPasswordDialog();
             } else {
                 Log.e(TAG, "BiometricHelper or currentUser is null");
@@ -257,12 +245,8 @@ public class biometrics_page extends FragmentActivity {
                 String email = currentUser.getEmail();
                 String userId = String.valueOf(currentUser.getId());
 
-                Log.d(TAG, "Completing biometric setup for user: " + username);
                 biometricHelper.storeCredentials(username, email, password, userId);
-
                 showToast("Biometric login setup complete!");
-
-                // Return to previous screen
                 finish();
             }
         } catch (Exception e) {
@@ -282,7 +266,6 @@ public class biometrics_page extends FragmentActivity {
                     try {
                         startActivity(enrollIntent);
                     } catch (Exception e) {
-                        // Fallback to security settings
                         startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS));
                     }
                 })
@@ -312,22 +295,16 @@ public class biometrics_page extends FragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
         try {
-            // Clean up BiometricHelper to prevent memory leaks
             if (biometricHelper != null) {
                 biometricHelper.cleanup();
                 biometricHelper = null;
             }
 
-            // Clean up other resources
             biometricPrompt = null;
             promptInfo = null;
             currentUser = null;
-
-            // Clear UI references
             biometricsButton = null;
             cancelButton = null;
-
-            Log.d(TAG, "biometrics_page cleanup completed");
         } catch (Exception e) {
             Log.e(TAG, "Error in onDestroy: " + e.getMessage(), e);
         }

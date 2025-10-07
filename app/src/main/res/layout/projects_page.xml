@@ -54,7 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Add guidelines for proportional margins -->
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_start"
                 android:layout_width="wrap_content"

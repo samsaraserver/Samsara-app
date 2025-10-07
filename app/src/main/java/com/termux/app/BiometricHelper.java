@@ -21,7 +21,6 @@ public class BiometricHelper {
     private static final String KEY_PASSWORD = "biometric_password";
     private static final String KEY_USER_ID = "biometric_user_id";
 
-    // Use WeakReference to prevent memory leaks
     private final WeakReference<FragmentActivity> activityRef;
     private final WeakReference<AuthenticationCallback> callbackRef;
     private final SharedPreferences prefs;
@@ -43,7 +42,6 @@ public class BiometricHelper {
     private void setupBiometricPrompt() {
         FragmentActivity activity = activityRef.get();
         if (activity == null || activity.isDestroyed() || activity.isFinishing()) {
-            Log.w(TAG, "Activity is null or destroyed, cannot setup biometric prompt");
             return;
         }
 
@@ -51,12 +49,10 @@ public class BiometricHelper {
         biometricPrompt = new BiometricPrompt(activity, executor, new BiometricAuthCallback());
     }
 
-    // Separate class to avoid anonymous inner class memory leaks
     private class BiometricAuthCallback extends BiometricPrompt.AuthenticationCallback {
         @Override
         public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
             super.onAuthenticationSucceeded(result);
-            // SIMPLIFIED - No longer need cipher for decryption
             retrieveCredentials();
         }
 
@@ -73,7 +69,6 @@ public class BiometricHelper {
         }
     }
 
-    // Safe callback notification that checks for null references
     private void notifyCallback(CallbackAction action) {
         AuthenticationCallback callback = callbackRef.get();
         if (callback != null) {
@@ -82,8 +77,6 @@ public class BiometricHelper {
             } catch (Exception e) {
                 Log.e(TAG, "Error in callback execution: " + e.getMessage(), e);
             }
-        } else {
-            Log.w(TAG, "Callback reference is null, cannot notify");
         }
     }
 
@@ -94,7 +87,6 @@ public class BiometricHelper {
     public boolean isBiometricAvailable() {
         FragmentActivity activity = activityRef.get();
         if (activity == null) {
-            Log.w(TAG, "Activity reference is null");
             return false;
         }
 
@@ -106,17 +98,12 @@ public class BiometricHelper {
     public boolean hasStoredCredentials() {
         boolean hasUsername = prefs.contains(KEY_USERNAME);
         boolean hasPassword = prefs.contains(KEY_PASSWORD);
-
-        Log.d(TAG, "Checking stored credentials - Username: " + hasUsername +
-                   ", Password: " + hasPassword);
-
         return hasUsername && hasPassword;
     }
 
     public void startBiometricAuthentication() {
         FragmentActivity activity = activityRef.get();
         if (activity == null || activity.isDestroyed() || activity.isFinishing()) {
-            Log.w(TAG, "Activity is null or destroyed, cannot start authentication");
             notifyCallback(callback -> callback.onAuthenticationError(
                 BiometricPrompt.ERROR_CANCELED, "Activity is not available"));
             return;
@@ -124,7 +111,6 @@ public class BiometricHelper {
 
         try {
             if (!hasStoredCredentials()) {
-                Log.e(TAG, "Cannot start biometric authentication: No stored credentials found");
                 notifyCallback(callback -> callback.onAuthenticationError(
                     BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL,
                     "No biometric credentials saved. Please log in with password first."));
@@ -138,11 +124,9 @@ public class BiometricHelper {
                     .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
                     .build();
 
-            Log.d(TAG, "Starting biometric authentication prompt");
             if (biometricPrompt != null) {
                 biometricPrompt.authenticate(promptInfo);
             } else {
-                Log.e(TAG, "BiometricPrompt is null");
                 notifyCallback(callback -> callback.onAuthenticationError(
                     BiometricPrompt.ERROR_HW_UNAVAILABLE, "Biometric prompt not initialized"));
             }
@@ -155,17 +139,13 @@ public class BiometricHelper {
     }
 
     public void storeCredentials(String username, String email, String password, String userId) {
-        // SIMPLIFIED - Remove complex encryption that causes crashes
         try {
-            // Store credentials in plain SharedPreferences (less secure but more stable)
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString(KEY_USERNAME, username);
             editor.putString(KEY_EMAIL, email);
-            editor.putString(KEY_PASSWORD, password); // Store in plain text for now
+            editor.putString(KEY_PASSWORD, password);
             editor.putString(KEY_USER_ID, userId);
             editor.apply();
-
-            Log.d(TAG, "Credentials stored for biometric login (simplified)");
         } catch (Exception e) {
             Log.e(TAG, "Error storing credentials for biometric login", e);
         }
@@ -173,19 +153,16 @@ public class BiometricHelper {
 
     private void retrieveCredentials() {
         try {
-            // SIMPLIFIED - Remove complex decryption
             String password = prefs.getString(KEY_PASSWORD, null);
             String username = prefs.getString(KEY_USERNAME, "");
             String email = prefs.getString(KEY_EMAIL, "");
             String userId = prefs.getString(KEY_USER_ID, "");
 
             if (password == null) {
-                Log.e(TAG, "No stored password found");
                 notifyCallback(callback -> callback.onAuthenticationFailed());
                 return;
             }
 
-            // Pass the credentials back via the callback
             notifyCallback(callback -> callback.onAuthenticationSuccessful(username, email, password, userId));
         } catch (Exception e) {
             Log.e(TAG, "Error retrieving stored credentials", e);
@@ -193,38 +170,19 @@ public class BiometricHelper {
         }
     }
 
-    /**
-     * Clear all stored biometric credentials
-     * Also cleans up references to prevent memory leaks
-     */
     public void clearStoredCredentials() {
         try {
-            // Clear SharedPreferences
             SharedPreferences.Editor editor = prefs.edit();
             editor.clear();
             editor.apply();
-
-            Log.d(TAG, "Biometric credentials cleared");
         } catch (Exception e) {
             Log.e(TAG, "Error clearing stored credentials", e);
         }
     }
 
-    /**
-     * Clean up resources to prevent memory leaks
-     * Call this when the activity is being destroyed
-     */
     public void cleanup() {
         try {
-            Log.d(TAG, "Cleaning up BiometricHelper resources");
-
-            // Clear BiometricPrompt reference
             biometricPrompt = null;
-
-            // Clear weak references (they'll be garbage collected naturally)
-            // No need to clear WeakReference contents manually
-
-            Log.d(TAG, "BiometricHelper cleanup completed");
         } catch (Exception e) {
             Log.e(TAG, "Error during BiometricHelper cleanup: " + e.getMessage(), e);
         }

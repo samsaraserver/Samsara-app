@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <!-- Add guidelines for proportional margins -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -55,7 +54,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.65" />
 
-    <!-- Add guidelines for vertical centering -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_vertical_top"
         android:layout_width="wrap_content"
@@ -90,7 +88,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
-    <!--Dashboard Section-->
 
     <TextView
         android:id="@+id/Title"
@@ -204,7 +201,6 @@
         app:layout_constraintStart_toEndOf="@+id/tvDash3"
         app:layout_constraintTop_toBottomOf="@+id/tvDash2" />
 
-    <!-- Buttons Section -->
 
     <ImageButton
         android:id="@+id/monitorBtn"
@@ -344,7 +340,6 @@
         app:layout_constraintTop_toBottomOf="@+id/configurationBtn"
         tools:ignore="ContentDescription" />
 
-    <!-- Navbar Include -->
 
     <TextView
         android:id="@+id/tvDocs"

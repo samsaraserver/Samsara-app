@@ -52,7 +52,6 @@ public class UserRepository {
                 
                 try (Response response = httpClient.newCall(request).execute()) {
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "User created successfully with status: " + response.code());
                         return true;
                     } else {
                         String errorBody = response.body() != null ? response.body().string() : "Unknown error";
@@ -137,10 +136,7 @@ public class UserRepository {
     public CompletableFuture<Boolean> authenticateUser(String emailOrUsername, String password) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                // First, get user by email or username
                 SamsaraUser user = null;
-                
-                // Try email first
                 if (emailOrUsername.contains("@")) {
                     user = getUserByEmail(emailOrUsername).get();
                 } else {
@@ -192,7 +188,6 @@ public class UserRepository {
             md.update(salt);
             byte[] hashedPassword = md.digest(password.getBytes());
             
-            // Combine salt and hash
             byte[] combined = new byte[salt.length + hashedPassword.length];
             System.arraycopy(salt, 0, combined, 0, salt.length);
             System.arraycopy(hashedPassword, 0, combined, salt.length, hashedPassword.length);
@@ -209,16 +204,13 @@ public class UserRepository {
         try {
             byte[] combined = Base64.getDecoder().decode(storedHash);
             
-            // Extract salt (first 16 bytes)
             byte[] salt = new byte[16];
             System.arraycopy(combined, 0, salt, 0, 16);
             
-            // Hash the provided password with the extracted salt
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(salt);
             byte[] hashedPassword = md.digest(password.getBytes());
             
-            // Compare with stored hash (remaining bytes)
             for (int i = 0; i < hashedPassword.length; i++) {
                 if (hashedPassword[i] != combined[16 + i]) {
                     return false;
@@ -266,7 +258,6 @@ public class UserRepository {
                 
                 try (Response response = httpClient.newCall(request).execute()) {
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "User updated successfully with status: " + response.code());
                         return true;
                     } else {
                         String errorBody = response.body() != null ? response.body().string() : "Unknown error";
@@ -305,7 +296,6 @@ public class UserRepository {
                 
                 try (Response response = httpClient.newCall(request).execute()) {
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "User info updated successfully");
                         return true;
                     } else {
                         String errorBody = response.body() != null ? response.body().string() : "Unknown error";
@@ -347,7 +337,6 @@ public class UserRepository {
                 
                 try (Response response = httpClient.newCall(request).execute()) {
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "User info with password updated successfully");
                         return true;
                     } else {
                         String errorBody = response.body() != null ? response.body().string() : "Unknown error";
@@ -405,7 +394,6 @@ public class UserRepository {
                 Log.e(TAG, "Invalid upload parameters");
                 return null;
             }
-            // enforce max 5MB
             if (imageData.length > 5 * 1024 * 1024) {
                 Log.e(TAG, "Image exceeds 5MB limit");
                 return null;
@@ -426,7 +414,6 @@ public class UserRepository {
             
             try (Response response = httpClient.newCall(request).execute()) {
                 if (response.isSuccessful()) {
-                    Log.d(TAG, "Profile picture uploaded successfully: " + filename);
                     return filename;
                 } else {
                     Log.e(TAG, "Upload failed with status: " + response.code());
@@ -446,7 +433,6 @@ public class UserRepository {
             try {
                 if (userId == null || userId <= 0) return false;
                 if (filename == null || filename.isEmpty()) return false;
-                // basic filename validation: {id}_{timestamp}.jpg
                 if (!filename.matches("\\d+_\\d+\\.jpg")) {
                     Log.e(TAG, "Invalid profile picture filename format: " + filename);
                     return false;
@@ -490,11 +476,9 @@ public class UserRepository {
     
     private boolean isValidResponse(Response response) {
         if (!response.isSuccessful()) {
-            Log.w(TAG, "API request failed with status: " + response.code());
+            Log.e(TAG, "API request failed with status: " + response.code());
             return false;
         }
-        
-        Log.d(TAG, "Response successful with status: " + response.code());
         return true;
     }
 }

@@ -14,14 +14,14 @@ import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_SERVICE;
 public class NavbarHelper {
 
     public static void setupNavbar(Activity activity) {
-        ImageButton homebutton = activity.findViewById(R.id.navbar_home);
-        ImageButton configbutton = activity.findViewById(R.id.navbar_config);
-        ImageButton terminalbutton = activity.findViewById(R.id.navbar_center);
-        ImageButton documentsbutton = activity.findViewById(R.id.navbar_docs);
-        ImageButton accountbutton = activity.findViewById(R.id.navbar_profile);
+        ImageButton homeButton = activity.findViewById(R.id.navbar_home);
+        ImageButton configButton = activity.findViewById(R.id.navbar_config);
+        ImageButton terminalButton = activity.findViewById(R.id.navbar_center);
+        ImageButton documentsButton = activity.findViewById(R.id.navbar_docs);
+        ImageButton accountButton = activity.findViewById(R.id.navbar_profile);
 
-        if (homebutton != null) {
-            homebutton.setOnClickListener(view -> {
+        if (homeButton != null) {
+            homeButton.setOnClickListener(view -> {
                 Intent intent = new Intent(activity, home_page.class);
                 activity.startActivity(intent);
                 if (!(activity instanceof home_page)) {
@@ -30,8 +30,8 @@ public class NavbarHelper {
             });
         }
 
-        if (configbutton != null) {
-            configbutton.setOnClickListener(view -> {
+        if (configButton != null) {
+            configButton.setOnClickListener(view -> {
                 Intent intent = new Intent(activity, configuration_page.class);
                 activity.startActivity(intent);
                 if (!(activity instanceof configuration_page)) {
@@ -40,8 +40,8 @@ public class NavbarHelper {
             });
         }
 
-        if (terminalbutton != null) {
-            terminalbutton.setOnClickListener(view -> {
+        if (terminalButton != null) {
+            terminalButton.setOnClickListener(view -> {
                 String[] options = new String[]{"Termux (port 333)", "Alpine (port 222)"};
                 new AlertDialog.Builder(activity)
                         .setTitle("Select environment")
@@ -57,8 +57,8 @@ public class NavbarHelper {
             });
         }
 
-        if (documentsbutton != null) {
-            documentsbutton.setOnClickListener(view -> {
+        if (documentsButton != null) {
+            documentsButton.setOnClickListener(view -> {
                 Intent intent = new Intent(activity, documents_page.class);
                 activity.startActivity(intent);
                 if (!(activity instanceof documents_page)) {
@@ -67,8 +67,8 @@ public class NavbarHelper {
             });
         }
 
-        if (accountbutton != null) {
-            accountbutton.setOnClickListener(view -> {
+        if (accountButton != null) {
+            accountButton.setOnClickListener(view -> {
                 Intent intent = new Intent(activity, profile_page.class);
                 activity.startActivity(intent);
                 if (!(activity instanceof profile_page)) {

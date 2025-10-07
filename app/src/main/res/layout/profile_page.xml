@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
-    <!-- Add guidelines for proportional margins -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
@@ -55,8 +54,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.7" />
-
-    <!--Top Nav Bar and Title-->
 
     <ImageView
         android:id="@+id/TopBar"
@@ -114,8 +111,6 @@
         app:layout_constraintEnd_toEndOf="@+id/SignInOutBtn"
         app:layout_constraintStart_toStartOf="@+id/SignInOutBtn"
         app:layout_constraintTop_toTopOf="@+id/SignInOutBtn" />
-
-    <!--User infomation-->
 
     <ImageView
         android:id="@+id/imgProfilePic"
@@ -197,8 +192,6 @@
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/EmailPhoneBox" />
 
-
-    <!--Buttons-->
 
     <EditText
         android:id="@+id/PasswordBox"
@@ -288,9 +281,6 @@
         app:layout_constraintEnd_toEndOf="@+id/SaveBtn"
         app:layout_constraintStart_toStartOf="@+id/SaveBtn"
         app:layout_constraintTop_toTopOf="@+id/SaveBtn" />
-
-
-    <!-- Navbar Include -->
 
     <include
         android:id="@+id/navbar_include"
