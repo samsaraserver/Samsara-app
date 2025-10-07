@@ -62,7 +62,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Setup Biometrics"
+        android:text="@string/setup_biometrics"
         android:layout_marginTop="@dimen/spacing_xl"
         android:textColor="#FFFFFF"
         android:textSize="34sp"
@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_xl"
         android:gravity="center_horizontal"
-        android:text="Biometrics can be used to login and view configurations"
+        android:text="@string/biometrics_can_be_used_to_login_and_view_configurations"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
@@ -95,7 +95,8 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/tvSummary"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintVertical_bias="0.1"
+        tools:ignore="ContentDescription" />
 
     <!--button-->
 
@@ -108,7 +109,8 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@+id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@+id/tvSummary"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintVertical_bias="0.1"
+        tools:ignore="ContentDescription" />
 
     <!-- Navbar Include -->
 
@@ -120,7 +122,8 @@
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/biometrics_3"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
+        tools:ignore="ContentDescription" />
 
     <ImageButton
         android:id="@+id/CancelBtn"
@@ -131,13 +134,14 @@
         android:backgroundTint="#00FFFFFF"
         android:src="@drawable/biometrics_3"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvGetStarted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Started"
+        android:text="@string/get_started"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/BiometricsBtn"
         app:layout_constraintEnd_toEndOf="@+id/BiometricsBtn"
@@ -157,7 +161,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
+        android:text="@string/action_cancel"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/CancelBtn"
         app:layout_constraintEnd_toEndOf="@+id/CancelBtn"

@@ -64,7 +64,8 @@
         android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/SamsaraLogo"
@@ -72,7 +73,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/samsara_logo_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <!-- btn svg needs to be resized-->
 
@@ -82,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="90dp"
         android:layout_marginTop="25dp"
-        android:text="Register"
+        android:text="@string/register"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
         app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
@@ -95,7 +97,7 @@
         android:layout_marginStart="@dimen/padding_na"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="@dimen/padding_na"
-        android:text="Login or create an account "
+        android:text="@string/login_or_create_an_account"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -114,7 +116,8 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/tvSignInOrCreateAccount" />
+        app:layout_constraintTop_toBottomOf="@id/tvSignInOrCreateAccount"
+        tools:ignore="ContentDescription" />
 
     <ImageButton
         android:id="@+id/LoginBtn"
@@ -126,7 +129,8 @@
         app:layout_constraintEnd_toEndOf="@+id/guideline_middle"
         app:layout_constraintStart_toStartOf="@+id/guideline_start"
         app:layout_constraintTop_toTopOf="@+id/SignUpView"
-        app:layout_constraintBottom_toBottomOf="@+id/SignUpView" />
+        app:layout_constraintBottom_toBottomOf="@+id/SignUpView"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvRegister"
@@ -158,14 +162,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@drawable/account_3"
-        android:hint="Username"
+        android:hint="@string/username"
         android:paddingLeft="15dp"
         android:scaleType="fitXY"
         android:textColorHint="#a2a2a2"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/SignUpView" />
+        app:layout_constraintTop_toBottomOf="@+id/SignUpView"
+        tools:ignore="Autofill,TextFields" />
 
     <EditText
         android:id="@+id/EmailPhoneBox"
@@ -181,7 +186,8 @@
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/UsernameBox" />
+        app:layout_constraintTop_toBottomOf="@+id/UsernameBox"
+        tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/PasswordBox"
@@ -197,7 +203,8 @@
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/EmailPhoneBox" />
+        app:layout_constraintTop_toBottomOf="@+id/EmailPhoneBox"
+        tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/ConfirmPasswordBox"
@@ -213,7 +220,8 @@
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/PasswordBox" />
+        app:layout_constraintTop_toBottomOf="@+id/PasswordBox"
+        tools:ignore="Autofill" />
 
     <CheckBox
         android:id="@+id/CheckBoxTermsAndConditions"
@@ -239,7 +247,8 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/CheckBoxTermsAndConditions"
-        android:src="@drawable/login_5" />
+        android:src="@drawable/login_5"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvCreateAccount"
@@ -262,13 +271,14 @@
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/CreateAccountBtn" />
+        app:layout_constraintTop_toBottomOf="@id/CreateAccountBtn"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvSignUpGithub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register with github"
+        android:text="@string/sign_up_with_github"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/SignInGithubBtn"
         app:layout_constraintEnd_toEndOf="@+id/SignInGithubBtn"
@@ -284,7 +294,8 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toEndOf="@+id/tvAlreadyHaveAnAccount"
         app:layout_constraintTop_toTopOf="@+id/tvAlreadyHaveAnAccount"
-        app:layout_constraintBottom_toBottomOf="@+id/tvAlreadyHaveAnAccount"/>
+        app:layout_constraintBottom_toBottomOf="@+id/tvAlreadyHaveAnAccount"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvLogin2"
