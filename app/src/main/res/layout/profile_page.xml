@@ -66,7 +66,8 @@
         android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/SamsaraLogo"
@@ -74,7 +75,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/samsara_logo_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/Title"
@@ -82,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
         android:layout_marginTop="10dp"
-        android:text="Profile"
+        android:text="@string/profile"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
         app:layout_constraintBottom_toTopOf="@+id/guideline_top"
@@ -99,13 +101,14 @@
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/TopBar"
         app:layout_constraintTop_toTopOf="@id/TopBar"
-        android:src="@drawable/account_1" />
+        android:src="@drawable/account_1"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvSignInOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign In"
+        android:text="@string/sign_in"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/SignInOutBtn"
         app:layout_constraintEnd_toEndOf="@+id/SignInOutBtn"
@@ -122,13 +125,14 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/TopBar"
-        android:src="@drawable/account_2" />
+        android:src="@drawable/account_2"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Username"
+        android:text="@string/username"
         android:layout_marginTop="@dimen/padding_xl"
         android:layout_marginStart="@dimen/padding_sm"
         android:textColor="#FFFFFF"
@@ -139,7 +143,8 @@
         android:id="@+id/UserBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Username"
+        android:inputType="text"
+        android:hint="@string/username"
         android:textColorHint="#a2a2a2"
         android:textColor="#FFFFFF"
         android:scaleType="fitXY"
@@ -148,13 +153,14 @@
         android:background="@drawable/account_3"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/tvUsername" />
+        app:layout_constraintTop_toBottomOf="@id/tvUsername"
+        tools:ignore="Autofill" />
 
     <TextView
         android:id="@+id/tvEmailPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Email or Phone Number"
+        android:text="@string/email_or_phone_number"
         android:textColor="#FFFFFF"
         android:layout_marginStart="@dimen/padding_sm"
         android:layout_marginTop="@dimen/padding_lg"
@@ -176,14 +182,15 @@
         android:layout_marginTop="@dimen/padding_sm"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/tvEmailPhone" />
+        app:layout_constraintTop_toBottomOf="@id/tvEmailPhone"
+        tools:ignore="Autofill" />
 
     <TextView
         android:id="@+id/tvPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:freezesText="true"
-        android:text="Password"
+        android:text="@string/password"
         android:textColor="#FFFFFF"
         android:layout_marginStart="@dimen/padding_sm"
         android:layout_marginTop="@dimen/padding_lg"
@@ -208,7 +215,8 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/tvPassword" />
+        app:layout_constraintTop_toBottomOf="@id/tvPassword"
+        tools:ignore="Autofill" />
 
     <ImageButton
         android:id="@+id/SetupBiometricsBtn"
@@ -219,7 +227,8 @@
         android:src="@drawable/account_4"
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvSetupBiometrics"
@@ -242,7 +251,8 @@
         android:src="@drawable/account_4"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@+id/guideline_middle"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bottom" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvEditInformation"
@@ -264,7 +274,8 @@
         android:src="@drawable/account_5"
         app:layout_constraintEnd_toStartOf="@+id/guideline_end"
         app:layout_constraintStart_toStartOf="@+id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/EditInformationBtn" />
+        app:layout_constraintTop_toBottomOf="@id/EditInformationBtn"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvSave"

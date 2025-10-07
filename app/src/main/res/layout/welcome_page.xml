@@ -60,12 +60,12 @@
         android:id="@+id/logo_image"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:contentDescription="Samsara Server Logo"
         android:scaleType="centerInside"
         android:src="@drawable/welcome_1"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toTopOf="@id/guideline_top" />
+        app:layout_constraintTop_toTopOf="@id/guideline_top"
+        tools:ignore="ContentDescription" />
 
     <!-- App Title -->
 
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_lg"
         android:letterSpacing="0.05"
-        android:text="SamsaraServer"
+        android:text="@string/samsara_server"
         android:textColor="#FFFFFF"
         android:textSize="36sp"
         android:textStyle="bold"
@@ -96,7 +96,7 @@
         android:layout_marginEnd="@dimen/padding_lg"
         android:gravity="center"
         android:lineSpacingExtra="2dp"
-        android:text="Transform your Android device into a powerful Linux server"
+        android:text="@string/transform_your_android_device_into_a_powerful_linux_server"
         android:textColor="#E0E0E0"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -125,6 +125,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
+        android:contentDescription="@string/get_started"
         android:src="@drawable/welcome_2"
         app:layout_constraintTop_toBottomOf="@id/guideline_bottom"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -134,7 +135,7 @@
         android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to samsara server"
+        android:text="@string/welcome_to_samsara_server"
         app:layout_constraintBottom_toBottomOf="@+id/WelcomeBtn"
         app:layout_constraintEnd_toEndOf="@+id/WelcomeBtn"
         app:layout_constraintStart_toStartOf="@+id/WelcomeBtn"

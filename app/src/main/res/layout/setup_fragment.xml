@@ -70,6 +70,13 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.9" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_overview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05" />
+
             <!-- Background 1 -->
 
             <!--Background 2-->
@@ -78,7 +85,7 @@
                 android:id="@+id/tvSetup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Samsara Setup"
+                android:text="@string/samsara_setup"
                 android:textColor="#C44F4F"
                 android:textSize="34sp"
                 app:layout_constraintEnd_toEndOf="@+id/guideline_end"
@@ -133,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_sm"
                 android:gravity="center"
-                android:text="Heading 1"
+                android:text="@string/heading_1"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -160,7 +167,7 @@
                 android:layout_marginStart="@dimen/padding_smd"
                 android:layout_marginEnd="@dimen/padding_smd"
                 android:layout_marginTop="@dimen/padding_sm"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+                android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore_magna_aliqua_ut_enim_ad_minim_veniam_quis_nostrud_exercitation_ullamco_laboris_nisi_ut_aliquip_ex_ea_commodo_consequat"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -173,7 +180,7 @@
                 android:layout_marginTop="@dimen/padding_sm"
                 android:gravity="center"
                 android:scaleType="fitXY"
-                android:text="Heading 2"
+                android:text="@string/heading_2"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -200,7 +207,7 @@
                 android:layout_marginTop="@dimen/padding_sm"
                 android:layout_marginStart="@dimen/padding_smd"
                 android:layout_marginEnd="@dimen/padding_smd"
-                android:text="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore_magna_aliqua_ut_enim_ad_minim_veniam_quis_nostrud_exercitation_ullamco_laboris_nisi_ut_aliquip_ex_ea_commodo_consequat"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -213,7 +220,7 @@
                 android:layout_marginTop="@dimen/padding_sm"
                 android:scaleType="fitXY"
                 android:gravity="center"
-                android:text="Heading 3"
+                android:text="@string/heading_3"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -240,7 +247,7 @@
                 android:layout_marginTop="@dimen/padding_sm"
                 android:layout_marginStart="@dimen/padding_smd"
                 android:layout_marginEnd="@dimen/padding_smd"
-                android:text="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores."
+                android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore_magna_aliqua_ut_enim_ad_minim_veniam_quis_nostrud_exercitation_ullamco_laboris_nisi_ut_aliquip_ex_ea_commodo_consequat"
                 android:textColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/line3"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -257,7 +264,7 @@
                 android:layout_marginTop="@dimen/padding_sm"
                 android:layout_marginStart="@dimen/padding_smd"
                 android:layout_marginEnd="@dimen/padding_smd"
-                android:text="Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam."
+                android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore_magna_aliqua_ut_enim_ad_minim_veniam_quis_nostrud_exercitation_ullamco_laboris_nisi_ut_aliquip_ex_ea_commodo_consequat"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -269,7 +276,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_sm"
                 android:gravity="center"
-                android:text="Heading 4"
+                android:text="@string/heading_4"
                 android:scaleType="fitXY"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -297,7 +304,7 @@
                 android:layout_marginTop="@dimen/padding_sm"
                 android:layout_marginStart="@dimen/padding_smd"
                 android:layout_marginEnd="@dimen/padding_smd"
-                android:text="At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti."
+                android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore_magna_aliqua_ut_enim_ad_minim_veniam_quis_nostrud_exercitation_ullamco_laboris_nisi_ut_aliquip_ex_ea_commodo_consequat"
                 android:textColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/line4"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -309,17 +316,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_sm"
                 android:layout_marginStart="@dimen/padding_lg"
-                android:text="Contents"
+                android:text="@string/contents"
                 android:textColor="#000000"
                 app:layout_constraintHorizontal_bias="0.55"
-                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintStart_toStartOf="@+id/guideline_overview"
                 app:layout_constraintTop_toTopOf="@+id/OverviewIcon" />
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Heading 1"
+                android:text="@string/heading_1"
                 android:textColor="#C44F4F"
                 app:layout_constraintStart_toStartOf="@+id/textView2"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -328,7 +335,7 @@
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heading 2"
+                android:text="@string/heading_2"
                 android:textColor="#C44F4F"
                 app:layout_constraintStart_toStartOf="@+id/textView3"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -337,7 +344,7 @@
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heading 3"
+                android:text="@string/heading_3"
                 android:textColor="#C44F4F"
                 app:layout_constraintStart_toStartOf="@+id/textView5"
                 app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -346,7 +353,7 @@
                 android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heading 4"
+                android:text="@string/heading_4"
                 android:textColor="#C44F4F"
                 app:layout_constraintStart_toStartOf="@+id/textView6"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />

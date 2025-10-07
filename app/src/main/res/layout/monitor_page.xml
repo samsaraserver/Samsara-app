@@ -64,7 +64,8 @@
         android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/SamsaraLogo"
@@ -72,7 +73,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/samsara_logo_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/Title"
@@ -80,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginTop="30dp"
-        android:text="System Monitor"
+        android:text="@string/system_monitor"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
         app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
@@ -96,13 +98,14 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/TopBar" />
+        app:layout_constraintTop_toBottomOf="@id/TopBar"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvDiskIO"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Disk IO:"
+        android:text="@string/disk_io"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/DiskMonitoringPanel"
         app:layout_constraintTop_toTopOf="@id/DiskMonitoringPanel"
@@ -120,7 +123,8 @@
         android:layout_marginStart="@dimen/padding_smd"
         android:layout_marginEnd="@dimen/padding_smd"
         android:layout_marginTop="@dimen/padding_sm"
-        app:srcCompat="@drawable/monitor_2" />
+        app:srcCompat="@drawable/monitor_2"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvReadWrite"
@@ -128,7 +132,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_md"
-        android:text="Read/Write speed:"
+        android:text="@string/read_write_speed"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line"
         app:layout_constraintTop_toBottomOf="@id/Line" />
@@ -141,7 +145,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_md"
-        android:text="Disk Utilization:"
+        android:text="@string/disk_utilization"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@+id/Line"
         app:layout_constraintTop_toBottomOf="@id/tvReadWrite" />
@@ -150,7 +154,7 @@
         android:id="@+id/tvReadWrite2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvReadWrite"
         app:layout_constraintTop_toTopOf="@id/tvReadWrite"
@@ -160,7 +164,7 @@
         android:id="@+id/tvDiskUtil2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvDiskUtil"
         app:layout_constraintTop_toTopOf="@id/tvDiskUtil"
@@ -176,7 +180,8 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/DiskMonitoringPanel" />
+        app:layout_constraintTop_toBottomOf="@id/DiskMonitoringPanel"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvProcessMonitoring"
@@ -184,7 +189,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_md"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="Process Monitoring"
+        android:text="@string/process_monitoring"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/ProcessMonitoringPanel"
         app:layout_constraintTop_toTopOf="@id/ProcessMonitoringPanel" />
@@ -200,7 +205,8 @@
         android:layout_marginStart="@dimen/padding_smd"
         android:layout_marginEnd="@dimen/padding_smd"
         android:layout_marginTop="@dimen/padding_sm"
-        app:srcCompat="@drawable/monitor_2" />
+        app:srcCompat="@drawable/monitor_2"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvCPU"
@@ -208,7 +214,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="CPU Usage:"
+        android:text="@string/cpu_usage"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line2"
         app:layout_constraintTop_toBottomOf="@id/Line2" />
@@ -219,7 +225,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="CPU Temperature:"
+        android:text="@string/cpu_temperature"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line2"
         app:layout_constraintTop_toBottomOf="@id/tvCPU" />
@@ -230,7 +236,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="Memory Usage:"
+        android:text="@string/memory_usage"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line2"
         app:layout_constraintTop_toBottomOf="@id/tvCpuTemp" />
@@ -241,7 +247,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="Thread Count:"
+        android:text="@string/thread_count"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line2"
         app:layout_constraintTop_toBottomOf="@id/tvMemoryUsage" />
@@ -252,7 +258,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="Handles:"
+        android:text="@string/handles"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line2"
         app:layout_constraintTop_toBottomOf="@id/tvThreadCount" />
@@ -261,7 +267,7 @@
         android:id="@+id/tvCPU2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvCPU"
         app:layout_constraintTop_toTopOf="@id/tvCPU"
@@ -271,7 +277,7 @@
         android:id="@+id/tvCpuTemp2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvCpuTemp"
         app:layout_constraintTop_toTopOf="@id/tvCpuTemp"
@@ -281,7 +287,7 @@
         android:id="@+id/tvMemoryUsage2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvMemoryUsage"
         app:layout_constraintTop_toTopOf="@id/tvMemoryUsage"
@@ -291,7 +297,7 @@
         android:id="@+id/tvThreadCount2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvThreadCount"
         app:layout_constraintTop_toTopOf="@id/tvThreadCount"
@@ -301,7 +307,7 @@
         android:id="@+id/tvHandles2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvHandles"
         app:layout_constraintTop_toTopOf="@id/tvHandles"
@@ -320,13 +326,14 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/ProcessMonitoringPanel" />
+        app:layout_constraintTop_toBottomOf="@id/ProcessMonitoringPanel"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvNetworkActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Network Activity"
+        android:text="@string/network_activity"
         android:textColor="#FFFFFF"
         android:layout_marginStart="@dimen/padding_md"
         android:layout_marginTop="@dimen/padding_sm"
@@ -344,7 +351,8 @@
         android:layout_marginStart="@dimen/padding_smd"
         android:layout_marginEnd="@dimen/padding_smd"
         android:layout_marginTop="@dimen/padding_sm"
-        app:srcCompat="@drawable/monitor_2" />
+        app:srcCompat="@drawable/monitor_2"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvBandwidthUsage"
@@ -352,7 +360,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="Bandwidth Usage:"
+        android:text="@string/bandwidth_usage"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line3"
         app:layout_constraintTop_toBottomOf="@id/Line3" />
@@ -363,7 +371,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="Packet Loss:"
+        android:text="@string/packet_loss"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line3"
         app:layout_constraintTop_toBottomOf="@id/tvBandwidthUsage" />
@@ -374,7 +382,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="Network Latency:"
+        android:text="@string/network_latency"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line3"
         app:layout_constraintTop_toBottomOf="@id/tvPacketLoss" />
@@ -385,7 +393,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/padding_sm"
-        android:text="Active Connections:"
+        android:text="@string/active_connections"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/Line3"
         app:layout_constraintTop_toBottomOf="@id/tvNetworkLatency" />
@@ -394,7 +402,7 @@
         android:id="@+id/tvBandwidthUsage2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvBandwidthUsage"
         app:layout_constraintTop_toTopOf="@id/tvBandwidthUsage"
@@ -404,7 +412,7 @@
         android:id="@+id/tvPacketLoss2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvPacketLoss"
         app:layout_constraintTop_toTopOf="@id/tvPacketLoss"
@@ -414,7 +422,7 @@
         android:id="@+id/tvNetworkLatency2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvNetworkLatency"
         app:layout_constraintTop_toTopOf="@id/tvNetworkLatency"
@@ -424,7 +432,7 @@
         android:id="@+id/tvActiveConnections2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/tvActiveConnections"
         app:layout_constraintTop_toTopOf="@id/tvActiveConnections"

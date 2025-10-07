@@ -342,5 +342,12 @@
     <string name="email_address">Email Address</string>
     <string name="forgot_password"><u>Forgot Password ?</u></string>
     <string name="press_the_show_ip_button">Press the Show IP button</string>
+    <string name="alpine_guide">Alpine Guide</string>
+    <string name="_60c">60c</string>
+    <string name="_8gb">8GB</string>
+    <string name="heading_4">Heading 4</string>
+    <string name="heading_3">Heading 3</string>
+    <string name="heading_2">Heading 2</string>
+    <string name="heading_1">Heading 1</string>
 
 </resources>

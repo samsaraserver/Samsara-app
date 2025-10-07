@@ -78,7 +78,8 @@
         android:src="@drawable/top_bar_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guideline_vertical_top" />
+        app:layout_constraintTop_toTopOf="@id/guideline_vertical_top"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/SamsaraLogo"
@@ -86,7 +87,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/samsara_logo_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <!--Dashboard Section-->
 
@@ -96,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
         android:layout_marginTop="28dp"
-        android:text="Samsara Server"
+        android:text="@string/samsara_server"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
         app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
@@ -114,7 +116,8 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/TopBar" />
+        app:layout_constraintTop_toBottomOf="@id/TopBar"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/DashboardLogo"
@@ -124,7 +127,8 @@
         android:layout_marginTop="8dp"
         android:src="@drawable/home_2"
         app:layout_constraintStart_toStartOf="@id/redImage"
-        app:layout_constraintTop_toTopOf="@id/redImage" />
+        app:layout_constraintTop_toTopOf="@id/redImage"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvDash"
@@ -132,7 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
-        android:text="Access Web Dashboard"
+        android:text="@string/access_web_dashboard"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/DashboardLogo"
         app:layout_constraintTop_toTopOf="@id/DashboardLogo" />
@@ -150,7 +154,8 @@
         app:layout_constraintStart_toEndOf="@+id/tvDash"
         app:layout_constraintTop_toTopOf="@+id/redImage"
         app:layout_constraintVertical_bias="1.0"
-        android:src="@drawable/home_1" />
+        android:src="@drawable/home_1"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvIP"
@@ -170,7 +175,7 @@
         android:layout_marginStart="@dimen/padding_na"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="@dimen/padding_na"
-        android:text="Manage your server through the web interface once the terminal is running. "
+        android:text="@string/manage_your_server_through_the_web_interface_once_the_terminal_is_running"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
@@ -183,7 +188,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:text="The ip address is:"
+        android:text="@string/the_ip_address_is"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/tvDash2"
         app:layout_constraintTop_toBottomOf="@id/tvDash2" />
@@ -213,7 +218,8 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/redImage" />
+        app:layout_constraintTop_toBottomOf="@+id/redImage"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvMonitor"
@@ -221,7 +227,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:layout_marginStart="6dp"
-        android:text="System Monitor"
+        android:text="@string/system_monitor"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@+id/guideline_home_left"
         app:layout_constraintTop_toTopOf="@+id/monitorBtn" />
@@ -234,9 +240,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/padding_lg"
-        android:text="CPU, memory, network and temperature stats"
+        android:text="@string/cpu_memory_network_and_temperature_stats"
         android:textColor="#FFFFFF"
-        android:textSize="10sp"
+        android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="@+id/monitorBtn"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/monitorBtn"
@@ -253,14 +259,15 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/guideline_middle"
-        app:layout_constraintTop_toBottomOf="@+id/redImage" />
+        app:layout_constraintTop_toBottomOf="@+id/redImage"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvConfig"
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="Configuration"
+        android:text="@string/config"
         android:textColor="#FFFFFF"
         android:layout_marginStart="6dp"
         app:layout_constraintStart_toStartOf="@+id/guideline_home_right"
@@ -273,9 +280,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/padding_lg"
-        android:text="View and manage your server settings"
+        android:text="@string/view_and_manage_your_server_settings"
         android:textColor="#FFFFFF"
-        android:textSize="10sp"
+        android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="@+id/configurationBtn"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/configurationBtn"
@@ -293,7 +300,8 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/monitorBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/monitorBtn"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvProject"
@@ -301,7 +309,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:layout_marginStart="6dp"
-        android:text="Projects"
+        android:text="@string/projects"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@+id/guideline_home_left"
         app:layout_constraintTop_toTopOf="@+id/ProjectBtn" />
@@ -313,9 +321,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/padding_lg"
-        android:text="Install or manage community server packages"
+        android:text="@string/install_or_manage_community_server_packages"
         android:textColor="#FFFFFF"
-        android:textSize="10sp"
+        android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="@+id/ProjectBtn"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/ProjectBtn"
@@ -333,7 +341,8 @@
         app:layout_constraintEnd_toEndOf="@+id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/guideline_middle"
-        app:layout_constraintTop_toBottomOf="@+id/configurationBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/configurationBtn"
+        tools:ignore="ContentDescription" />
 
     <!-- Navbar Include -->
 
@@ -342,7 +351,7 @@
         android:layout_width="@dimen/padding_na"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="Documentation"
+        android:text="@string/documentation"
         android:textColor="#FFFFFF"
         android:layout_marginStart="6dp"
         app:layout_constraintStart_toStartOf="@+id/guideline_home_right"
@@ -355,9 +364,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="@dimen/padding_lg"
-        android:text="Access guides and forms"
+        android:text="@string/access_guides_and_forms"
         android:textColor="#FFFFFF"
-        android:textSize="10sp"
+        android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="@+id/documentationBtn"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/documentationBtn"
