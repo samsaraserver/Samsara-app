@@ -1,0 +1,14 @@
+name: Sonar Scan
+
+on:
+  push:
+    branches:
+      - '**' 
+
+jobs:
+  sonar_scan:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Sonar Scan
+        run: .\sonar-scan.bat
