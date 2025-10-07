@@ -82,13 +82,14 @@
                 android:id="@+id/Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lg"
-                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginStart="@dimen/padding_na"
+                android:layout_marginTop="@dimen/spacing_lg"
                 android:text="@string/system_monitor"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/text_xl"
                 app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
-                app:layout_constraintTop_toTopOf="@id/SamsaraLogo" />
+                app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
 
             <ImageView
                 android:id="@+id/DiskMonitoringPanel"
