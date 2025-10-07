@@ -138,14 +138,16 @@
 
     <ImageButton
         android:id="@+id/Fragment1Btn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FFFFFF"
         android:layout_marginStart="@dimen/padding_smd"
         android:layout_marginEnd="@dimen/padding_na"
         android:layout_marginTop="@dimen/padding_md"
+        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/SearchBarBackground"
+        app:layout_constraintEnd_toStartOf="@id/Fragment2Btn"
         app:srcCompat="@drawable/documentation_4"
         tools:ignore="ContentDescription" />
 
@@ -163,12 +165,12 @@
 
     <ImageButton
         android:id="@+id/Fragment2Btn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toStartOf="@+id/Fragment3Btn"
-        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toEndOf="@id/Fragment1Btn"
         app:layout_constraintTop_toBottomOf="@+id/SearchBarBackground"
         app:srcCompat="@drawable/documentation_5"
@@ -187,13 +189,15 @@
 
     <ImageButton
         android:id="@+id/Fragment3Btn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/padding_smd"
         android:layout_marginTop="@dimen/padding_md"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toStartOf="@+id/guideline_end"
         app:layout_constraintTop_toBottomOf="@id/SearchBarBackground"
+        app:layout_constraintStart_toEndOf="@id/Fragment2Btn"
         app:srcCompat="@drawable/documentation_5"
         tools:ignore="ContentDescription" />
 
