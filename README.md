@@ -8,7 +8,7 @@ Repurpose your old Android devices into powerful Linux servers with a sleek inte
 
 ## About
 
-Samsara Server aims to breath new life into unused Android phones and tablets by converting them into fully functional Linux servers. Built on the robust foundation of Termux, this application provides an intuitive wrapper interface that makes server management accessible to everyone, from beginners to system administrators.
+Samsara Server aims to breathe new life into unused Android phones and tablets by converting them into fully functional Linux servers. Built on the robust foundation of Termux, this application provides an intuitive wrapper interface that makes server management accessible to everyone, from beginners to system administrators.
 
 The project combines the power of Alpine Linux with Android's hardware capabilities, creating an ecosystem where community-driven projects can flourish on repurposed devices. Whether you're running a home automation system, hosting a personal cloud, or experimenting with distributed computing, Samsara Server makes it simple.
 
