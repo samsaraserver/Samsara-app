@@ -1,18 +1,38 @@
+<img width="1259" height="478" alt="image" src="https://github.com/user-attachments/assets/62fd6a8e-619a-49e2-a33a-b7d69b23cfba" />
+
+<br>
+<br>
+
+<p align="center">
+  <a href="https://sonarcube.samsaraserver.space/dashboard?id=Samsara-server">
+    <img src="https://sonarcube.samsaraserver.space/api/project_badges/measure?project=Samsara-server&metric=sqale_rating&token=sqb_f1c814e55b2b022b69df00e731feb80af8c5d8ae" alt="Maintainability Rating" />
+  </a>
+  <a href="https://sonarcube.samsaraserver.space/dashboard?id=Samsara-server">
+    <img src="https://sonarcube.samsaraserver.space/api/project_badges/measure?project=Samsara-server&metric=vulnerabilities&token=sqb_f1c814e55b2b022b69df00e731feb80af8c5d8ae" alt="Vulnerabilities" />
+  </a>
+  <br>
+  <a href="https://samsaraserver.space/">
+    <img src="https://img.shields.io/badge/Website-samsaraserver.space-blue" alt="Project Website" />
+  </a>
+  <a href="https://github.com/termux/termux-app">
+    <img src="https://img.shields.io/badge/Termux-App-black?logo=github" alt="Termux App" />
+  </a>
+  <a href="https://github.com/termux/termux-packages">
+    <img src="https://img.shields.io/badge/Termux-Packages-black?logo=github" alt="Termux Packages" />
+  </a>
+</p>
+
+<br>
+
 # Samsara Server
-[![Maintainability Rating](https://sonarcube.samsaraserver.space/api/project_badges/measure?project=Samsara-server&metric=sqale_rating&token=sqb_f1c814e55b2b022b69df00e731feb80af8c5d8ae)](https://sonarcube.samsaraserver.space/dashboard?id=Samsara-server)
-[![Vulnerabilities](https://sonarcube.samsaraserver.space/api/project_badges/measure?project=Samsara-server&metric=vulnerabilities&token=sqb_f1c814e55b2b022b69df00e731feb80af8c5d8ae)](https://sonarcube.samsaraserver.space/dashboard?id=Samsara-server)
 
 Repurpose your old Android devices into powerful Linux servers with a sleek interface and zero command-line complexity.
-
-<img width="217" height="205" alt="Logo-detailed-no-background_1" src="https://github.com/user-attachments/assets/67748b4d-0057-4dd0-b02e-7b86ce544dd0" /> 
 
 ## About
 
 Samsara Server aims to breathe new life into unused Android phones and tablets by converting them into fully functional Linux servers. Built on the robust foundation of Termux, this application provides an intuitive wrapper interface that makes server management accessible to everyone, from beginners to system administrators.
 
 The project combines the power of Alpine Linux with Android's hardware capabilities, creating an ecosystem where community-driven projects can flourish on repurposed devices. Whether you're running a home automation system, hosting a personal cloud, or experimenting with distributed computing, Samsara Server makes it simple.
-
-**Project Website:** [samsaraserver.space](https://samsaraserver.space)
 
 ## Features
 
