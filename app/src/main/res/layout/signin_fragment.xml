@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.47" />
+        app:layout_constraintGuide_percent="0.46" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_mright"
@@ -47,26 +47,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9" />
+        app:layout_constraintGuide_percent="0.8" />
 
     <!-- Top visuals to match login_page.xml -->
 
 
     <TextView
         android:id="@+id/tvSignInCreateAccount"
-        android:layout_width="250dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="@dimen/padding_na"
-        android:text="login_or_create_an_account"
+        android:text="Sign in or create an account"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -89,7 +89,7 @@
         android:id="@+id/tvSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SignIn"
+        android:text="Sign In"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintEnd_toStartOf="@id/guideline_middle"
@@ -114,7 +114,7 @@
         android:id="@+id/tvSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SignUp"
+        android:text="Sign Up"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/RegisterBtn"
         app:layout_constraintEnd_toEndOf="@id/RegisterBtn"
@@ -172,7 +172,7 @@
         android:id="@+id/LoginBiometrics"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login_with_biometrics"
+        android:text="Sign in with Biometrics"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/LoginBiometricsBtn"
         app:layout_constraintEnd_toEndOf="@+id/LoginBiometricsBtn"
@@ -197,7 +197,7 @@
         android:id="@+id/tvLoginGithub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login_with_github"
+        android:text="Sign in with GitHub"
         android:textColor="#FFFFFF"
         app:layout_constraintTop_toTopOf="@id/LoginGithubGtn"
         app:layout_constraintBottom_toBottomOf="@id/LoginGithubGtn"
@@ -233,7 +233,7 @@
         android:id="@+id/tvLogin2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
+        android:text="Sign In"
         android:textColor="#FFFFFF"
         app:layout_constraintTop_toTopOf="@id/SignInBtn"
         app:layout_constraintBottom_toBottomOf="@id/SignInBtn"
@@ -277,7 +277,7 @@
         android:id="@+id/tvRegister2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register_under"
+        android:text="Sign Up"
         android:textColor="#FFFFFF"
         app:layout_constraintHorizontal_bias="0.03"
         app:layout_constraintBottom_toBottomOf="@id/RegisterBtn2"
