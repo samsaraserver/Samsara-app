@@ -21,6 +21,7 @@ import com.termux.app.home_page;
 import com.termux.app.database.SupabaseConfig;
 import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.managers.AuthManager;
+import com.termux.app.BiometricHelper;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -32,6 +33,7 @@ public class SignUpFragment extends Fragment {
     private EditText emailBox;
     private EditText passwordBox;
     private CheckBox checkBoxTermsAndConditions;
+    private BiometricHelper biometricHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +59,13 @@ public class SignUpFragment extends Fragment {
 
         initializeViews(view);
         setupClickListeners(view);
+
+        // Initialize biometric helper for storing credentials after successful signup
+        biometricHelper = new BiometricHelper(requireActivity(), new BiometricHelper.AuthenticationCallback() {
+            @Override public void onAuthenticationSuccessful(String u, String e, String p, String id) { /* no-op */ }
+            @Override public void onAuthenticationFailed() { /* no-op */ }
+            @Override public void onAuthenticationError(int errorCode, CharSequence errString) { /* no-op */ }
+        });
     }
 
     private void initializeViews(View view) {
@@ -142,6 +151,15 @@ public class SignUpFragment extends Fragment {
                     setFormEnabled(true);
                     if (user != null) {
                         AuthManager.getInstance(requireContext()).loginUser(user, password);
+                        // Store credentials for biometric login right after successful signup/login
+                        try {
+                            if (biometricHelper != null) {
+                                // Store regardless of current availability; harmless and enables future biometric login
+                                biometricHelper.storeCredentials(user.getUsername(), user.getEmail(), password, String.valueOf(user.getId()));
+                            }
+                        } catch (Exception ex) {
+                            Log.e(TAG, "Error storing biometric credentials after signup", ex);
+                        }
                         Toast.makeText(requireContext(), "Account created successfully!", Toast.LENGTH_LONG).show();
                         NavbarHelper.navigateToActivity(requireActivity(), home_page.class);
                     } else {
@@ -220,6 +238,10 @@ public class SignUpFragment extends Fragment {
         if (userRepository != null) {
             userRepository.shutdown();
             userRepository = null;
+        }
+        if (biometricHelper != null) {
+            try { biometricHelper.cleanup(); } catch (Exception ignore) {}
+            biometricHelper = null;
         }
         usernameBox = null;
         emailBox = null;

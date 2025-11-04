@@ -113,7 +113,24 @@ public class AuthManager {
     private void clearSavedCredentials() {
         try {
             SharedPreferences loginPrefs = appContext.getSharedPreferences("SamsaraLoginPrefs", Context.MODE_PRIVATE);
-            loginPrefs.edit().clear().apply();
+            boolean remember = loginPrefs.getBoolean("remember_me", false);
+            String savedIdentifier = loginPrefs.getString("email_username", null);
+
+            SharedPreferences.Editor editor = loginPrefs.edit();
+            editor.remove("encrypted_password");
+            editor.remove("login_encryption_key");
+
+            if (remember && savedIdentifier != null && !savedIdentifier.isEmpty()) {
+                editor.putBoolean("remember_me", true);
+                editor.putString("email_username", savedIdentifier);
+            } else {
+                editor.remove("remember_me");
+                editor.remove("email_username");
+            }
+            editor.apply();
+
+            SharedPreferences biometricPrefsSignup = appContext.getSharedPreferences("BiometricSignupPrefs", Context.MODE_PRIVATE);
+            biometricPrefsSignup.edit().clear().apply();
 
             SharedPreferences biometricPrefs = appContext.getSharedPreferences("BiometricLoginPrefs", Context.MODE_PRIVATE);
             biometricPrefs.edit().clear().apply();

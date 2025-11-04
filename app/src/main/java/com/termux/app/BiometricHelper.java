@@ -15,7 +15,7 @@ import java.util.concurrent.Executor;
 
 public class BiometricHelper {
     private static final String TAG = "BiometricHelper";
-    private static final String PREF_NAME = "BiometricLoginPrefs";
+    private static final String PREF_NAME = "BiometricSignupPrefs";
     private static final String KEY_USERNAME = "biometric_username";
     private static final String KEY_EMAIL = "biometric_email";
     private static final String KEY_PASSWORD = "biometric_password";
@@ -191,7 +191,7 @@ public class BiometricHelper {
             editor.putString(KEY_USER_ID, userId);
             editor.apply();
         } catch (Exception e) {
-            Log.e(TAG, "Error storing credentials for biometric login", e);
+            Log.e(TAG, "Error storing credentials for biometric signup", e);
         }
     }
 
