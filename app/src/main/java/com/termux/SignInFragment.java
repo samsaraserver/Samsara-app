@@ -465,14 +465,14 @@ public class SignInFragment extends Fragment {
     }
 
     private String encryptPassword(String password, SecretKey key) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS1Padding");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encryptedBytes = cipher.doFinal(password.getBytes());
         return Base64.getEncoder().encodeToString(encryptedBytes);
     }
 
     private String decryptPassword(String encryptedPassword, SecretKey key) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS1Padding");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedPassword));
         return new String(decryptedBytes);
