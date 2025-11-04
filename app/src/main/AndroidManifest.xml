@@ -76,14 +76,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".app.login_page"
+        <activity
+            android:name=".app.SignInOut_page"
             android:exported="false"
-            android:label="Login Page"
-            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
-
-        <activity android:name=".app.register_page"
-            android:exported="false"
-            android:label="Register Page"
+            android:label="Sign In / Sign Up"
             android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
 
         <activity

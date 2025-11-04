@@ -176,7 +176,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
             setFieldsEnabled(false);
             isEditMode = false;
         } else {
-            Intent intent = new Intent(this, login_page.class);
+            Intent intent = new Intent(this, SignInOut_page.class);
             startActivity(intent);
         }
     }

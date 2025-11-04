@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
@@ -55,54 +55,19 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.85" />
 
-    <ImageView
-        android:id="@+id/TopBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/top_bar_1"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="ContentDescription" />
-
-    <ImageView
-        android:id="@+id/SamsaraLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/samsara_logo_1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
-
-    <TextView
-        android:id="@+id/Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginTop="25dp"
-        android:text="@string/register"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/text_xl"
-        app:layout_constraintStart_toEndOf="@id/SamsaraLogo"
-        app:layout_constraintTop_toTopOf="@id/SamsaraLogo"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
-
     <TextView
         android:id="@+id/tvSignInOrCreateAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="@dimen/padding_na"
-        android:text="@string/login_or_create_an_account"
+        android:text="@string/sign_in_or_create_an_account"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/TopBar" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_top" />
 
     <ImageView
         android:id="@+id/SignUpView"
@@ -135,7 +100,7 @@
         android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register"
+        android:text="@string/sign_up"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/SignUpView"
         app:layout_constraintEnd_toEndOf="@+id/guideline_end"
@@ -148,7 +113,7 @@
         android:id="@+id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
+        android:text="@string/sign_in"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/LoginBtn"
         app:layout_constraintEnd_toEndOf="@+id/LoginBtn"
@@ -186,7 +151,7 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/UsernameBox"
-        tools:ignore="Autofill" />
+        tools:ignore="Autofill,TextFields" />
 
     <EditText
         android:id="@+id/PasswordBox"
@@ -288,19 +253,20 @@
         android:id="@+id/LoginBtn2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:backgroundTint="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAlreadyHaveAnAccount"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tvAlreadyHaveAnAccount"
         app:layout_constraintTop_toTopOf="@+id/tvAlreadyHaveAnAccount"
-        app:layout_constraintBottom_toBottomOf="@+id/tvAlreadyHaveAnAccount"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvLogin2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
+        android:text="@string/sign_in"
         android:textColor="#FFFFFF"
         app:layout_constraintHorizontal_bias="0.03"
         app:layout_constraintBottom_toBottomOf="@+id/LoginBtn2"
@@ -312,12 +278,12 @@
         android:id="@+id/tvAlreadyHaveAnAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:text="@string/already_have_an_account"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.368"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/SignInGithubBtn" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

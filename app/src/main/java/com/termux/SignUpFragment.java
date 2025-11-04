@@ -1,24 +1,32 @@
-package com.termux.app;
+package com.termux;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.termux.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.termux.app.NavbarHelper;
+import com.termux.app.home_page;
 import com.termux.app.database.SupabaseConfig;
 import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.managers.AuthManager;
+
 import java.util.concurrent.CompletableFuture;
 
-public class register_page extends Activity {
-    private static final String TAG = "RegisterPage";
+public class SignUpFragment extends Fragment {
+    private static final String TAG = "SignUpFragment";
+
     private UserRepository userRepository;
     private EditText usernameBox;
     private EditText emailBox;
@@ -26,48 +34,60 @@ public class register_page extends Activity {
     private CheckBox checkBoxTermsAndConditions;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register_page);
 
         try {
-            SupabaseConfig.initialize(this);
+            SupabaseConfig.initialize(requireContext());
             userRepository = new UserRepository();
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize Supabase: " + e.getMessage(), e);
-            Toast.makeText(this, "Database connection error. Please try again later.", Toast.LENGTH_LONG).show();
-            finish();
-            return;
+            Toast.makeText(requireContext(), "Database connection error. Please try again later.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.signup_fragment, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initializeViews(view);
+        setupClickListeners(view);
+    }
+
+    private void initializeViews(View view) {
+        usernameBox = view.findViewById(R.id.UsernameBox);
+        emailBox = view.findViewById(R.id.EmailPhoneBox);
+        passwordBox = view.findViewById(R.id.PasswordBox);
+        checkBoxTermsAndConditions = view.findViewById(R.id.CheckBoxTermsAndConditions);
+    }
+
+    private void setupClickListeners(View view) {
+        ImageButton loginBtn = view.findViewById(R.id.LoginBtn);
+        ImageButton loginBtn2 = view.findViewById(R.id.LoginBtn2);
+
+        View.OnClickListener toSignIn = v -> {
+            Bundle result = new Bundle();
+            result.putString("nav", "toSignIn");
+            getParentFragmentManager().setFragmentResult("auth_nav", result);
+        };
+
+        if (loginBtn != null) loginBtn.setOnClickListener(toSignIn);
+        if (loginBtn2 != null) loginBtn2.setOnClickListener(toSignIn);
+
+        ImageButton createAccountButton = view.findViewById(R.id.CreateAccountBtn);
+        if (createAccountButton != null) {
+            createAccountButton.setOnClickListener(v -> handleCreateAccount());
         }
 
-        initializeViews();
-        setupClickListeners();
-    }
-
-    private void initializeViews() {
-
-        usernameBox = findViewById(R.id.UsernameBox);
-        emailBox = findViewById(R.id.EmailPhoneBox);
-        passwordBox = findViewById(R.id.PasswordBox);
-        checkBoxTermsAndConditions = findViewById(R.id.CheckBoxTermsAndConditions);
-    }
-
-    private void setupClickListeners() {
-        ImageButton loginButton = findViewById(R.id.LoginBtn);
-        loginButton.setOnClickListener(view -> NavbarHelper.navigateToActivity(register_page.this, login_page.class));
-
-        ImageButton createAccountButton = findViewById(R.id.CreateAccountBtn);
-        createAccountButton.setOnClickListener(view -> {
-            handleCreateAccount();
-        });
-
-        ImageButton loginSecondaryButton = findViewById(R.id.LoginBtn2);
-        loginSecondaryButton.setOnClickListener(view -> NavbarHelper.navigateToActivity(register_page.this, login_page.class));
-
-        ImageButton githubButton = findViewById(R.id.SignInGithubBtn);
+        ImageButton githubButton = view.findViewById(R.id.SignInGithubBtn);
         if (githubButton != null) {
-            githubButton.setOnClickListener(view -> {
-                Toast.makeText(this, "GitHub signup not implemented yet", Toast.LENGTH_SHORT).show();
+            githubButton.setOnClickListener(v -> {
+                Toast.makeText(requireContext(), "GitHub signup not implemented yet", Toast.LENGTH_SHORT).show();
             });
         }
     }
@@ -82,13 +102,12 @@ public class register_page extends Activity {
         }
 
         setFormEnabled(false);
-        Toast.makeText(this, "Checking availability...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "Checking availability...", Toast.LENGTH_SHORT).show();
 
-        // First check if username or email already exists
         userRepository.checkUsernameExists(username)
             .thenCompose(usernameExists -> {
                 if (usernameExists) {
-                    runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         setFormEnabled(true);
                         usernameBox.setError("Username already exists");
                         usernameBox.requestFocus();
@@ -99,15 +118,16 @@ public class register_page extends Activity {
             })
             .thenCompose(emailExists -> {
                 if (emailExists) {
-                    runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         setFormEnabled(true);
                         emailBox.setError("Email already registered");
                         emailBox.requestFocus();
                     });
                     return CompletableFuture.completedFuture(false);
                 }
-                
-                runOnUiThread(() -> Toast.makeText(this, "Creating account...", Toast.LENGTH_SHORT).show());
+
+                requireActivity().runOnUiThread(() ->
+                    Toast.makeText(requireContext(), "Creating account...", Toast.LENGTH_SHORT).show());
                 return userRepository.createUser(username, email, password);
             })
             .thenCompose(success -> {
@@ -118,23 +138,22 @@ public class register_page extends Activity {
                 }
             })
             .thenAccept(user -> {
-                runOnUiThread(() -> {
+                requireActivity().runOnUiThread(() -> {
                     setFormEnabled(true);
                     if (user != null) {
-                        AuthManager.getInstance(this).loginUser(user, password);
-                        Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
-                        
-                        NavbarHelper.navigateToActivity(register_page.this, home_page.class);
+                        AuthManager.getInstance(requireContext()).loginUser(user, password);
+                        Toast.makeText(requireContext(), "Account created successfully!", Toast.LENGTH_LONG).show();
+                        NavbarHelper.navigateToActivity(requireActivity(), home_page.class);
                     } else {
-                        Toast.makeText(this, "Account may have been created, but login failed. Please try signing in manually.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), "Account may have been created, but login failed. Please try signing in manually.", Toast.LENGTH_LONG).show();
                     }
                 });
             })
             .exceptionally(throwable -> {
                 Log.e(TAG, "Error creating account", throwable);
-                runOnUiThread(() -> {
+                requireActivity().runOnUiThread(() -> {
                     setFormEnabled(true);
-                    Toast.makeText(this, "Error creating account: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), "Error creating account: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
                 });
                 return null;
             });
@@ -178,7 +197,7 @@ public class register_page extends Activity {
         }
 
         if (!checkBoxTermsAndConditions.isChecked()) {
-            Toast.makeText(this, "You must agree to the Terms and Conditions", Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), "You must agree to the Terms and Conditions", Toast.LENGTH_LONG).show();
             return false;
         }
 
@@ -186,17 +205,25 @@ public class register_page extends Activity {
     }
 
     private void setFormEnabled(boolean enabled) {
-        usernameBox.setEnabled(enabled);
-        emailBox.setEnabled(enabled);
-        passwordBox.setEnabled(enabled);
-        findViewById(R.id.CreateAccountBtn).setEnabled(enabled);
+        if (usernameBox != null) usernameBox.setEnabled(enabled);
+        if (emailBox != null) emailBox.setEnabled(enabled);
+        if (passwordBox != null) passwordBox.setEnabled(enabled);
+        if (getView() != null) {
+            View createBtn = getView().findViewById(R.id.CreateAccountBtn);
+            if (createBtn != null) createBtn.setEnabled(enabled);
+        }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         if (userRepository != null) {
             userRepository.shutdown();
+            userRepository = null;
         }
+        usernameBox = null;
+        emailBox = null;
+        passwordBox = null;
+        checkBoxTermsAndConditions = null;
     }
 }
