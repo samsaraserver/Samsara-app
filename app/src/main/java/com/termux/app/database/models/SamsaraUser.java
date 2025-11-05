@@ -11,6 +11,11 @@ public class SamsaraUser {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Boolean isActive;
+
+    // OAuth fields
+    private String githubId;
+    private String authProvider;
+    private String oauthToken;
     
     public SamsaraUser() {
         this.isActive = true;
@@ -87,7 +92,31 @@ public class SamsaraUser {
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
-    
+
+    public String getGithubId() {
+        return githubId;
+    }
+
+    public void setGithubId(String githubId) {
+        this.githubId = githubId;
+    }
+
+    public String getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(String authProvider) {
+        this.authProvider = authProvider;
+    }
+
+    public String getOauthToken() {
+        return oauthToken;
+    }
+
+    public void setOauthToken(String oauthToken) {
+        this.oauthToken = oauthToken;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

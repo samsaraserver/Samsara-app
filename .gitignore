@@ -16,7 +16,7 @@ release/
 local.properties
 
 # Supabase configuration file
-#app/src/main/assets/supabase.properties
+app/src/main/assets/supabase.properties
 
 # Gradle generated files
 .gradle/

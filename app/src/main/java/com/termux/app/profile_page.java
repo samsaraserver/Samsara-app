@@ -51,7 +51,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
 
         try {
             SupabaseConfig.initialize(this);
-            userRepository = new UserRepository();
+            userRepository = UserRepository.getInstance(this);
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize Supabase: " + e.getMessage(), e);
         }

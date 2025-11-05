@@ -27,6 +27,7 @@ import com.termux.app.database.SupabaseConfig;
 import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.managers.AuthManager;
 import com.termux.app.database.models.SamsaraUser;
+import com.termux.app.oauth.GitHubOAuthManager;
 
 import java.util.Base64;
 import java.util.regex.Pattern;
@@ -61,7 +62,7 @@ public class SignInFragment extends Fragment {
 
         try {
             SupabaseConfig.initialize(requireContext());
-            userRepository = new UserRepository();
+            userRepository = UserRepository.getInstance(requireContext());
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize Supabase: " + e.getMessage(), e);
             Toast.makeText(requireContext(), "Database connection error. Please try again later.", Toast.LENGTH_LONG).show();
@@ -176,7 +177,14 @@ public class SignInFragment extends Fragment {
         ImageButton githubButton = view.findViewById(R.id.LoginGithubGtn);
         if (githubButton != null) {
             githubButton.setOnClickListener(v -> {
-                Toast.makeText(requireContext(), "GitHub login not implemented yet", Toast.LENGTH_SHORT).show();
+                try {
+                    GitHubOAuthManager oauthManager = GitHubOAuthManager.getInstance(requireContext());
+                    oauthManager.startOAuthFlow(requireContext());
+                    Toast.makeText(requireContext(), "Redirecting to GitHub...", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to start GitHub OAuth", e);
+                    Toast.makeText(requireContext(), "GitHub login error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             });
         }
     }

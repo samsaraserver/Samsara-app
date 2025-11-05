@@ -10,7 +10,7 @@ public class JsonUtils {
     
     public static JSONObject userToJson(SamsaraUser user) throws JSONException {
         JSONObject json = new JSONObject();
-        
+
         if (user.getUsername() != null) {
             json.put("username", user.getUsername());
         }
@@ -26,20 +26,35 @@ public class JsonUtils {
         if (user.getIsActive() != null) {
             json.put("is_active", user.getIsActive());
         }
-        
+        // OAuth fields
+        if (user.getGithubId() != null) {
+            json.put("github_id", user.getGithubId());
+        }
+        if (user.getAuthProvider() != null) {
+            json.put("auth_provider", user.getAuthProvider());
+        }
+        if (user.getOauthToken() != null) {
+            json.put("oauth_token", user.getOauthToken());
+        }
+
         return json;
     }
     
     public static SamsaraUser jsonToUser(JSONObject json) throws JSONException {
         SamsaraUser user = new SamsaraUser();
-        
+
         user.setId(safeGetLong(json, "id", 0L));
         user.setUsername(safeGetString(json, "username", null));
         user.setEmail(safeGetString(json, "email", null));
         user.setPasswordHash(safeGetString(json, "password_hash", null));
         user.setProfilePictureUrl(safeGetString(json, "profile_picture_url", null));
         user.setIsActive(safeGetBoolean(json, "is_active", true));
-        
+
+        // OAuth fields
+        user.setGithubId(safeGetString(json, "github_id", null));
+        user.setAuthProvider(safeGetString(json, "auth_provider", null));
+        user.setOauthToken(safeGetString(json, "oauth_token", null));
+
         String createdAtStr = safeGetString(json, "created_at", null);
         if (createdAtStr != null && !createdAtStr.isEmpty()) {
             try {
@@ -55,7 +70,7 @@ public class JsonUtils {
                 user.setCreatedAt(null);
             }
         }
-        
+
         String updatedAtStr = safeGetString(json, "updated_at", null);
         if (updatedAtStr != null && !updatedAtStr.isEmpty()) {
             try {
@@ -71,7 +86,7 @@ public class JsonUtils {
                 user.setUpdatedAt(null);
             }
         }
-        
+
         return user;
     }
     

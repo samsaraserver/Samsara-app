@@ -23,17 +23,25 @@ public class UserRepository {
     private static final String TAG = "UserRepository";
     private static final String TABLE_NAME = "samsara_user";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    
+
+    private static UserRepository instance;
     private final OkHttpClient httpClient;
     private final ExecutorService executorService;
     private final String baseUrl;
     private final String apiKey;
-    
-    public UserRepository() {
+
+    private UserRepository() {
         this.httpClient = SupabaseConfig.getHttpClient();
         this.executorService = Executors.newCachedThreadPool();
         this.baseUrl = SupabaseConfig.getRestApiUrl();
         this.apiKey = SupabaseConfig.getApiKey();
+    }
+
+    public static synchronized UserRepository getInstance(android.content.Context context) {
+        if (instance == null) {
+            instance = new UserRepository();
+        }
+        return instance;
     }
     
     public CompletableFuture<Boolean> createUser(String username, String email, String password) {
@@ -240,7 +248,7 @@ public class UserRepository {
         }
     }
     
-    public CompletableFuture<Boolean> updateUser(SamsaraUser user) {
+    public CompletableFuture<SamsaraUser> updateUser(SamsaraUser user) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 JSONObject updateData = new JSONObject();
@@ -256,34 +264,53 @@ public class UserRepository {
                 if (user.getIsActive() != null) {
                     updateData.put("is_active", user.getIsActive());
                 }
-                
+                if (user.getProfilePictureUrl() != null) {
+                    updateData.put("profile_picture_url", user.getProfilePictureUrl());
+                }
+                // OAuth fields
+                if (user.getGithubId() != null) {
+                    updateData.put("github_id", user.getGithubId());
+                }
+                if (user.getAuthProvider() != null) {
+                    updateData.put("auth_provider", user.getAuthProvider());
+                }
+                if (user.getOauthToken() != null) {
+                    updateData.put("oauth_token", user.getOauthToken());
+                }
+
                 String timestamp = new java.sql.Timestamp(System.currentTimeMillis()).toString();
                 updateData.put("updated_at", timestamp);
-                
+
                 RequestBody body = RequestBody.create(updateData.toString(), JSON);
                 String url = baseUrl + TABLE_NAME + "?id=eq." + user.getId();
-                
+
                 Request request = new Request.Builder()
                     .url(url)
                     .addHeader("apikey", apiKey)
                     .addHeader("Authorization", "Bearer " + apiKey)
                     .addHeader("Content-Type", "application/json")
+                    .addHeader("Prefer", "return=representation")
                     .patch(body)
                     .build();
-                
+
                 try (Response response = httpClient.newCall(request).execute()) {
-                    if (response.isSuccessful()) {
-                        return true;
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        JSONArray jsonArray = new JSONArray(responseBody);
+                        if (jsonArray.length() > 0) {
+                            return JsonUtils.jsonToUser(jsonArray.getJSONObject(0));
+                        }
+                        return user;
                     } else {
                         String errorBody = response.body() != null ? response.body().string() : "Unknown error";
                         Log.e(TAG, "Failed to update user. Status: " + response.code() + ", Error: " + errorBody);
-                        return false;
+                        return null;
                     }
                 }
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "Error updating user: " + e.getMessage(), e);
-                return false;
+                return null;
             }
         }, executorService);
     }
@@ -495,5 +522,156 @@ public class UserRepository {
             return false;
         }
         return true;
+    }
+
+    // OAuth-specific methods
+
+    /**
+     * Find user by GitHub ID
+     */
+    public CompletableFuture<SamsaraUser> findByGithubId(String githubId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String url = baseUrl + TABLE_NAME + "?github_id=eq." + URLEncoder.encode(githubId, StandardCharsets.UTF_8.name()) + "&select=*";
+
+                Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .get()
+                    .build();
+
+                try (Response response = httpClient.newCall(request).execute()) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        JSONArray jsonArray = new JSONArray(responseBody);
+
+                        if (jsonArray.length() > 0) {
+                            JSONObject userJson = jsonArray.getJSONObject(0);
+                            return JsonUtils.jsonToUser(userJson);
+                        }
+                    } else {
+                        Log.e(TAG, "Failed to get user by GitHub ID. Status: " + response.code());
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting user by GitHub ID: " + e.getMessage(), e);
+            }
+            return null;
+        }, executorService);
+    }
+
+    /**
+     * Find user by ID
+     */
+    public CompletableFuture<SamsaraUser> findById(Long userId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String url = baseUrl + TABLE_NAME + "?id=eq." + userId + "&select=*";
+
+                Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .get()
+                    .build();
+
+                try (Response response = httpClient.newCall(request).execute()) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        JSONArray jsonArray = new JSONArray(responseBody);
+
+                        if (jsonArray.length() > 0) {
+                            JSONObject userJson = jsonArray.getJSONObject(0);
+                            return JsonUtils.jsonToUser(userJson);
+                        }
+                    } else {
+                        Log.e(TAG, "Failed to get user by ID. Status: " + response.code());
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting user by ID: " + e.getMessage(), e);
+            }
+            return null;
+        }, executorService);
+    }
+
+    /**
+     * Alias for getUserByEmail (for OAuth compatibility)
+     */
+    public CompletableFuture<SamsaraUser> findByEmail(String email) {
+        return getUserByEmail(email);
+    }
+
+    /**
+     * Check if username is available
+     */
+    public CompletableFuture<Boolean> isUsernameAvailable(String username) {
+        return checkUsernameExists(username).thenApply(exists -> !exists);
+    }
+
+    /**
+     * Check if email is available
+     */
+    public CompletableFuture<Boolean> isEmailAvailable(String email) {
+        return checkEmailExists(email).thenApply(exists -> !exists);
+    }
+
+    /**
+     * Create user from SamsaraUser object (for OAuth users)
+     */
+    public CompletableFuture<SamsaraUser> createUser(SamsaraUser user) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                JSONObject userData = new JSONObject();
+                userData.put("username", user.getUsername());
+                userData.put("email", user.getEmail());
+                userData.put("password_hash", user.getPasswordHash());
+                userData.put("profile_picture_url", user.getProfilePictureUrl());
+                userData.put("is_active", user.getIsActive() != null ? user.getIsActive() : true);
+
+                // OAuth fields
+                if (user.getGithubId() != null) {
+                    userData.put("github_id", user.getGithubId());
+                }
+                if (user.getAuthProvider() != null) {
+                    userData.put("auth_provider", user.getAuthProvider());
+                } else {
+                    userData.put("auth_provider", "email");
+                }
+                if (user.getOauthToken() != null) {
+                    userData.put("oauth_token", user.getOauthToken());
+                }
+
+                RequestBody body = RequestBody.create(userData.toString(), JSON);
+                Request request = new Request.Builder()
+                    .url(baseUrl + TABLE_NAME)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Prefer", "return=representation")
+                    .post(body)
+                    .build();
+
+                try (Response response = httpClient.newCall(request).execute()) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        JSONArray jsonArray = new JSONArray(responseBody);
+                        if (jsonArray.length() > 0) {
+                            return JsonUtils.jsonToUser(jsonArray.getJSONObject(0));
+                        }
+                    } else {
+                        String errorBody = response.body() != null ? response.body().string() : "Unknown error";
+                        Log.e(TAG, "Failed to create user. Status: " + response.code() + ", Error: " + errorBody);
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error creating user: " + e.getMessage(), e);
+            }
+            return null;
+        }, executorService);
     }
 }
