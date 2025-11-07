@@ -105,7 +105,7 @@
         app:layout_constraintHorizontal_bias="0.5" />
 
     <ImageButton
-        android:id="@+id/RegisterBtn"
+        android:id="@+id/SignUpBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/register"
@@ -123,10 +123,10 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_up"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/RegisterBtn"
-        app:layout_constraintEnd_toEndOf="@id/RegisterBtn"
-        app:layout_constraintTop_toTopOf="@id/RegisterBtn"
-        app:layout_constraintBottom_toBottomOf="@id/RegisterBtn" />
+        app:layout_constraintStart_toStartOf="@id/SignUpBtn"
+        app:layout_constraintEnd_toEndOf="@id/SignUpBtn"
+        app:layout_constraintTop_toTopOf="@id/SignUpBtn"
+        app:layout_constraintBottom_toBottomOf="@id/SignUpBtn" />
 
     <EditText
         android:id="@+id/EmailUsernameBox"
@@ -142,7 +142,7 @@
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintTop_toBottomOf="@id/RegisterBtn"
+        app:layout_constraintTop_toBottomOf="@id/SignUpBtn"
         app:srcCompat="@drawable/login_3" />
 
     <EditText
@@ -163,7 +163,7 @@
 
 
     <ImageButton
-        android:id="@+id/LoginBiometricsBtn"
+        android:id="@+id/SignInBiometricsBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -181,14 +181,14 @@
         android:layout_height="wrap_content"
         android:text="Sign in with Biometrics"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/LoginBiometricsBtn"
-        app:layout_constraintEnd_toEndOf="@+id/LoginBiometricsBtn"
-        app:layout_constraintStart_toStartOf="@+id/LoginBiometricsBtn"
-        app:layout_constraintTop_toTopOf="@+id/LoginBiometricsBtn"
+        app:layout_constraintBottom_toBottomOf="@+id/SignInBiometricsBtn"
+        app:layout_constraintEnd_toEndOf="@+id/SignInBiometricsBtn"
+        app:layout_constraintStart_toStartOf="@+id/SignInBiometricsBtn"
+        app:layout_constraintTop_toTopOf="@+id/SignInBiometricsBtn"
         />
 
     <ImageButton
-        android:id="@+id/LoginGithubGtn"
+        android:id="@+id/SignInGithubBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -206,10 +206,10 @@
         android:layout_height="wrap_content"
         android:text="Sign in with GitHub"
         android:textColor="#FFFFFF"
-        app:layout_constraintTop_toTopOf="@id/LoginGithubGtn"
-        app:layout_constraintBottom_toBottomOf="@id/LoginGithubGtn"
-        app:layout_constraintStart_toStartOf="@id/LoginGithubGtn"
-        app:layout_constraintEnd_toEndOf="@id/LoginGithubGtn" />
+        app:layout_constraintTop_toTopOf="@id/SignInGithubBtn"
+        app:layout_constraintBottom_toBottomOf="@id/SignInGithubBtn"
+        app:layout_constraintStart_toStartOf="@id/SignInGithubBtn"
+        app:layout_constraintEnd_toEndOf="@id/SignInGithubBtn" />
 
     <CheckBox
         android:id="@+id/RememberMeCheckBox"
@@ -221,7 +221,7 @@
         android:text="@string/remember_me"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/LoginBiometricsBtn" />
+        app:layout_constraintTop_toBottomOf="@id/SignInBiometricsBtn" />
 
     <ImageButton
         android:id="@+id/SignInBtn"
@@ -249,8 +249,8 @@
 
     <ImageButton
         android:id="@+id/ForgotPasswordBtn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="131dp"
+        android:layout_height="26dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -270,27 +270,30 @@
 
 
     <ImageButton
-        android:id="@+id/RegisterBtn2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/SignUpBtn2"
+        android:layout_width="56dp"
+        android:layout_height="32dp"
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="@string/register"
         app:layout_constraintBottom_toBottomOf="@id/tvNoAccount"
-        app:layout_constraintStart_toEndOf="@id/tvNoAccount"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintTop_toTopOf="@+id/tvNoAccount" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/tvNoAccount"
+        app:layout_constraintTop_toTopOf="@+id/tvNoAccount"
+        app:layout_constraintVertical_bias="0.461" />
 
     <TextView
-        android:id="@+id/tvRegister2"
+        android:id="@+id/tvSignUp2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sign_up"
         android:textColor="#FFFFFF"
-        app:layout_constraintHorizontal_bias="0.03"
-        app:layout_constraintBottom_toBottomOf="@id/RegisterBtn2"
-        app:layout_constraintEnd_toEndOf="@id/RegisterBtn2"
-        app:layout_constraintStart_toStartOf="@id/RegisterBtn2"
-        app:layout_constraintTop_toTopOf="@id/RegisterBtn2" />
+        app:layout_constraintBottom_toBottomOf="@+id/SignUpBtn2"
+        app:layout_constraintEnd_toEndOf="@+id/SignUpBtn2"
+        app:layout_constraintHorizontal_bias="0.525"
+        app:layout_constraintStart_toStartOf="@id/SignUpBtn2"
+        app:layout_constraintTop_toTopOf="@+id/SignUpBtn2"
+        app:layout_constraintVertical_bias="0.550" />
 
     <TextView
         android:id="@+id/tvNoAccount"
@@ -300,8 +303,8 @@
         android:text="@string/dont_have_an_account"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="0.394"
-        app:layout_constraintStart_toStartOf="@+id/ForgotPasswordBtn"
+        app:layout_constraintHorizontal_bias="0.352"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/ForgotPasswordBtn" />
 
     <ImageButton
@@ -313,7 +316,7 @@
         android:backgroundTint="#00FFFFFF"
         android:scaleType="fitXY"
         android:src="@drawable/login_5"
-        app:layout_constraintTop_toBottomOf="@id/tvRegister2"
+        app:layout_constraintTop_toBottomOf="@id/tvSignUp2"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
