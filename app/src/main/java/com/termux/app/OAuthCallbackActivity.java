@@ -74,7 +74,7 @@ public class OAuthCallbackActivity extends Activity {
                 .thenAccept(user -> {
                     if (user != null) {
                         runOnUiThread(() -> {
-                            AuthManager.getInstance(this).loginUser(user);
+                            AuthManager.getInstance(this).signinUser(user);
                             Toast.makeText(this, "Successfully signed in with GitHub!", Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(this, home_page.class);

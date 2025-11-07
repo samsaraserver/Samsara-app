@@ -39,11 +39,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class SignInFragment extends Fragment {
     private static final String TAG = "SignInFragment";
-    private static final String PREFS_NAME = "SamsaraLoginPrefs";
+    private static final String PREFS_NAME = "SamsaraSignInPrefs";
     private static final String KEY_REMEMBER_ME = "remember_me";
     private static final String KEY_EMAIL_USERNAME = "email_username";
     private static final String KEY_ENCRYPTED_PASSWORD = "encrypted_password";
-    private static final String KEY_ENCRYPTION_KEY = "login_encryption_key";
+    private static final String KEY_ENCRYPTION_KEY = "signin_encryption_key";
 
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^.{8,}$");
 
@@ -51,14 +51,14 @@ public class SignInFragment extends Fragment {
     private EditText emailUsernameBox;
     private EditText passwordBox;
     private CheckBox rememberMeCheckBox;
-    private SharedPreferences loginPrefs;
+    private SharedPreferences signInPrefs;
     private BiometricHelper biometricHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loginPrefs = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        signInPrefs = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
         try {
             SupabaseConfig.initialize(requireContext());
@@ -82,14 +82,14 @@ public class SignInFragment extends Fragment {
         loadSavedCredentials();
         setupClickListeners(view);
         setupBiometricHelper();
-        setupBiometricLogin(view);
+        setupBiometricSignIn(view);
     }
 
     private void setupBiometricHelper() {
         biometricHelper = new BiometricHelper(requireActivity(), new BiometricHelper.AuthenticationCallback() {
             @Override
             public void onAuthenticationSuccessful(String username, String email, String password, String userId) {
-                loginWithStoredCredentials(username, email, password);
+                signInWithStoredCredentials(username, email, password);
             }
 
             @Override
@@ -112,9 +112,9 @@ public class SignInFragment extends Fragment {
             tvForgotPassword.setText(Html.fromHtml(tvForgotPassword.getText().toString()));
         }
 
-        TextView tvRegister2 = view.findViewById(R.id.tvRegister2);
-        if (tvRegister2 != null) {
-            tvRegister2.setText(Html.fromHtml(tvRegister2.getText().toString()));
+        TextView tvSignUp2 = view.findViewById(R.id.tvSignUp2);
+        if (tvSignUp2 != null) {
+            tvSignUp2.setText(Html.fromHtml(tvSignUp2.getText().toString()));
         }
 
         emailUsernameBox = view.findViewById(R.id.EmailUsernameBox);
@@ -123,9 +123,9 @@ public class SignInFragment extends Fragment {
     }
 
     private void loadSavedCredentials() {
-        boolean rememberMe = loginPrefs.getBoolean(KEY_REMEMBER_ME, false);
+        boolean rememberMe = signInPrefs.getBoolean(KEY_REMEMBER_ME, false);
         if (rememberMe) {
-            String savedUsername = loginPrefs.getString(KEY_EMAIL_USERNAME, "");
+            String savedUsername = signInPrefs.getString(KEY_EMAIL_USERNAME, "");
             emailUsernameBox.setText(savedUsername);
             passwordBox.setHint("Enter password");
             passwordBox.setText("");
@@ -135,8 +135,8 @@ public class SignInFragment extends Fragment {
     }
 
     private void setupClickListeners(View view) {
-        ImageButton registerBtn = view.findViewById(R.id.RegisterBtn);
-        ImageButton registerBtn2 = view.findViewById(R.id.RegisterBtn2);
+        ImageButton signUpBtn = view.findViewById(R.id.SignUpBtn);
+        ImageButton signUpBtn2 = view.findViewById(R.id.SignUpBtn2);
 
         View.OnClickListener toSignUp = v -> {
             Bundle result = new Bundle();
@@ -144,12 +144,12 @@ public class SignInFragment extends Fragment {
             getParentFragmentManager().setFragmentResult("auth_nav", result);
         };
 
-        if (registerBtn != null) registerBtn.setOnClickListener(toSignUp);
-        if (registerBtn2 != null) registerBtn2.setOnClickListener(toSignUp);
+        if (signUpBtn != null) signUpBtn.setOnClickListener(toSignUp);
+        if (signUpBtn2 != null) signUpBtn2.setOnClickListener(toSignUp);
 
-        ImageButton biometricLoginButton = view.findViewById(R.id.LoginBiometricsBtn);
-        if (biometricLoginButton != null) {
-            biometricLoginButton.setOnClickListener(v -> {
+        ImageButton biometricSignInButton = view.findViewById(R.id.SignInBiometricsBtn);
+        if (biometricSignInButton != null) {
+            biometricSignInButton.setOnClickListener(v -> {
                 if (biometricHelper != null) {
                     if (biometricHelper.isBiometricAvailable() && biometricHelper.hasStoredCredentials()) {
                         biometricHelper.startBiometricAuthentication();
@@ -162,9 +162,9 @@ public class SignInFragment extends Fragment {
             });
         }
 
-        ImageButton loginButton = view.findViewById(R.id.SignInBtn);
-        if (loginButton != null) {
-            loginButton.setOnClickListener(v -> handleLogin());
+        ImageButton signInButton = view.findViewById(R.id.SignInBtn);
+        if (signInButton != null) {
+            signInButton.setOnClickListener(v -> handleSignIn());
         }
 
         ImageButton continueWithoutAccountButton = view.findViewById(R.id.ContinueWithoutAccountBtn);
@@ -174,7 +174,7 @@ public class SignInFragment extends Fragment {
             });
         }
 
-        ImageButton githubButton = view.findViewById(R.id.LoginGithubGtn);
+        ImageButton githubButton = view.findViewById(R.id.SignInGithubBtn);
         if (githubButton != null) {
             githubButton.setOnClickListener(v -> {
                 try {
@@ -183,32 +183,32 @@ public class SignInFragment extends Fragment {
                     Toast.makeText(requireContext(), "Redirecting to GitHub...", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     Log.e(TAG, "Failed to start GitHub OAuth", e);
-                    Toast.makeText(requireContext(), "GitHub login error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), "GitHub sign in error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         }
     }
 
-    private void setupBiometricLogin(View view) {
+    private void setupBiometricSignIn(View view) {
         if (biometricHelper == null) {
-            Log.e(TAG, "BiometricHelper is null, cannot setup biometric login");
+            Log.e(TAG, "BiometricHelper is null, cannot setup biometric sign in");
             return;
         }
 
         if (!biometricHelper.isBiometricAvailable()) {
-            ImageButton biometricLoginButton = view.findViewById(R.id.LoginBiometricsBtn);
-            if (biometricLoginButton != null) {
-                biometricLoginButton.setEnabled(false);
-                biometricLoginButton.setAlpha(0.5f);
+            ImageButton biometricSignInButton = view.findViewById(R.id.SignInBiometricsBtn);
+            if (biometricSignInButton != null) {
+                biometricSignInButton.setEnabled(false);
+                biometricSignInButton.setAlpha(0.5f);
             }
         }
     }
 
-    private void handleLogin() {
+    private void handleSignIn() {
         String emailOrUsername = emailUsernameBox.getText().toString().trim();
         String password = passwordBox.getText().toString();
 
-        if (!validateLoginInput(emailOrUsername, password)) {
+        if (!validateSignInInput(emailOrUsername, password)) {
             return;
         }
 
@@ -235,7 +235,7 @@ public class SignInFragment extends Fragment {
                             requireActivity().runOnUiThread(() -> {
                                 setFormEnabled(true);
                                 Log.e(TAG, "Authentication error", throwable);
-                                Toast.makeText(requireContext(), "Login error: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(requireContext(), "Sign in error: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
                             });
                             return null;
                         }
@@ -267,10 +267,10 @@ public class SignInFragment extends Fragment {
                         return null;
                     });
             } catch (Exception e) {
-                Log.e(TAG, "Error during login", e);
+                Log.e(TAG, "Error during sign in", e);
                 requireActivity().runOnUiThread(() -> {
                     setFormEnabled(true);
-                    Toast.makeText(requireContext(), "Login error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), "Sign in error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         }).start();
@@ -279,7 +279,7 @@ public class SignInFragment extends Fragment {
     private void handleUserResult(SamsaraUser user, Throwable userThrowable, String emailOrUsername, String password) {
         if (userThrowable != null) {
             Log.e(TAG, "Error fetching user data", userThrowable);
-            Toast.makeText(requireContext(), "Login error: " + userThrowable.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), "Sign in error: " + userThrowable.getMessage(), Toast.LENGTH_LONG).show();
             setFormEnabled(true);
             return;
         }
@@ -292,8 +292,8 @@ public class SignInFragment extends Fragment {
             }
 
             storeCredentialsForBiometric(user, emailOrUsername, password);
-            AuthManager.getInstance(requireContext()).loginUser(user, password);
-            Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_SHORT).show();
+            AuthManager.getInstance(requireContext()).signinUser(user, password);
+            Toast.makeText(requireContext(), "Sign in successful!", Toast.LENGTH_SHORT).show();
             NavbarHelper.navigateToActivity(requireActivity(), home_page.class);
         } else {
             Toast.makeText(requireContext(), "Invalid email/username or password", Toast.LENGTH_LONG).show();
@@ -313,32 +313,32 @@ public class SignInFragment extends Fragment {
             String email = user.getEmail();
             String userId = String.valueOf(user.getId());
             biometricHelper.storeCredentials(username, email, password, userId);
-            Toast.makeText(requireContext(), "Biometric login updated and ready to use!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Biometric sign in updated and ready to use!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void loginWithStoredCredentials(String username, String email, String password) {
+    private void signInWithStoredCredentials(String username, String email, String password) {
         setFormEnabled(false);
-        Toast.makeText(requireContext(), "Logging in with biometrics...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "Signing in with biometrics...", Toast.LENGTH_SHORT).show();
 
-        final String loginIdentifier = !TextUtils.isEmpty(email) ? email : username;
+        final String signInIdentifier = !TextUtils.isEmpty(email) ? email : username;
 
-        if (TextUtils.isEmpty(loginIdentifier) || TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(signInIdentifier) || TextUtils.isEmpty(password)) {
             Log.e(TAG, "Stored credentials are incomplete");
-            Toast.makeText(requireContext(), "Stored login information is incomplete. Please log in with password.", Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), "Stored sign in information is incomplete. Please sign in with password.", Toast.LENGTH_LONG).show();
             setFormEnabled(true);
             return;
         }
 
         new Thread(() -> {
             try {
-                userRepository.authenticateUser(loginIdentifier, password)
+                userRepository.authenticateUser(signInIdentifier, password)
                     .handle((success, throwable) -> {
                         if (throwable != null) {
                             requireActivity().runOnUiThread(() -> {
                                 setFormEnabled(true);
-                                Log.e(TAG, "Error during biometric login", throwable);
-                                Toast.makeText(requireContext(), "Biometric login error: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                                Log.e(TAG, "Error during biometric sign in", throwable);
+                                Toast.makeText(requireContext(), "Biometric sign in error: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
                             });
                             return null;
                         }
@@ -347,10 +347,10 @@ public class SignInFragment extends Fragment {
                             new Thread(() -> {
                                 try {
                                     SamsaraUser user = null;
-                                    if (loginIdentifier.contains("@")) {
-                                        user = userRepository.getUserByEmail(loginIdentifier).get();
+                                    if (signInIdentifier.contains("@")) {
+                                        user = userRepository.getUserByEmail(signInIdentifier).get();
                                     } else {
-                                        user = userRepository.getUserByUsername(loginIdentifier).get();
+                                        user = userRepository.getUserByUsername(signInIdentifier).get();
                                     }
 
                                     final SamsaraUser finalUser = user;
@@ -362,16 +362,16 @@ public class SignInFragment extends Fragment {
                         } else {
                             requireActivity().runOnUiThread(() -> {
                                 setFormEnabled(true);
-                                Toast.makeText(requireContext(), "Biometric login failed. Your stored credentials may no longer be valid.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(requireContext(), "Biometric sign in failed. Your stored credentials may no longer be valid.", Toast.LENGTH_LONG).show();
                             });
                         }
                         return null;
                     });
             } catch (Exception e) {
-                Log.e(TAG, "Error during biometric login", e);
+                Log.e(TAG, "Error during biometric sign in", e);
                 requireActivity().runOnUiThread(() -> {
                     setFormEnabled(true);
-                    Toast.makeText(requireContext(), "Biometric login error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), "Biometric sign in error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         }).start();
@@ -380,25 +380,25 @@ public class SignInFragment extends Fragment {
     private void handleBiometricUserResult(SamsaraUser user, Throwable userThrowable, String password) {
         setFormEnabled(true);
         if (userThrowable != null) {
-            Log.e(TAG, "Error fetching user data for biometric login", userThrowable);
-            Toast.makeText(requireContext(), "Biometric login error: " + userThrowable.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, "Error fetching user data for biometric sign in", userThrowable);
+            Toast.makeText(requireContext(), "Biometric sign in error: " + userThrowable.getMessage(), Toast.LENGTH_LONG).show();
             return;
         }
 
         if (user != null) {
             if (!TextUtils.isEmpty(password)) {
-                AuthManager.getInstance(requireContext()).loginUser(user, password);
+                AuthManager.getInstance(requireContext()).signinUser(user, password);
             } else {
-                AuthManager.getInstance(requireContext()).loginUser(user);
+                AuthManager.getInstance(requireContext()).signinUser(user);
             }
-            Toast.makeText(requireContext(), "Biometric login successful!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Biometric sign in successful!", Toast.LENGTH_SHORT).show();
             NavbarHelper.navigateToActivity(requireActivity(), home_page.class);
         } else {
-            Toast.makeText(requireContext(), "Biometric login failed. Your stored credentials may no longer be valid.", Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), "Biometric sign in failed. Your stored credentials may no longer be valid.", Toast.LENGTH_LONG).show();
         }
     }
 
-    private boolean validateLoginInput(String emailOrUsername, String password) {
+    private boolean validateSignInInput(String emailOrUsername, String password) {
         if (TextUtils.isEmpty(emailOrUsername)) {
             emailUsernameBox.setError("Email or username is required");
             emailUsernameBox.requestFocus();
@@ -430,7 +430,7 @@ public class SignInFragment extends Fragment {
 
     private void saveCredentials(String emailOrUsername, String password) {
         try {
-            SharedPreferences.Editor editor = loginPrefs.edit();
+            SharedPreferences.Editor editor = signInPrefs.edit();
             editor.putBoolean(KEY_REMEMBER_ME, true);
             editor.putString(KEY_EMAIL_USERNAME, emailOrUsername);
 
@@ -447,7 +447,7 @@ public class SignInFragment extends Fragment {
     }
 
     private void clearSavedCredentials() {
-        SharedPreferences.Editor editor = loginPrefs.edit();
+        SharedPreferences.Editor editor = signInPrefs.edit();
         editor.remove(KEY_REMEMBER_ME);
         editor.remove(KEY_EMAIL_USERNAME);
         editor.remove(KEY_ENCRYPTED_PASSWORD);
@@ -456,7 +456,7 @@ public class SignInFragment extends Fragment {
     }
 
     private SecretKey getOrCreateEncryptionKey() throws Exception {
-        String encodedKey = loginPrefs.getString(KEY_ENCRYPTION_KEY, null);
+        String encodedKey = signInPrefs.getString(KEY_ENCRYPTION_KEY, null);
         if (encodedKey != null) {
             byte[] keyBytes = Base64.getDecoder().decode(encodedKey);
             return new SecretKeySpec(keyBytes, "AES");
@@ -467,7 +467,7 @@ public class SignInFragment extends Fragment {
         SecretKey key = keyGen.generateKey();
 
         String encodedNewKey = Base64.getEncoder().encodeToString(key.getEncoded());
-        loginPrefs.edit().putString(KEY_ENCRYPTION_KEY, encodedNewKey).apply();
+        signInPrefs.edit().putString(KEY_ENCRYPTION_KEY, encodedNewKey).apply();
 
         return key;
     }
@@ -488,7 +488,7 @@ public class SignInFragment extends Fragment {
 
     private String retrieveSavedPassword() {
         try {
-            String encryptedPassword = loginPrefs.getString(KEY_ENCRYPTED_PASSWORD, null);
+            String encryptedPassword = signInPrefs.getString(KEY_ENCRYPTED_PASSWORD, null);
             if (encryptedPassword != null) {
                 SecretKey encryptionKey = getOrCreateEncryptionKey();
                 return decryptPassword(encryptedPassword, encryptionKey);
@@ -522,10 +522,8 @@ public class SignInFragment extends Fragment {
                 biometricHelper = null;
             }
 
-            if (userRepository != null) {
-                userRepository.shutdown();
-                userRepository = null;
-            }
+            // Don't shutdown UserRepository as it's a singleton used across the app
+            userRepository = null;
 
             emailUsernameBox = null;
             passwordBox = null;

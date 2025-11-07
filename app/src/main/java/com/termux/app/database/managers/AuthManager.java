@@ -33,14 +33,14 @@ public class AuthManager {
         return instance;
     }
 
-    public void loginUser(SamsaraUser user) {
-        this.currentUser = user;
-        saveUserToPrefs(user);
-    }
-
-    public void loginUser(SamsaraUser user, String password) {
+    public void signinUser(SamsaraUser user, String password) {
         this.currentUser = user;
         saveUserToPrefs(user, password);
+    }
+
+    public void signinUser(SamsaraUser user) {
+        this.currentUser = user;
+        saveUserToPrefs(user);
     }
 
     public void logoutUser() {
@@ -112,13 +112,13 @@ public class AuthManager {
 
     private void clearSavedCredentials() {
         try {
-            SharedPreferences loginPrefs = appContext.getSharedPreferences("SamsaraLoginPrefs", Context.MODE_PRIVATE);
-            boolean remember = loginPrefs.getBoolean("remember_me", false);
-            String savedIdentifier = loginPrefs.getString("email_username", null);
+            SharedPreferences SigninPrefs = appContext.getSharedPreferences("SamsaraSigninPrefs", Context.MODE_PRIVATE);
+            boolean remember = SigninPrefs.getBoolean("remember_me", false);
+            String savedIdentifier = SigninPrefs.getString("email_username", null);
 
-            SharedPreferences.Editor editor = loginPrefs.edit();
+            SharedPreferences.Editor editor = SigninPrefs.edit();
             editor.remove("encrypted_password");
-            editor.remove("login_encryption_key");
+            editor.remove("Signin_encryption_key");
 
             if (remember && savedIdentifier != null && !savedIdentifier.isEmpty()) {
                 editor.putBoolean("remember_me", true);
@@ -132,7 +132,7 @@ public class AuthManager {
             SharedPreferences biometricPrefsSignup = appContext.getSharedPreferences("BiometricSignupPrefs", Context.MODE_PRIVATE);
             biometricPrefsSignup.edit().clear().apply();
 
-            SharedPreferences biometricPrefs = appContext.getSharedPreferences("BiometricLoginPrefs", Context.MODE_PRIVATE);
+            SharedPreferences biometricPrefs = appContext.getSharedPreferences("BiometricSigninPrefs", Context.MODE_PRIVATE);
             biometricPrefs.edit().clear().apply();
         } catch (Exception e) {
             Log.e(TAG, "Failed to clear stored credentials on logout", e);

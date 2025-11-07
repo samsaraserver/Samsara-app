@@ -77,8 +77,8 @@ public class SignUpFragment extends Fragment {
     }
 
     private void setupClickListeners(View view) {
-        ImageButton loginBtn = view.findViewById(R.id.LoginBtn);
-        ImageButton loginBtn2 = view.findViewById(R.id.LoginBtn2);
+        ImageButton signinBtn = view.findViewById(R.id.SignInBtn);
+        ImageButton signinBtn2 = view.findViewById(R.id.SignInBtn2);
 
         View.OnClickListener toSignIn = v -> {
             Bundle result = new Bundle();
@@ -86,8 +86,8 @@ public class SignUpFragment extends Fragment {
             getParentFragmentManager().setFragmentResult("auth_nav", result);
         };
 
-        if (loginBtn != null) loginBtn.setOnClickListener(toSignIn);
-        if (loginBtn2 != null) loginBtn2.setOnClickListener(toSignIn);
+        if (signinBtn != null) signinBtn.setOnClickListener(toSignIn);
+        if (signinBtn2 != null) signinBtn2.setOnClickListener(toSignIn);
 
         ImageButton createAccountButton = view.findViewById(R.id.CreateAccountBtn);
         if (createAccountButton != null) {
@@ -158,11 +158,11 @@ public class SignUpFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     setFormEnabled(true);
                     if (user != null) {
-                        AuthManager.getInstance(requireContext()).loginUser(user, password);
-                        // Store credentials for biometric login right after successful signup/login
+                        AuthManager.getInstance(requireContext()).signinUser(user, password);
+                        // Store credentials for biometric sign in right after successful signup
                         try {
                             if (biometricHelper != null) {
-                                // Store regardless of current availability; harmless and enables future biometric login
+                                // Store regardless of current availability; harmless and enables future biometric signin
                                 biometricHelper.storeCredentials(user.getUsername(), user.getEmail(), password, String.valueOf(user.getId()));
                             }
                         } catch (Exception ex) {
@@ -171,7 +171,7 @@ public class SignUpFragment extends Fragment {
                         Toast.makeText(requireContext(), "Account created successfully!", Toast.LENGTH_LONG).show();
                         NavbarHelper.navigateToActivity(requireActivity(), home_page.class);
                     } else {
-                        Toast.makeText(requireContext(), "Account may have been created, but login failed. Please try signing in manually.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), "Account may have been created, but sign in failed. Please try signing in manually.", Toast.LENGTH_LONG).show();
                     }
                 });
             })
@@ -243,10 +243,8 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (userRepository != null) {
-            userRepository.shutdown();
-            userRepository = null;
-        }
+        // Don't shutdown UserRepository as it's a singleton used across the app
+        userRepository = null;
         if (biometricHelper != null) {
             try { biometricHelper.cleanup(); } catch (Exception ignore) {}
             biometricHelper = null;

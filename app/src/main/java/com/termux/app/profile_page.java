@@ -268,9 +268,9 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
                 updatedUser.setEmail(email);
                 String updatedPassword = newPasswordForDisplay;
                 if (!TextUtils.isEmpty(updatedPassword)) {
-                    authManager.loginUser(updatedUser, updatedPassword);
+                    authManager.signinUser(updatedUser, updatedPassword);
                 } else {
-                    authManager.loginUser(updatedUser);
+                    authManager.signinUser(updatedUser);
                 }
 
                 Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
@@ -421,7 +421,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
                 .thenAccept(filename -> runOnUiThread(() -> {
                     if (filename != null && !filename.isEmpty()) {
                         currentUser.setProfilePictureUrl(filename);
-                        authManager.loginUser(currentUser);
+                        authManager.signinUser(currentUser);
                         loadProfilePicture(filename);
                         Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show();
                     } else {
@@ -498,8 +498,6 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (userRepository != null) {
-            userRepository.shutdown();
-        }
+        // Don't shutdown UserRepository as it's a singleton used across the app
     }
 }
