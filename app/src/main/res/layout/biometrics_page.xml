@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_xl"
         android:gravity="center_horizontal"
-        android:text="@string/biometrics_can_be_used_to_login_and_view_configurations"
+        android:text="@string/login_with_biometrics"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
