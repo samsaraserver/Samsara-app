@@ -498,6 +498,5 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Don't shutdown UserRepository as it's a singleton used across the app
     }
 }

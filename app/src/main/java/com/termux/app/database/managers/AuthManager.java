@@ -112,13 +112,13 @@ public class AuthManager {
 
     private void clearSavedCredentials() {
         try {
-            SharedPreferences SigninPrefs = appContext.getSharedPreferences("SamsaraSigninPrefs", Context.MODE_PRIVATE);
-            boolean remember = SigninPrefs.getBoolean("remember_me", false);
-            String savedIdentifier = SigninPrefs.getString("email_username", null);
+            SharedPreferences SignInPrefs = appContext.getSharedPreferences("SamsaraSignInPrefs", Context.MODE_PRIVATE);
+            boolean remember = SignInPrefs.getBoolean("remember_me", false);
+            String savedIdentifier = SignInPrefs.getString("email_username", null);
 
-            SharedPreferences.Editor editor = SigninPrefs.edit();
+            SharedPreferences.Editor editor = SignInPrefs.edit();
             editor.remove("encrypted_password");
-            editor.remove("Signin_encryption_key");
+            editor.remove("signin_encryption_key");
 
             if (remember && savedIdentifier != null && !savedIdentifier.isEmpty()) {
                 editor.putBoolean("remember_me", true);
@@ -128,12 +128,6 @@ public class AuthManager {
                 editor.remove("email_username");
             }
             editor.apply();
-
-            SharedPreferences biometricPrefsSignup = appContext.getSharedPreferences("BiometricSignupPrefs", Context.MODE_PRIVATE);
-            biometricPrefsSignup.edit().clear().apply();
-
-            SharedPreferences biometricPrefs = appContext.getSharedPreferences("BiometricSigninPrefs", Context.MODE_PRIVATE);
-            biometricPrefs.edit().clear().apply();
         } catch (Exception e) {
             Log.e(TAG, "Failed to clear stored credentials on logout", e);
         }

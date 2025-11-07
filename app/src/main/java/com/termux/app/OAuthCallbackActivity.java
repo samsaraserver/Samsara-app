@@ -57,15 +57,12 @@ public class OAuthCallbackActivity extends Activity {
                 .thenCompose(githubUserInfo -> {
                     Log.d(TAG, "GitHub user info received: " + githubUserInfo);
 
-                    // Check if user already exists with this GitHub ID
                     return userRepository.findByGithubId(githubUserInfo.getGithubId())
                             .thenCompose(existingUser -> {
                                 if (existingUser != null) {
-                                    // User exists, log them in
                                     Log.d(TAG, "Existing user found, logging in");
                                     return userRepository.findById(existingUser.getId());
                                 } else {
-                                    // New user, create account
                                     Log.d(TAG, "New user, creating account");
                                     return createGitHubUser(userRepository, githubUserInfo);
                                 }
@@ -75,6 +72,9 @@ public class OAuthCallbackActivity extends Activity {
                     if (user != null) {
                         runOnUiThread(() -> {
                             AuthManager.getInstance(this).signinUser(user);
+
+                            storeBiometricCredentialsForGitHubUser(user);
+
                             Toast.makeText(this, "Successfully signed in with GitHub!", Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(this, home_page.class);
@@ -108,7 +108,6 @@ public class OAuthCallbackActivity extends Activity {
                     String username = usernameAvailable ? githubUserInfo.getUsername() :
                                      githubUserInfo.getUsername() + "_" + githubUserInfo.getGithubId().substring(0, 4);
 
-                    // Check email availability if provided
                     if (githubUserInfo.getEmail() != null) {
                         return userRepository.isEmailAvailable(githubUserInfo.getEmail())
                                 .thenCompose(emailAvailable -> {
@@ -150,6 +149,37 @@ public class OAuthCallbackActivity extends Activity {
         newUser.setIsActive(true);
 
         return userRepository.createUser(newUser);
+    }
+
+    private void storeBiometricCredentialsForGitHubUser(SamsaraUser user) {
+        try {
+            androidx.biometric.BiometricManager biometricManager =
+                androidx.biometric.BiometricManager.from(this);
+
+            int canAuthenticate = biometricManager.canAuthenticate(
+                androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG);
+
+            if (canAuthenticate != androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS) {
+                Log.d(TAG, "Biometric authentication not available, skipping credential storage");
+                return;
+            }
+
+            // Store credentials using SharedPreferences directly
+            android.content.SharedPreferences prefs =
+                getSharedPreferences("BiometricSignupPrefs", MODE_PRIVATE);
+
+            android.content.SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("biometric_username", user.getUsername());
+            editor.putString("biometric_email", user.getEmail());
+            editor.putString("biometric_password", "__OAUTH_USER__");
+            editor.putString("biometric_user_id", String.valueOf(user.getId()));
+            editor.putString("biometric_auth_provider", user.getAuthProvider());
+            editor.apply();
+
+            Log.d(TAG, "Stored biometric credentials for GitHub user: " + user.getUsername());
+        } catch (Exception e) {
+            Log.e(TAG, "Error storing biometric credentials for GitHub user", e);
+        }
     }
 }
 

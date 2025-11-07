@@ -524,11 +524,6 @@ public class UserRepository {
         return true;
     }
 
-    // OAuth-specific methods
-
-    /**
-     * Find user by GitHub ID
-     */
     public CompletableFuture<SamsaraUser> findByGithubId(String githubId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -562,9 +557,6 @@ public class UserRepository {
         }, executorService);
     }
 
-    /**
-     * Find user by ID
-     */
     public CompletableFuture<SamsaraUser> findById(Long userId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -598,30 +590,18 @@ public class UserRepository {
         }, executorService);
     }
 
-    /**
-     * Alias for getUserByEmail (for OAuth compatibility)
-     */
     public CompletableFuture<SamsaraUser> findByEmail(String email) {
         return getUserByEmail(email);
     }
 
-    /**
-     * Check if username is available
-     */
     public CompletableFuture<Boolean> isUsernameAvailable(String username) {
         return checkUsernameExists(username).thenApply(exists -> !exists);
     }
 
-    /**
-     * Check if email is available
-     */
     public CompletableFuture<Boolean> isEmailAvailable(String email) {
         return checkEmailExists(email).thenApply(exists -> !exists);
     }
 
-    /**
-     * Create user from SamsaraUser object (for OAuth users)
-     */
     public CompletableFuture<SamsaraUser> createUser(SamsaraUser user) {
         return CompletableFuture.supplyAsync(() -> {
             try {

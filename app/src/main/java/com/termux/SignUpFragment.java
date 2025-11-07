@@ -159,10 +159,8 @@ public class SignUpFragment extends Fragment {
                     setFormEnabled(true);
                     if (user != null) {
                         AuthManager.getInstance(requireContext()).signinUser(user, password);
-                        // Store credentials for biometric sign in right after successful signup
                         try {
                             if (biometricHelper != null) {
-                                // Store regardless of current availability; harmless and enables future biometric signin
                                 biometricHelper.storeCredentials(user.getUsername(), user.getEmail(), password, String.valueOf(user.getId()));
                             }
                         } catch (Exception ex) {

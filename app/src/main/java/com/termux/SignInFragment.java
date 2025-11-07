@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.termux.app.BiometricHelper;
@@ -53,12 +55,15 @@ public class SignInFragment extends Fragment {
     private CheckBox rememberMeCheckBox;
     private SharedPreferences signInPrefs;
     private BiometricHelper biometricHelper;
+    private BiometricPrompt biometricPrompt;
+    private SharedPreferences biometricPrefs;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         signInPrefs = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        biometricPrefs = requireActivity().getSharedPreferences("BiometricSignupPrefs", Context.MODE_PRIVATE);
 
         try {
             SupabaseConfig.initialize(requireContext());
@@ -83,6 +88,33 @@ public class SignInFragment extends Fragment {
         setupClickListeners(view);
         setupBiometricHelper();
         setupBiometricSignIn(view);
+
+        // Debug: Check what's stored in biometric prefs
+        logStoredBiometricInfo();
+    }
+
+    private void logStoredBiometricInfo() {
+        Log.d(TAG, "=== Biometric Credentials Debug ===");
+        Log.d(TAG, "Has biometric_username: " + biometricPrefs.contains("biometric_username"));
+        Log.d(TAG, "Has biometric_password: " + biometricPrefs.contains("biometric_password"));
+        Log.d(TAG, "Has biometric_email: " + biometricPrefs.contains("biometric_email"));
+        Log.d(TAG, "Has biometric_user_id: " + biometricPrefs.contains("biometric_user_id"));
+
+        if (biometricPrefs.contains("biometric_username")) {
+            Log.d(TAG, "Stored username: " + biometricPrefs.getString("biometric_username", ""));
+        }
+        if (biometricPrefs.contains("biometric_email")) {
+            Log.d(TAG, "Stored email: " + biometricPrefs.getString("biometric_email", ""));
+        }
+
+        BiometricManager biometricManager = BiometricManager.from(requireContext());
+        int canAuthenticateStrong = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG);
+        int canAuthenticateWeak = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK);
+
+        Log.d(TAG, "BIOMETRIC_STRONG status: " + canAuthenticateStrong + " (0=SUCCESS)");
+        Log.d(TAG, "BIOMETRIC_WEAK status: " + canAuthenticateWeak + " (0=SUCCESS)");
+        Log.d(TAG, "BiometricHelper.isBiometricAvailable(): " + (biometricHelper != null ? biometricHelper.isBiometricAvailable() : "helper is null"));
+        Log.d(TAG, "===================================");
     }
 
     private void setupBiometricHelper() {
@@ -104,6 +136,77 @@ public class SignInFragment extends Fragment {
                 }
             }
         });
+
+        // Setup BiometricPrompt for sign-in (simplified, like biometrics_page)
+        java.util.concurrent.Executor executor = ContextCompat.getMainExecutor(requireActivity());
+        biometricPrompt = new BiometricPrompt(requireActivity(), executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                retrieveAndSignInWithBiometricCredentials();
+            }
+
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                if (errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON && errorCode != BiometricPrompt.ERROR_USER_CANCELED) {
+                    Toast.makeText(requireContext(), "Authentication error: " + errString, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Toast.makeText(requireContext(), "Biometric authentication failed. Try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private boolean hasStoredBiometricCredentials() {
+        return biometricPrefs.contains("biometric_username") && biometricPrefs.contains("biometric_password");
+    }
+
+    private void retrieveAndSignInWithBiometricCredentials() {
+        Log.d(TAG, "retrieveAndSignInWithBiometricCredentials called");
+        try {
+            String username = biometricPrefs.getString("biometric_username", "");
+            String email = biometricPrefs.getString("biometric_email", "");
+            String password = biometricPrefs.getString("biometric_password", null);
+
+            Log.d(TAG, "Retrieved credentials - Username: " + username + ", Email: " + email + ", Password exists: " + (password != null));
+
+            if (password != null) {
+                Log.d(TAG, "Credentials found, proceeding with sign-in");
+                signInWithStoredCredentials(username, email, password);
+            } else {
+                Log.w(TAG, "Password is null in stored biometric credentials");
+                Toast.makeText(requireContext(), "Biometric credentials not found. Please sign in with password.", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error retrieving biometric credentials", e);
+            Toast.makeText(requireContext(), "Error retrieving credentials. Please sign in with password.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void startDirectBiometricAuthentication() {
+        if (!hasStoredBiometricCredentials()) {
+            Toast.makeText(requireContext(), "No biometric credentials saved. Please log in with password first.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (biometricPrompt == null) {
+            Toast.makeText(requireContext(), "Biometric prompt not initialized", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Sign In")
+                .setSubtitle("Use your biometric to sign in")
+                .setNegativeButtonText("Cancel")
+                .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                .build();
+
+        biometricPrompt.authenticate(promptInfo);
     }
 
     private void initializeViews(View view) {
@@ -150,15 +253,7 @@ public class SignInFragment extends Fragment {
         ImageButton biometricSignInButton = view.findViewById(R.id.SignInBiometricsBtn);
         if (biometricSignInButton != null) {
             biometricSignInButton.setOnClickListener(v -> {
-                if (biometricHelper != null) {
-                    if (biometricHelper.isBiometricAvailable() && biometricHelper.hasStoredCredentials()) {
-                        biometricHelper.startBiometricAuthentication();
-                    } else {
-                        Toast.makeText(requireContext(), "Biometric authentication not available or no stored credentials.", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Biometric helper not initialized.", Toast.LENGTH_SHORT).show();
-                }
+                startDirectBiometricAuthentication();
             });
         }
 
@@ -304,16 +399,37 @@ public class SignInFragment extends Fragment {
     }
 
     private void storeCredentialsForBiometric(SamsaraUser user, String emailOrUsername, String password) {
-        if (user == null || biometricHelper == null) {
+        Log.d(TAG, "storeCredentialsForBiometric called");
+
+        if (user == null) {
+            Log.e(TAG, "Cannot store biometric credentials: user is null");
             return;
         }
 
+        if (biometricHelper == null) {
+            Log.e(TAG, "Cannot store biometric credentials: biometricHelper is null");
+            return;
+        }
+
+        Log.d(TAG, "Checking if biometric is available...");
         if (biometricHelper.isBiometricAvailable()) {
             String username = user.getUsername();
             String email = user.getEmail();
             String userId = String.valueOf(user.getId());
+
+            Log.d(TAG, "Biometric available. Storing credentials for user: " + username + " (ID: " + userId + ")");
             biometricHelper.storeCredentials(username, email, password, userId);
-            Toast.makeText(requireContext(), "Biometric sign in updated and ready to use!", Toast.LENGTH_SHORT).show();
+
+            // Verify credentials were stored
+            if (biometricHelper.hasStoredCredentials()) {
+                Log.d(TAG, "Credentials successfully stored and verified");
+                Toast.makeText(requireContext(), "Biometric sign in updated and ready to use!", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e(TAG, "Credentials storage verification failed!");
+                Toast.makeText(requireContext(), "Warning: Biometric credentials may not have been saved", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.w(TAG, "Biometric authentication not available on this device");
         }
     }
 
@@ -330,6 +446,41 @@ public class SignInFragment extends Fragment {
             return;
         }
 
+        // Check if this is an OAuth user (GitHub user)
+        boolean isOAuthUser = "__OAUTH_USER__".equals(password);
+
+        if (isOAuthUser) {
+            // For OAuth users, skip password authentication and directly fetch user data
+            new Thread(() -> {
+                try {
+                    SamsaraUser user = null;
+                    if (signInIdentifier.contains("@")) {
+                        user = userRepository.getUserByEmail(signInIdentifier).get();
+                    } else {
+                        user = userRepository.getUserByUsername(signInIdentifier).get();
+                    }
+
+                    final SamsaraUser finalUser = user;
+                    requireActivity().runOnUiThread(() -> {
+                        if (finalUser != null) {
+                            handleBiometricUserResult(finalUser, null, null);
+                        } else {
+                            setFormEnabled(true);
+                            Toast.makeText(requireContext(), "User not found. Please sign in with GitHub again.", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } catch (Exception e) {
+                    requireActivity().runOnUiThread(() -> {
+                        setFormEnabled(true);
+                        Log.e(TAG, "Error fetching OAuth user for biometric sign in", e);
+                        Toast.makeText(requireContext(), "Biometric sign in error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+                }
+            }).start();
+            return;
+        }
+
+        // Regular password-based authentication
         new Thread(() -> {
             try {
                 userRepository.authenticateUser(signInIdentifier, password)
@@ -522,7 +673,6 @@ public class SignInFragment extends Fragment {
                 biometricHelper = null;
             }
 
-            // Don't shutdown UserRepository as it's a singleton used across the app
             userRepository = null;
 
             emailUsernameBox = null;
