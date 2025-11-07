@@ -4,34 +4,23 @@
 
 <resources>
 
-    <!-- Core App Identity -->
+    <!-- Global App Identity & User Label -->
     <string name="application_name">&TERMUX_APP_NAME;</string>
     <string name="shared_user_label">&TERMUX_APP_NAME; user</string>
 
-
-    <!-- Termux Permissions & Bootstrap -->
-    <!-- Termux RUN_COMMAND permission -->
+    <!-- Permissions & Bootstrap (App Startup) -->
     <string name="permission_run_command_label">Run commands in &TERMUX_APP_NAME; environment</string>
-    <string name="permission_run_command_description">execute arbitrary commands within &TERMUX_APP_NAME;
-        environment and access files</string>
-
-    <!-- Termux Bootstrap Packages Installation -->
+    <string name="permission_run_command_description">execute arbitrary commands within &TERMUX_APP_NAME; environment and access files</string>
     <string name="bootstrap_installer_body">Setting up Alpine Linux environment…</string>
     <string name="bootstrap_error_title">Unable to setup environment</string>
     <string name="bootstrap_error_body">&TERMUX_APP_NAME; was unable to setup the Alpine Linux environment.</string>
     <string name="bootstrap_error_abort">Abort</string>
     <string name="bootstrap_error_try_again">Try again</string>
-    <string name="bootstrap_error_not_primary_user_message">&TERMUX_APP_NAME; can only be run as the primary user.
-        \nBootstrap binaries compiled for &TERMUX_APP_NAME; have hardcoded $PREFIX path and cannot be installed
-        under any path other than:\n%1$s.</string>
-    <string name="bootstrap_error_installed_on_portable_sd">&TERMUX_APP_NAME; cannot be installed on
-        portable/external/removable sd card on your device.
-        \nBootstrap binaries compiled for &TERMUX_APP_NAME; have hardcoded $PREFIX path and cannot be installed
-        under any path other than:\n%1$s.</string>
+    <string name="bootstrap_error_not_primary_user_message">&TERMUX_APP_NAME; can only be run as the primary user.\nBootstrap binaries compiled for &TERMUX_APP_NAME; have hardcoded $PREFIX path and cannot be installed under any path other than:\n%1$s.</string>
+    <string name="bootstrap_error_installed_on_portable_sd">&TERMUX_APP_NAME; cannot be installed on portable/external/removable sd card on your device.\nBootstrap binaries compiled for &TERMUX_APP_NAME; have hardcoded $PREFIX path and cannot be installed under any path other than:\n%1$s.</string>
 
-
-    <!-- Terminal: Sessions, Toolbar, Popups -->
-    <!-- Terminal Sidebar and Shortcuts -->
+    <!-- Terminal Activity: Sessions, Toolbar, Popups -->
+    <!-- (activity_termux.xml, item_terminal_sessions_list.xml) -->
     <string name="action_new_session">New Alpine session</string>
     <string name="action_new_session_failsafe">Failsafe</string>
     <string name="title_max_terminals_reached">Max terminals reached</string>
@@ -40,180 +29,105 @@
     <string name="action_rename_session_confirm">Set</string>
     <string name="title_create_named_session">New named session</string>
     <string name="action_create_named_session_confirm">Create</string>
-
     <string name="action_toggle_soft_keyboard">Keyboard</string>
     <string name="msg_enabling_terminal_toolbar">Enabling Terminal Toolbar</string>
     <string name="msg_disabling_terminal_toolbar">Disabling Terminal Toolbar</string>
-
-    <!-- Terminal Popup -->
     <string name="action_select_url">Select URL</string>
     <string name="title_select_url_dialog">Click URL to copy or long press to open</string>
     <string name="title_select_url_none_found">No URL found in the terminal.</string>
     <string name="msg_select_url_copied_to_clipboard">URL copied to clipboard</string>
-
     <string name="action_share_transcript">Share transcript</string>
     <string name="title_share_transcript">Terminal transcript</string>
     <string name="title_share_transcript_with">Send transcript to:</string>
-
     <string name="action_share_selected_text">Share selected text</string>
     <string name="title_share_selected_text">Terminal Text</string>
     <string name="title_share_selected_text_with">Send selected text to:</string>
-
     <string name="action_autofill_username">Autofill username</string>
     <string name="action_autofill_password">Autofill password</string>
-
     <string name="action_reset_terminal">Reset</string>
     <string name="msg_terminal_reset">Terminal reset</string>
-
     <string name="action_kill_process">Kill process (%d)</string>
     <string name="title_confirm_kill_process">Really kill this session?</string>
-
     <string name="action_toggle_keep_screen_on">Keep screen on</string>
     <string name="action_open_settings">Settings</string>
     <string name="action_request_root">Request root</string>
-
     <string name="action_report_issue">Report Issue</string>
     <string name="msg_generating_report">Generating Report</string>
     <string name="msg_add_termux_debug_info">Add termux debug info to report?</string>
 
-
-    <!-- Notifications & Exit -->
-    <!-- Termux Notifications -->
+    <!-- Notifications & Exit Dialog -->
     <string name="notification_action_exit">Exit</string>
     <string name="notification_action_wake_lock">Acquire wakelock</string>
     <string name="notification_action_wake_unlock">Release wakelock</string>
-
-    <!-- Exit Confirmation Dialog -->
     <string name="exit_prompt_title">Leave terminal?</string>
     <string name="exit_prompt_message">Do you want to keep the terminal running in the background or exit fully?</string>
     <string name="action_run_in_background">Run in background</string>
     <string name="action_exit_fully">Exit fully</string>
 
-
-    <!-- Services & Errors -->
-    <!-- TermuxService -->
-    <string name="error_display_over_other_apps_permission_not_granted_to_start_terminal">&TERMUX_APP_NAME;
-        requires
-        \"Display over other apps\" permission to start terminal sessions from background on Android >= 10.
-        Grants it from Settings -> Apps -> &TERMUX_APP_NAME; -> Advanced</string>
+    <!-- Services & Errors (TermuxService, RunCommandService, File RX) -->
+    <string name="error_display_over_other_apps_permission_not_granted_to_start_terminal">&TERMUX_APP_NAME; requires "Display over other apps" permission to start terminal sessions from background on Android >= 10. Grants it from Settings -> Apps -> &TERMUX_APP_NAME; -> Advanced</string>
     <string name="error_termux_service_invalid_execution_command_runner">Invalid execution command runner to TermuxService: `%1$s`</string>
     <string name="error_termux_service_unsupported_execution_command_runner">Unsupported execution command runner to TermuxService: `%1$s`</string>
     <string name="error_termux_service_unsupported_execution_command_shell_create_mode">Unsupported execution command shell create mode to TermuxService: `%1$s`</string>
     <string name="error_termux_service_execution_command_shell_name_unset">Shell name not set but `%1$s` shell create mode passed</string>
-
-    <!-- Termux RunCommandService -->
     <string name="error_run_command_service_invalid_intent_action">Invalid intent action to RunCommandService: `%1$s`</string>
     <string name="error_run_command_service_invalid_execution_command_runner">Invalid execution command runner to RunCommandService: `%1$s`</string>
-    <string name="error_run_command_service_mandatory_extra_missing">Mandatory extra missing to RunCommandService: \"%1$s\"</string>
+    <string name="error_run_command_service_mandatory_extra_missing">Mandatory extra missing to RunCommandService: "%1$s"</string>
     <string name="error_run_command_service_api_help">Visit %1$s for more info on RUN_COMMAND Intent usage.</string>
-
-    <!-- Termux File Receiver -->
     <string name="title_file_received">Save file in ~/downloads/</string>
     <string name="action_file_received_edit">Edit</string>
     <string name="action_file_received_open_directory">Open directory</string>
-
-    <!-- Miscellaneous -->
     <string name="error_termux_service_start_failed_general">Failed to start TermuxService. Check logcat for exception message.</string>
     <string name="error_termux_service_start_failed_bg">Failed to start TermuxService while app is in background due to android bg restrictions.</string>
 
-
-    <!-- Settings Pages -->
-    <!-- Termux Settings root -->
+    <!-- Settings Activity (activity_settings.xml) -->
     <string name="title_activity_termux_settings">&TERMUX_APP_NAME; Settings</string>
-
-    <!-- Termux App Preferences -->
     <string name="termux_preferences_title">&TERMUX_APP_NAME;</string>
     <string name="termux_preferences_summary">Preferences for &TERMUX_APP_NAME; app</string>
-
-    <!-- Debugging Preferences -->
     <string name="termux_debugging_preferences_title">Debugging</string>
     <string name="termux_debugging_preferences_summary">Preferences for debugging</string>
-
-    <!-- Logging Category -->
     <string name="termux_logging_header">Logging</string>
-
-    <!-- Log Level -->
     <string name="termux_log_level_title">Log Level</string>
-
-    <!-- Terminal View Key Logging -->
     <string name="termux_terminal_view_key_logging_enabled_title">Terminal View Key Logging</string>
     <string name="termux_terminal_view_key_logging_enabled_off">Logs will not have entries for terminal view keys. (Default)</string>
-    <string name="termux_terminal_view_key_logging_enabled_on">Logcat logs will have entries for terminal view keys.
-                    These are very verbose and should be disabled under normal circumstances or will cause performance issues.</string>
-
-    <!-- Plugin Error Notifications -->
+    <string name="termux_terminal_view_key_logging_enabled_on">Logcat logs will have entries for terminal view keys. These are very verbose and should be disabled under normal circumstances or will cause performance issues.</string>
     <string name="termux_plugin_error_notifications_enabled_title">Plugin Error Notifications</string>
     <string name="termux_plugin_error_notifications_enabled_off">Disable flashes and notifications for plugin errors.</string>
     <string name="termux_plugin_error_notifications_enabled_on">Show flashes and notifications for plugin errors. (Default)</string>
-
-    <!-- Crash Report Notifications -->
     <string name="termux_crash_report_notifications_enabled_title">Crash Report Notifications</string>
     <string name="termux_crash_report_notifications_enabled_off">Disable notifications for crash reports.</string>
     <string name="termux_crash_report_notifications_enabled_on">Show notifications for crash reports. (Default)</string>
-
-    <!-- Terminal IO Preferences -->
     <string name="termux_terminal_io_preferences_title">Terminal I/O</string>
     <string name="termux_terminal_io_preferences_summary">Preferences for terminal I/O</string>
-
-    <!-- Keyboard Category -->
     <string name="termux_keyboard_header">Keyboard</string>
-
-    <!-- Soft Keyboard -->
     <string name="termux_soft_keyboard_enabled_title">Soft Keyboard Enabled</string>
     <string name="termux_soft_keyboard_enabled_off">Soft keyboard will be disabled.</string>
     <string name="termux_soft_keyboard_enabled_on">Soft keyboard will be enabled. (Default)</string>
-
-    <!-- Soft Keyboard Only If No Hardware-->
     <string name="termux_soft_keyboard_enabled_only_if_no_hardware_title">Soft Keyboard Only If No Hardware</string>
-    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_off">Soft keyboard will be enabled even if
-                    hardware keyboard is connected. (Default)</string>
-    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_on">Soft keyboard will be enabled only if
-                    no hardware keyboard is connected.</string>
-
-    <!-- Terminal View Preferences -->
+    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_off">Soft keyboard will be enabled even if hardware keyboard is connected. (Default)</string>
+    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_on">Soft keyboard will be enabled only if no hardware keyboard is connected.</string>
     <string name="termux_terminal_view_preferences_title">Terminal View</string>
     <string name="termux_terminal_view_preferences_summary">Preferences for terminal view</string>
-
-    <!-- View Category -->
     <string name="termux_terminal_view_view_header">View</string>
-
-    <!-- Terminal View Margin Adjustment -->
     <string name="termux_terminal_view_terminal_margin_adjustment_title">Terminal Margin Adjustment</string>
     <string name="termux_terminal_view_terminal_margin_adjustment_off">Terminal margin adjustment will be disabled.</string>
-    <string name="termux_terminal_view_terminal_margin_adjustment_on">Terminal margin adjustment will be enabled.
-                    It should be enabled to try to fix the issue where soft keyboard covers part of extra keys/terminal view.
-                    If it causes screen flickering on your devices, then disable it. (Default)</string>
-
-    <!-- Termux:API App Preferences -->
+    <string name="termux_terminal_view_terminal_margin_adjustment_on">Terminal margin adjustment will be enabled. It should be enabled to try to fix the issue where soft keyboard covers part of extra keys/terminal view. If it causes screen flickering on your devices, then disable it. (Default)</string>
     <string name="termux_api_preferences_title">&TERMUX_API_APP_NAME;</string>
     <string name="termux_api_preferences_summary">Preferences for &TERMUX_API_APP_NAME; app</string>
-
-    <!-- Termux:Float App Preferences -->
     <string name="termux_float_preferences_title">&TERMUX_FLOAT_APP_NAME;</string>
     <string name="termux_float_preferences_summary">Preferences for &TERMUX_FLOAT_APP_NAME; app</string>
-
-    <!-- Termux:Tasker App Preferences -->
     <string name="termux_tasker_preferences_title">&TERMUX_TASKER_APP_NAME;</string>
     <string name="termux_tasker_preferences_summary">Preferences for &TERMUX_TASKER_APP_NAME; app</string>
-
-    <!-- Termux:Widget App Preferences -->
     <string name="termux_widget_preferences_title">&TERMUX_WIDGET_APP_NAME;</string>
     <string name="termux_widget_preferences_summary">Preferences for &TERMUX_WIDGET_APP_NAME; app</string>
-
-    <!-- About Preference (settings page entry) -->
     <string name="about_preference_title">About</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-
-    <!-- App UI: Navigation & Accessibility -->
-    <!-- Bottom navigation bar -->
+    <!-- Navigation Bar & Accessibility (navbar_layout.xml) -->
     <string name="home">Home</string>
     <string name="config">Configuration</string>
     <string name="docs">Docs</string>
     <string name="profile">Profile</string>
-
-    <!-- Content descriptions for accessibility and icons -->
     <string name="home_description">Navigate to home</string>
     <string name="config_description">Navigate to configuration</string>
     <string name="center_description">Main navigation button</string>
@@ -221,15 +135,13 @@
     <string name="profile_description">Navigate to profile</string>
     <string name="samsara_server_logo">Samsara Server Logo</string>
 
-
-    <!-- Branding & Welcome -->
+    <!-- Branding & Welcome (welcome_page.xml) -->
     <string name="samsaraserver">SamsaraServer</string>
     <string name="samsara_server">Samsara Server</string>
     <string name="transform_your_android_device_into_a_powerful_linux_server">Transform your Android device into a powerful Linux server</string>
     <string name="welcome_to_samsara_server">Welcome to Samsara Server</string>
 
-
-    <!-- Authentication & Accounts -->
+    <!-- Authentication & Account (signin/signup/profile pages) -->
     <string name="login"><u>Login</u></string>
     <string name="sign_in_or_create_an_account">Sign in or create an account</string>
     <string name="sign_up">Sign Up</string>
@@ -261,8 +173,7 @@
     <string name="edit_information">Edit Information</string>
     <string name="save">Save</string>
 
-
-    <!-- Dashboard / Home -->
+    <!-- Dashboard / Home (home_page.xml) -->
     <string name="manage_your_server_through_the_web_interface_once_the_terminal_is_running">Manage your server through the web interface once the terminal is running.</string>
     <string name="the_ip_address_is">The IP address is</string>
     <string name="access_web_dashboard">Access Web Dashboard</string>
@@ -273,32 +184,28 @@
     <string name="tap_terminal_to_initialize">Tap terminal to initialize</string>
     <string name="show_ip">Show IP</string>
     <string name="press_the_show_ip_button">Press the Show IP button</string>
-
-    <!-- Inline styled sample text used in UI examples -->
     <string name="lt_u_lt_b_textview_lt_b_lt_u"><![CDATA[<u><b>TextView</b></u>]]></string>
 
-
-    <!-- Community & Marketplace -->
+    <!-- Community & Marketplace (projects_page.xml) -->
     <string name="community_packages">Community Packages</string>
     <string name="test_package">Test Package</string>
     <string name="last_updated_25_08_2025">Last updated: 25/08/2025</string>
     <string name="installs_1k">Installs: 1K</string>
-    <string name="lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore_magna_aliqua_ut_enim_ad_minim_veniam_quis_nostrud_exercitation_ullamco_laboris_nisi_ut_aliquip_ex_ea_commodo_consequat">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="lorem_para_1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
     <string name="by_jane_doe">By: Jane Doe</string>
     <string name="install">Install</string>
     <string name="projects">Projects</string>
     <string name="install_or_manage_community_server_packages">Install or manage community server packages</string>
 
-
-    <!-- Configuration / Settings (in-app) -->
+    <!-- Configuration Page (configuration_page.xml) -->
     <string name="general">General</string>
     <string name="auto_start_on_boot">Auto start on boot</string>
     <string name="dashboard_password">Dashboard Password</string>
     <string name="network">Network</string>
     <string name="web_dashboard_port">Web Dashboard Port</string>
-    <string name="_8080">8080</string>
+    <string name="port_http_default">8080</string>
     <string name="ssh_port">SSH Port</string>
-    <string name="_2222">2222</string>
+    <string name="port_ssh_default">2222</string>
     <string name="linux_environment">Linux Environment</string>
     <string name="monitoring">Monitoring</string>
     <string name="monitoring_interval">Monitoring Interval</string>
@@ -314,8 +221,7 @@
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="save_changes">Save Changes</string>
 
-
-    <!-- About & Diagnostics -->
+    <!-- About & Diagnostics (about section / configuration) -->
     <string name="about">About</string>
     <string name="app_version">App Version:</string>
     <string name="textview">TextView</string>
@@ -323,8 +229,7 @@
     <string name="press_to_view_system_files">Press to View System Files</string>
     <string name="browse">Browse</string>
 
-
-    <!-- Monitoring & Stats -->
+    <!-- Monitoring & Stats (monitor_page.xml) -->
     <string name="disk_io">Disk I/O:</string>
     <string name="read_write_speed">Read/Write Speed:</string>
     <string name="disk_utilization">Disk Utilization:</string>
@@ -339,9 +244,10 @@
     <string name="packet_loss">Packet Loss:</string>
     <string name="network_latency">Network Latency:</string>
     <string name="active_connections">Active Connections:</string>
+    <string name="temp_60c">60c</string>
+    <string name="mem_8gb">8GB</string>
 
-
-    <!-- Documentation & Guides -->
+    <!-- Documentation & Guides (overview/setup/alpine fragments) -->
     <string name="documentation">Documentation</string>
     <string name="access_guides_and_forms">Access guides and forms</string>
     <string name="get_started">Get Started</string>
@@ -350,18 +256,16 @@
     <string name="alpine">Alpine</string>
     <string name="installation_guide">Installation Guide</string>
     <string name="minimum_requirements">Minimum Requirements</string>
-    <string name="duis_aute_irure_dolor_in_reprehenderit_in_voluptate_velit_esse_cillum_dolore_eu_fugiat_nulla_pariatur_excepteur_sint_occaecat_cupidatat_non_proident_sunt_in_culpa_qui_officia_deserunt_mollit_anim_id_est_laborum">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="lorem_para_2">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="installation_steps">Installation Steps</string>
-    <string name="nemo_enim_ipsam_voluptatem_quia_voluptas_sit_aspernatur_aut_odit_aut_fugit_sed_quia_consequuntur_magni_dolores">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores.</string>
-    <string name="npm_install_g_samsara_server">npm install -g samsara-server</string>
-    <string name="neque_porro_quisquam_est_qui_dolorem_ipsum_quia_dolor_sit_amet_consectetur_adipisci_velit_sed_quia_non_numquam">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam.</string>
-    <string name="at_vero_eos_et_accusamus_et_iusto_odio_dignissimos_ducimus_qui_blanditiis_praesentium_voluptatum_deleniti">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti.</string>
+    <string name="lorem_para_3">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores.</string>
+    <string name="cmd_npm_install">npm install -g samsara-server</string>
+    <string name="lorem_para_4">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam.</string>
+    <string name="lorem_para_5">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti.</string>
     <string name="contents">Contents</string>
     <string name="system_requirements">System Requirements</string>
     <string name="samsara_setup">Samsara Setup</string>
     <string name="alpine_guide">Alpine Guide</string>
-    <string name="_60c">60c</string>
-    <string name="_8gb">8GB</string>
     <string name="heading_4">Heading 4</string>
     <string name="heading_3">Heading 3</string>
     <string name="heading_2">Heading 2</string>
