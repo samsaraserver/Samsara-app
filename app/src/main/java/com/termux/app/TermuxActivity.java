@@ -176,6 +176,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     private float mTerminalToolbarDefaultHeight;
 
+    private BatterySaverOverlay mBatterySaverOverlay;
+
 
     private static final int CONTEXT_MENU_SELECT_URL_ID = 0;
     private static final int CONTEXT_MENU_SHARE_TRANSCRIPT_ID = 1;
@@ -251,6 +253,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         setToggleKeyboardView();
 
         registerForContextMenu(mTerminalView);
+
+        mBatterySaverOverlay = new BatterySaverOverlay(this);
+        mBatterySaverOverlay.attachToActivity();
 
         FileReceiverActivity.updateFileReceiverActivityComponentsState(this);
 
@@ -350,6 +355,10 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         Logger.logDebug(LOG_TAG, "onDestroy");
 
         if (mIsInvalidState) return;
+
+        if (mBatterySaverOverlay != null) {
+            mBatterySaverOverlay.cleanup();
+        }
 
         if (mTermuxService != null) {
             // Do not leave service and session clients with references to activity.
