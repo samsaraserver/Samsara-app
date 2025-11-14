@@ -70,8 +70,9 @@ public class home_page extends AppCompatActivity {
 
         monitorBtn.setOnClickListener(view -> {
             Intent intent = new Intent(home_page.this, monitor_page.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            finish();
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         ImageButton configurationBtn = findViewById(R.id.configurationBtn);
@@ -89,16 +90,18 @@ public class home_page extends AppCompatActivity {
 
         projectButton.setOnClickListener(view -> {
             Intent intent = new Intent(home_page.this, projects_page.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            finish();
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         ImageButton documentationBtn = findViewById(R.id.documentationBtn);
 
         documentationBtn.setOnClickListener(view -> {
             Intent intent = new Intent(home_page.this, documents_page.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            finish();
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
     }
 
@@ -123,10 +126,10 @@ public class home_page extends AppCompatActivity {
                     public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
                         super.onAuthenticationSucceeded(result);
                         Log.d(TAG, "Authentication succeeded");
-                        // Navigate to configuration page on successful authentication
                         Intent intent = new Intent(home_page.this, configuration_page.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(intent);
-                        finish();
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     }
 
                     @Override
@@ -336,10 +339,9 @@ public class home_page extends AppCompatActivity {
             .setMessage("Choose how to access configuration:")
             .setPositiveButton("Continue to Config", (dialog, which) -> {
                 Intent intent = new Intent(activity, configuration_page.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 activity.startActivity(intent);
-                if (!(activity instanceof configuration_page)) {
-                    activity.finish();
-                }
+                activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             })
             .setNegativeButton("Online Wiki", (dialog, which) -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wiki.termux.com/wiki/Configuration"));
@@ -366,10 +368,9 @@ public class home_page extends AppCompatActivity {
             .setMessage("Choose how to access configuration:")
             .setPositiveButton("Continue to Config", (dialog, which) -> {
                 Intent intent = new Intent(activity, configuration_page.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 activity.startActivity(intent);
-                if (!(activity instanceof configuration_page)) {
-                    activity.finish();
-                }
+                activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             })
             .setNegativeButton("Online Wiki", (dialog, which) -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wiki.termux.com/wiki/Configuration"));

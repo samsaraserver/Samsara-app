@@ -125,7 +125,7 @@
 
     <!-- Navigation Bar & Accessibility (navbar_layout.xml) -->
     <string name="home">Home</string>
-    <string name="config">Configuration</string>
+    <string name="config">Config</string>
     <string name="docs">Docs</string>
     <string name="profile">Profile</string>
     <string name="home_description">Navigate to home</string>

@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,7 @@ public class SignInFragment extends Fragment {
     private CheckBox rememberMeCheckBox;
     private SharedPreferences loginPrefs;
     private BiometricHelper biometricHelper;
+    private boolean isPasswordVisible = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -145,6 +148,11 @@ public class SignInFragment extends Fragment {
 
         if (registerBtn != null) registerBtn.setOnClickListener(toSignUp);
         if (registerBtn2 != null) registerBtn2.setOnClickListener(toSignUp);
+
+        ImageButton togglePasswordVisibilityBtn = view.findViewById(R.id.TogglePasswordVisibilityBtn);
+        if (togglePasswordVisibilityBtn != null) {
+            togglePasswordVisibilityBtn.setOnClickListener(v -> togglePasswordVisibility());
+        }
 
         ImageButton biometricLoginButton = view.findViewById(R.id.LoginBiometricsBtn);
         if (biometricLoginButton != null) {
@@ -533,5 +541,18 @@ public class SignInFragment extends Fragment {
         if (passwordBox != null && rememberMeCheckBox != null && !rememberMeCheckBox.isChecked()) {
             passwordBox.setText("");
         }
+    }
+
+    private void togglePasswordVisibility() {
+        if (passwordBox == null) return;
+
+        if (isPasswordVisible) {
+            passwordBox.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            isPasswordVisible = false;
+        } else {
+            passwordBox.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            isPasswordVisible = true;
+        }
+        passwordBox.setSelection(passwordBox.getText().length());
     }
 }

@@ -92,6 +92,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
         setupBiometricsButton.setOnClickListener(v -> {
             Intent intent = new Intent(profile_page.this, biometrics_page.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         ImageButton editButton = findViewById(R.id.EditInformationBtn);
@@ -178,6 +179,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
         } else {
             Intent intent = new Intent(this, SignInOut_page.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     }
 

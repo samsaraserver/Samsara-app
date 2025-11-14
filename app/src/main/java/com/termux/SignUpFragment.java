@@ -2,6 +2,8 @@ package com.termux;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -32,8 +34,11 @@ public class SignUpFragment extends Fragment {
     private EditText usernameBox;
     private EditText emailBox;
     private EditText passwordBox;
+    private EditText confirmPasswordBox;
     private CheckBox checkBoxTermsAndConditions;
     private BiometricHelper biometricHelper;
+    private boolean isPasswordVisible = false;
+    private boolean isConfirmPasswordVisible = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,6 +77,7 @@ public class SignUpFragment extends Fragment {
         usernameBox = view.findViewById(R.id.UsernameBox);
         emailBox = view.findViewById(R.id.EmailPhoneBox);
         passwordBox = view.findViewById(R.id.PasswordBox);
+        confirmPasswordBox = view.findViewById(R.id.ConfirmPasswordBox);
         checkBoxTermsAndConditions = view.findViewById(R.id.CheckBoxTermsAndConditions);
     }
 
@@ -87,6 +93,16 @@ public class SignUpFragment extends Fragment {
 
         if (loginBtn != null) loginBtn.setOnClickListener(toSignIn);
         if (loginBtn2 != null) loginBtn2.setOnClickListener(toSignIn);
+
+        ImageButton togglePasswordVisibilityBtn = view.findViewById(R.id.TogglePasswordVisibilityBtn);
+        if (togglePasswordVisibilityBtn != null) {
+            togglePasswordVisibilityBtn.setOnClickListener(v -> togglePasswordVisibility());
+        }
+
+        ImageButton toggleConfirmPasswordVisibilityBtn = view.findViewById(R.id.ToggleConfirmPasswordVisibilityBtn);
+        if (toggleConfirmPasswordVisibilityBtn != null) {
+            toggleConfirmPasswordVisibilityBtn.setOnClickListener(v -> toggleConfirmPasswordVisibility());
+        }
 
         ImageButton createAccountButton = view.findViewById(R.id.CreateAccountBtn);
         if (createAccountButton != null) {
@@ -246,6 +262,33 @@ public class SignUpFragment extends Fragment {
         usernameBox = null;
         emailBox = null;
         passwordBox = null;
+        confirmPasswordBox = null;
         checkBoxTermsAndConditions = null;
+    }
+
+    private void togglePasswordVisibility() {
+        if (passwordBox == null) return;
+
+        if (isPasswordVisible) {
+            passwordBox.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            isPasswordVisible = false;
+        } else {
+            passwordBox.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            isPasswordVisible = true;
+        }
+        passwordBox.setSelection(passwordBox.getText().length());
+    }
+
+    private void toggleConfirmPasswordVisibility() {
+        if (confirmPasswordBox == null) return;
+
+        if (isConfirmPasswordVisible) {
+            confirmPasswordBox.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            isConfirmPasswordVisible = false;
+        } else {
+            confirmPasswordBox.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            isConfirmPasswordVisible = true;
+        }
+        confirmPasswordBox.setSelection(confirmPasswordBox.getText().length());
     }
 }
