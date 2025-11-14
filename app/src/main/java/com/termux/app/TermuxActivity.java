@@ -248,6 +248,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
         setSettingsButtonView();
 
+        setBatterySaverButtonView();
+
         setNewSessionButtonView();
 
         setToggleKeyboardView();
@@ -684,7 +686,18 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             });
         }
 
-    // Removed emergency buttons
+    }
+
+    private void setBatterySaverButtonView() {
+        View batterySaverButton = findViewById(R.id.battery_saver_button);
+        if (batterySaverButton != null) {
+            batterySaverButton.setOnClickListener(v -> {
+                if (mBatterySaverOverlay != null) {
+                    mBatterySaverOverlay.toggle();
+                }
+                getDrawer().closeDrawers();
+            });
+        }
     }
 
 

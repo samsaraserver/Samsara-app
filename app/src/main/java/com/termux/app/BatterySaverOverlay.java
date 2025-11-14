@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 public class BatterySaverOverlay {
 
-    private static final int TAP_THRESHOLD = 4;
-    private static final long TAP_TIMEOUT_MS = 2000;
+    private static final int TAP_THRESHOLD = 2;
+    private static final long TAP_TIMEOUT_MS = 1000;
 
     private Activity activity;
     private View overlayView;
@@ -53,7 +53,7 @@ public class BatterySaverOverlay {
         );
         hintParams.gravity = Gravity.CENTER;
         hintTextView.setLayoutParams(hintParams);
-        hintTextView.setText("Battery Saver Active\n\nTap 4 times to wake");
+        hintTextView.setText("Battery Saver Active\n\nDouble tap to unlock");
         hintTextView.setTextColor(Color.parseColor("#666666"));
         hintTextView.setTextSize(18);
         hintTextView.setGravity(Gravity.CENTER);
@@ -130,7 +130,7 @@ public class BatterySaverOverlay {
     private void showTapProgress() {
         if (hintTextView == null) return;
 
-        hintTextView.setText("Battery Saver Active\n\nTap " + tapCount + " of 4 to wake");
+        hintTextView.setText("Battery Saver Active\n\nTap " + tapCount + " of 2 to unlock");
         hintTextView.animate().alpha(0.8f).setDuration(150).start();
     }
 
@@ -149,7 +149,7 @@ public class BatterySaverOverlay {
         }
 
         if (hintTextView != null) {
-            hintTextView.setText("Battery Saver Active\n\nTap 4 times to wake");
+            hintTextView.setText("Battery Saver Active\n\nDouble tap to unlock");
             hintTextView.postDelayed(() -> {
                 hintTextView.animate().alpha(0.6f).setDuration(800).start();
             }, 500);
@@ -160,7 +160,7 @@ public class BatterySaverOverlay {
 
         isActive = true;
 
-        Toast.makeText(activity, "Battery saver ON - Tap screen 4x to wake", Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, "Battery saver ON - Double tap to unlock", Toast.LENGTH_LONG).show();
     }
 
     public void deactivate() {
@@ -185,6 +185,14 @@ public class BatterySaverOverlay {
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public void toggle() {
+        if (isActive) {
+            deactivate();
+        } else {
+            activate();
+        }
     }
 
     public void cleanup() {
