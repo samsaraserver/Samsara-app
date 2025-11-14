@@ -4,9 +4,14 @@ set -e
 # #COMPLETION_DRIVE: Assuming this script runs inside Alpine (proot-distro login alpine) as root
 # #SUGGEST_VERIFY: Run `cat /etc/alpine-release` and `id -u` should be 0 before continuing
 
-PORT=222
+DEFAULT_SSH_PORT="${SAMSARA_SSH_PORT:-222}"
+FALLBACK_SSH_PORT="${SAMSARA_SSH_FALLBACK_PORT:-8022}"
+PORT="$DEFAULT_SSH_PORT"
+# #COMPLETION_DRIVE: Assuming fallback port >=1024 is always allowed inside proot even if privileged ports are blocked
+# #SUGGEST_VERIFY: When fallback triggers, run `ss -ltn | grep :$FALLBACK_SSH_PORT` to confirm listening socket
 SSHD_BIN="${SSHD_BIN:-/usr/sbin/sshd}"
 SSHD_LOG="/var/log/samsara-sshd.log"
+SAMSARA_PORT_FILE="/etc/samsara_port"
 
 SAMSARA_HUB_REPO="https://github.com/samsaraserver/Samsara-hub.git"
 SAMSARA_HUB_BRANCH="${SAMSARA_HUB_BRANCH:-main}"
@@ -102,6 +107,11 @@ EOF
     fi
     chmod 600 /etc/ssh/ssh_host_rsa_key 2>/dev/null || true
     mkdir -p /var/run/sshd /run/sshd 2>/dev/null || true
+    persist_ssh_port
+}
+
+persist_ssh_port() {
+    echo "$PORT" > "$SAMSARA_PORT_FILE" 2>/dev/null || true
 }
 
 ensure_rc_env() {
@@ -187,10 +197,16 @@ start_sshd() {
 #!/bin/sh
 # #COMPLETION_DRIVE: Ensure sshd is running at runlevel start
 # #SUGGEST_VERIFY: rc-service sshd status returns started after login
+PORT_FILE="/etc/samsara_port"
+if [ -f "$PORT_FILE" ]; then
+        PORT=$(cat "$PORT_FILE" 2>/dev/null || echo __PORT_FALLBACK__)
+else
+        PORT=__PORT_FALLBACK__
+fi
 tries=0
 while [ $tries -lt 3 ]; do
     if command -v ss >/dev/null 2>&1; then
-        ss -ltn 2>/dev/null | awk '{print $4}' | grep -E '(:|^)222$' -q && exit 0
+        ss -ltn 2>/dev/null | awk '{print $4}' | grep -E "(:|^)${PORT}$" -q && exit 0
     fi
     if command -v rc-service >/dev/null 2>&1; then
         rc-service sshd status >/dev/null 2>&1 || rc-service sshd start >/dev/null 2>&1 || true
@@ -198,13 +214,14 @@ while [ $tries -lt 3 ]; do
     sleep 1
     tries=$((tries+1))
 done
-if ! ss -ltn 2>/dev/null | awk '{print $4}' | grep -E '(:|^)222$' -q; then
-    nohup /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config -p 222 -o StrictModes=no -o PasswordAuthentication=yes >>/var/log/samsara-sshd.log 2>&1 &
+if ! ss -ltn 2>/dev/null | awk '{print $4}' | grep -E "(:|^)${PORT}$" -q; then
+    nohup /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes >>/var/log/samsara-sshd.log 2>&1 &
 fi
 EOS
+        sed -i "s/__PORT_FALLBACK__/$FALLBACK_SSH_PORT/g" /etc/local.d/samsara.start
         chmod 0755 /etc/local.d/samsara.start 2>/dev/null || true
         mkdir -p /etc/profile.d /run/samsara 2>/dev/null || true
-        cat > /etc/profile.d/samsara_openrc.sh <<'EOS'
+    cat > /etc/profile.d/samsara_openrc.sh <<'EOS'
 # #COMPLETION_DRIVE: Start OpenRC default runlevel on interactive login under proot
 # #SUGGEST_VERIFY: After new login, rc-status shows services in default runlevel
 if [ -z "$SAMSARA_OPENRC_BOOTED" ]; then
@@ -219,9 +236,10 @@ if [ -z "$SAMSARA_OPENRC_BOOTED" ]; then
     fi
 fi
 EOS
-        rc-service sshd restart >/dev/null 2>&1 || rc-service sshd start >/dev/null 2>&1 || true
+    rc-service sshd restart >/dev/null 2>&1 || rc-service sshd start >/dev/null 2>&1 || true
         sleep 1
         if is_port_listening "$PORT"; then
+            persist_ssh_port
             return 0
         fi
         info "OpenRC start failed, falling back to direct sshd"
@@ -230,12 +248,23 @@ EOS
     if nohup env PROOT_NO_SECCOMP=1 "$SSHD_BIN" -D -e -f /etc/ssh/sshd_config -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes >>"$SSHD_LOG" 2>&1 & then
         sleep 1
         if is_port_listening "$PORT"; then
+            persist_ssh_port
             return 0
         fi
         diagnose_sshd_failure
+        if should_switch_to_fallback; then
+            if switch_to_fallback_port; then
+                start_sshd
+                return
+            fi
+        fi
         fail "SSH server not listening on port $PORT"
     else
         diagnose_sshd_failure
+        if should_switch_to_fallback && switch_to_fallback_port; then
+            start_sshd
+            return
+        fi
         fail "SSH server start failed"
     fi
 }
@@ -251,9 +280,14 @@ install_samsara_init() {
 #!/bin/sh
 set -e
 # #COMPLETION_DRIVE: Ensure baseline services are running on every Alpine session without requiring full OpenRC boot
-# #SUGGEST_VERIFY: After login, ss -ltn | grep :222 shows sshd listening; rc-service sshd status returns started if OpenRC available
+# #SUGGEST_VERIFY: After login, ss -ltn | grep :${PORT} shows sshd listening; rc-service sshd status returns started if OpenRC available
 
-PORT=222
+PORT_FILE="/etc/samsara_port"
+if [ -f "$PORT_FILE" ]; then
+    PORT=$(cat "$PORT_FILE" 2>/dev/null || echo __PORT_FALLBACK__)
+else
+    PORT=__PORT_FALLBACK__
+fi
 
 if command -v openrc >/dev/null 2>&1; then
     mkdir -p /run/openrc 2>/dev/null || true
@@ -274,6 +308,7 @@ fi
 
 exec /bin/sh -l
 EOS
+    sed -i "s/__PORT_FALLBACK__/$FALLBACK_SSH_PORT/g" /usr/local/bin/samsara-init
     chmod 0755 /usr/local/bin/samsara-init || true
 }
 
@@ -292,6 +327,20 @@ diagnose_sshd_failure() {
     else
         echo "sshd -t returned success"
     fi
+}
+
+should_switch_to_fallback() {
+    if [ "$PORT" = "$FALLBACK_SSH_PORT" ]; then
+        return 1
+    fi
+    grep -qi "Permission denied" "$SSHD_LOG" 2>/dev/null
+}
+
+switch_to_fallback_port() {
+    info "Permission denied binding to port $PORT, switching to fallback port $FALLBACK_SSH_PORT"
+    PORT="$FALLBACK_SSH_PORT"
+    setup_ssh
+    return 0
 }
 
 install_bun_runtime() {
@@ -466,8 +515,12 @@ summary() {
     fi
     [ -z "$ip" ] && ip=$(hostname -i 2>/dev/null | awk '{print $1}')
     case "$ip" in 127.*|0.0.0.0|"") ip="<phone-ip>";; esac
-    echo "SSH ready on port $PORT"
-    echo "Connect: ssh root@${ip} -p ${PORT} (password: server)"
+    current_port=$(cat "$SAMSARA_PORT_FILE" 2>/dev/null || echo "$PORT")
+    echo "SSH ready on port $current_port"
+    echo "Connect: ssh root@${ip} -p ${current_port} (password: server)"
+    if [ "$current_port" != "$DEFAULT_SSH_PORT" ]; then
+        echo "Note: Fallback SSH port engaged due to privileged port restrictions."
+    fi
     echo "Samsara Hub directory: $SAMSARA_HUB_DIR"
     echo "Service binary: $SAMSARA_HUB_SERVICE_BIN"
 }
