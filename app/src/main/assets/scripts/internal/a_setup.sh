@@ -61,6 +61,10 @@ safe_set_shell() {
 }
 
 set_password() {
+    if [ "$SAMSARA_INIT_SKIP_SHELL" = "1" ]; then
+        exit 0
+    fi
+
     u="$1"; p="$2"
     passwd -u "$u" >/dev/null 2>&1 || true
     if command -v chpasswd >/dev/null 2>&1; then
@@ -121,6 +125,27 @@ ensure_rc_env() {
         mkdir -p /run/openrc 2>/dev/null || true
         [ -f /run/openrc/softlevel ] || echo default > /run/openrc/softlevel 2>/dev/null || true
     fi
+}
+
+configure_openrc_proot() {
+    if ! command -v rc-update >/dev/null 2>&1; then
+        return
+    fi
+    info "Configuring OpenRC runlevels for PRoot"
+    if [ -d /etc/runlevels ]; then
+        find /etc/runlevels -mindepth 2 -type l -delete 2>/dev/null || true
+    fi
+    # #COMPLETION_DRIVE: Restrict OpenRC default runlevel to only Samsara services to avoid privileged actions
+    # #SUGGEST_VERIFY: `rc-update show default` lists only local and sshd after setup
+    rc-update del bootmisc default >/dev/null 2>&1 || true
+    rc-update del devfs default >/dev/null 2>&1 || true
+    rc-update del hwclock default >/dev/null 2>&1 || true
+    rc-update del mount-ro default >/dev/null 2>&1 || true
+    rc-update del mountfs default >/dev/null 2>&1 || true
+    rc-update del networking default >/dev/null 2>&1 || true
+    rc-update del sysctl default >/dev/null 2>&1 || true
+    rc-update add local default >/dev/null 2>&1 || true
+    rc-update add sshd default >/dev/null 2>&1 || true
 }
 
 is_port_listening() {
@@ -306,10 +331,44 @@ if command -v ss >/dev/null 2>&1; then
     fi
 fi
 
+if [ "$SAMSARA_INIT_SKIP_SHELL" = "1" ]; then
+    exit 0
+fi
+
 exec /bin/sh -l
 EOS
     sed -i "s/__PORT_FALLBACK__/$FALLBACK_SSH_PORT/g" /usr/local/bin/samsara-init
     chmod 0755 /usr/local/bin/samsara-init || true
+}
+
+install_samsara_login_wrapper() {
+    cat > /usr/local/bin/samsara-login <<'EOS'
+#!/bin/sh
+set -e
+
+# #COMPLETION_DRIVE: Relying on /sbin/openrc to be available inside Alpine PRoot session
+# #SUGGEST_VERIFY: Run `/sbin/openrc --version` before using this launcher
+
+rm -rf /run/openrc
+mkdir -p /run/openrc
+echo default > /run/openrc/softlevel
+/sbin/openrc default >/var/log/samsara-openrc.log 2>&1 || true
+exec /usr/local/bin/samsara-init "$@"
+EOS
+    chmod 0755 /usr/local/bin/samsara-login || true
+}
+
+install_autostart_profile() {
+    mkdir -p /etc/profile.d || true
+    cat > /etc/profile.d/samsara_autostart.sh <<'EOS'
+# #COMPLETION_DRIVE: Auto-start Samsara services for every Alpine login shell
+# #SUGGEST_VERIFY: Verify /var/log/samsara-autostart.log updates each login
+if [ -z "$SAMSARA_SERVICES_STARTED" ] && [ -x /usr/local/bin/samsara-init ]; then
+    export SAMSARA_SERVICES_STARTED=1
+    SAMSARA_INIT_SKIP_SHELL=1 /usr/local/bin/samsara-init >/var/log/samsara-autostart.log 2>&1 || true
+fi
+EOS
+    chmod 0644 /etc/profile.d/samsara_autostart.sh || true
 }
 
 diagnose_sshd_failure() {
@@ -523,6 +582,9 @@ summary() {
     fi
     echo "Samsara Hub directory: $SAMSARA_HUB_DIR"
     echo "Service binary: $SAMSARA_HUB_SERVICE_BIN"
+    echo "Auto-start hook: /etc/profile.d/samsara_autostart.sh"
+    echo "Manual refresh: run 'samsara-init' (no need to rerun a_setup)"
+    echo "Future logins: proot-distro login alpine --fix-low-ports -- /usr/local/bin/samsara-login"
 }
 
 main() {
@@ -532,6 +594,9 @@ main() {
     start_sshd
     ensure_config_dir
     install_samsara_init
+    install_autostart_profile
+    install_samsara_login_wrapper
+    configure_openrc_proot
     prepare_samsara_hub
     info "Alpine setup complete"
     summary
