@@ -24,6 +24,8 @@ import java.util.Base64;
 public class NavbarHelper {
 
     private static final String TAG = "NavbarHelper";
+    private static long lastClickTime = 0;
+    private static final long CLICK_DEBOUNCE_MS = 500;
 
     public static void applyBackTransition(Activity activity) {
         activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -32,6 +34,15 @@ public class NavbarHelper {
     public static boolean isUserSignedIn(Context context) {
         AuthManager authManager = AuthManager.getInstance(context);
         return authManager.isLoggedIn();
+    }
+
+    private static boolean isClickAllowed() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastClickTime < CLICK_DEBOUNCE_MS) {
+            return false;
+        }
+        lastClickTime = currentTime;
+        return true;
     }
 
     public static void setupNavbar(Activity activity) {
@@ -43,17 +54,20 @@ public class NavbarHelper {
 
         if (homeButton != null) {
             homeButton.setOnClickListener(view -> {
+                if (!isClickAllowed()) return;
                 if (!(activity instanceof home_page)) {
                     Intent intent = new Intent(activity, home_page.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     activity.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    activity.finish();
                 }
             });
         }
 
         if (configButton != null) {
             configButton.setOnClickListener(view -> {
+                if (!isClickAllowed()) return;
                 if (isUserSignedIn(activity)) {
                     showSignedInAuthenticationOptions(activity);
                 } else {
@@ -64,6 +78,7 @@ public class NavbarHelper {
 
         if (terminalButton != null) {
             terminalButton.setOnClickListener(view -> {
+                if (!isClickAllowed()) return;
                 String[] options = new String[]{"Termux (port 333)", "Alpine (port 222)"};
                 new AlertDialog.Builder(activity)
                     .setTitle("Select environment")
@@ -81,22 +96,26 @@ public class NavbarHelper {
 
         if (documentsButton != null) {
             documentsButton.setOnClickListener(view -> {
+                if (!isClickAllowed()) return;
                 if (!(activity instanceof documents_page)) {
                     Intent intent = new Intent(activity, documents_page.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     activity.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    activity.finish();
                 }
             });
         }
 
         if (accountButton != null) {
             accountButton.setOnClickListener(view -> {
+                if (!isClickAllowed()) return;
                 if (!(activity instanceof profile_page)) {
                     Intent intent = new Intent(activity, profile_page.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     activity.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    activity.finish();
                 }
             });
         }
@@ -129,6 +148,7 @@ public class NavbarHelper {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 activity.startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                activity.finish();
             })
             .setNegativeButton("Online Wiki", (dialog, which) -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wiki.termux.com/wiki/Configuration"));
@@ -147,6 +167,7 @@ public class NavbarHelper {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 activity.startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                activity.finish();
             })
             .setNegativeButton("Online Wiki", (dialog, which) -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wiki.termux.com/wiki/Configuration"));
@@ -369,11 +390,13 @@ public class NavbarHelper {
     }
 
     public static void navigateToActivity(Activity currentActivity, Class<?> targetActivity) {
+        if (!isClickAllowed()) return;
         try {
             Intent intent = new Intent(currentActivity, targetActivity);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             currentActivity.startActivity(intent);
             currentActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            currentActivity.finish();
         } catch (Exception e) {
             Log.e(TAG, "Error navigating to activity: " + targetActivity.getSimpleName(), e);
         }
