@@ -4,7 +4,7 @@ set -e
 # #COMPLETION_DRIVE: Assuming this runs inside Termux with pkg available
 # #SUGGEST_VERIFY: Check `$PREFIX` is set and `pkg --version` works
 
-PORT=333
+PORT=3333
 SV_DIR="$PREFIX/var/service"
 
 info(){ echo "[INFO] $*"; }
@@ -23,7 +23,7 @@ install_packages() {
     yes | pkg upgrade || true
     # #COMPLETION_DRIVE: Install default packages per SERVERSYSTEM.md
     # #SUGGEST_VERIFY: Verify commands exist: sshd, nano, htop, node, deno
-    yes | pkg install termux-services openssh nano htop nodejs deno || fail "Package install failed"
+    yes | pkg install termux-services openssh nano htop nodejs deno git curl || fail "Package install failed"
 }
 
 configure_ssh() {
@@ -94,6 +94,25 @@ ensure_config() {
         fi
 }
 
+install_bun() {
+    if command -v bun >/dev/null 2>&1; then
+        info "Bun already installed"
+        return
+    fi
+
+    # #COMPLETION_DRIVE: Assuming Bun installer supports non-interactive execution in Termux bash
+    # #SUGGEST_VERIFY: Run `bun --version` after setup to confirm installation
+
+    if ! command -v curl >/dev/null 2>&1; then
+        fail "curl missing; cannot install Bun automatically"
+    fi
+
+    info "Installing Bun runtime"
+    if ! curl -fsSL https://bun.com/install | bash; then
+        fail "Bun installation failed"
+    fi
+}
+
 summary() {
     echo "Termux setup complete"
     userLabel="$(cut -d: -f2 "$HOME/.samsara-user" 2>/dev/null | sed -n 's/^user://p' || true)"
@@ -107,6 +126,7 @@ main() {
     ensure_default_user
     ensure_services
     ensure_config
+    install_bun
     summary
 }
 
