@@ -383,24 +383,25 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             return;
         }
 
-        // #COMPLETION_DRIVE: Ensure required scripts are extracted and t_start is executed for Termux startup
-        // #SUGGEST_VERIFY: Confirm $HOME/scripts/t_start.sh exists in session and prints the hint
         String setupScript =
             "set -e ; " +
             "echo '[*] SamsaraServer Termux Startup' ; " +
             "mkdir -p \"$HOME/scripts\" || { echo '[!] Failed to create scripts directory'; exit 1; } ; " +
-            // Extract startup and setup assets for Termux
             extractAssetsScript("scripts/t_start.sh") +
             extractAssetsScript("scripts/t_setup.sh") +
             extractAssetsScript("scripts/internal/samsara_dashboard.html") +
             extractAssetsScript("settings/samsara_config.json") +
-            // Validate presence
             "[ -f \"$HOME/scripts/t_start.sh\" ] || { echo '[!] t_start.sh missing'; exit 1; } ; " +
-            "chmod +x \"$HOME/scripts/t_start.sh\" || true ; " +
-            // Hand off to t_start
+            "[ -r \"$HOME/scripts/t_start.sh\" ] || { echo '[!] t_start.sh not readable'; exit 1; } ; " +
+            "chmod +x \"$HOME/scripts/t_start.sh\" || { echo '[!] Failed to set execute permission'; exit 1; } ; " +
             "exec /bin/sh \"$HOME/scripts/t_start.sh\"";
 
         String workingDirectory = getProperties().getDefaultWorkingDirectory();
+        if (workingDirectory == null || workingDirectory.trim().isEmpty()) {
+            workingDirectory = TermuxConstants.TERMUX_HOME_DIR_PATH;
+            Logger.logWarn(LOG_TAG, "Working directory was null, using default: " + workingDirectory);
+        }
+
         String[] arguments = {"-c", setupScript};
 
         TermuxSession newTermuxSession = service.createTermuxSession("/system/bin/sh", arguments, null, workingDirectory, false, "Termux");
@@ -719,31 +720,40 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         builder.setTitle(R.string.exit_prompt_title);
         builder.setMessage(R.string.exit_prompt_message);
 
-        // #COMPLETION_DRIVE: Running in background should only close the Activity and keep TermuxService alive
-        // #SUGGEST_VERIFY: After selecting this option, confirm the foreground notification persists and sessions remain attached in TermuxService
         builder.setNegativeButton(R.string.action_run_in_background, (dialog, which) -> {
             dialog.dismiss();
-            // Ensure the service is running in foreground if user wants background
-            try {
-                if (mTermuxService == null) {
-                    Intent start = new Intent(this, TermuxService.class);
-                    startService(start);
+            if (mTermuxService != null) {
+                try {
+                    mTermuxService.setForeground();
+                } catch (Exception e) {
+                    Logger.logStackTraceWithMessage(LOG_TAG, "Failed to ensure service in foreground", e);
                 }
-            } catch (Exception ignored) { /* noop */ }
+            } else {
+                try {
+                    Intent startIntent = new Intent(this, TermuxService.class);
+                    startService(startIntent);
+                } catch (Exception e) {
+                    Logger.logStackTraceWithMessage(LOG_TAG, "Failed to start service for background", e);
+                }
+            }
             finishActivityIfNotFinishing();
         });
 
-        // #COMPLETION_DRIVE: Exit fully should stop TermuxService via ACTION_STOP_SERVICE before finishing Activity
-        // #SUGGEST_VERIFY: Ensure the service notification disappears and mShellManager sessions are cleared after this action
         builder.setPositiveButton(R.string.action_exit_fully, (dialog, which) -> {
             dialog.dismiss();
-            try {
-                Intent stopIntent = new Intent(this, TermuxService.class).setAction(TERMUX_SERVICE.ACTION_STOP_SERVICE);
-                startService(stopIntent);
-            } catch (Exception ignored) {
+            if (mTermuxService != null) {
                 try {
-                    stopService(new Intent(this, TermuxService.class));
-                } catch (Exception ignoredAlso) { /* noop */ }
+                    Intent stopIntent = new Intent(this, TermuxService.class)
+                        .setAction(TERMUX_SERVICE.ACTION_STOP_SERVICE);
+                    startService(stopIntent);
+                } catch (Exception e) {
+                    Logger.logStackTraceWithMessage(LOG_TAG, "Failed to send stop action", e);
+                    try {
+                        stopService(new Intent(this, TermuxService.class));
+                    } catch (Exception e2) {
+                        Logger.logStackTraceWithMessage(LOG_TAG, "Failed to stop service directly", e2);
+                    }
+                }
             }
             finishActivityIfNotFinishing();
         });
