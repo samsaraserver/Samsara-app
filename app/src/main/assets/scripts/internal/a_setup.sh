@@ -425,6 +425,11 @@ install_bun_runtime() {
     fi
 }
 
+mark_setup_complete() {
+    mkdir -p /root/.config/samsara || true
+    touch /root/.config/samsara/alpine_initialized || true
+}
+
 install_samsara_hub_service() {
     info "Installing Samsara Hub service controller"
     mkdir -p "$SAMSARA_HUB_ROOT" /var/log /var/run || true
@@ -598,6 +603,7 @@ main() {
     install_samsara_login_wrapper
     configure_openrc_proot
     prepare_samsara_hub
+    mark_setup_complete
     info "Alpine setup complete"
     summary
 }

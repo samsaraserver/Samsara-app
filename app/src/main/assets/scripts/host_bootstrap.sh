@@ -12,6 +12,8 @@ ERR_SCRIPT_VALIDATION=8
 
 spinner_pid=0
 bootstrap_had_errors=0
+ALPINE_ROOT="$PREFIX/var/lib/proot-distro/installed-rootfs/alpine"
+ALPINE_READY_FLAG="$ALPINE_ROOT/root/.config/samsara/alpine_initialized"
 
 debug_log() {
     echo "[DEBUG $(date '+%H:%M:%S')] $*"
@@ -507,9 +509,14 @@ if [ "$bootstrap_had_errors" -eq 0 ]; then
     echo "║          SamsaraServer Ready         ║"
     echo "╚══════════════════════════════════════╝"
     echo
-    echo "NEXT STEP: Inside Alpine, run 'a_setup' to install packages and configure SSH"
-    echo "          and complete server initialization"
-    echo
+    if [ -f "$ALPINE_READY_FLAG" ]; then
+        echo "Alpine environment already initialized. Launching server shell..."
+        echo
+    else
+        echo "NEXT STEP: Inside Alpine, run 'a_setup' to install packages and configure SSH"
+        echo "          and complete server initialization"
+        echo
+    fi
 else
     echo
     echo "[WARNING] Bootstrap completed with warnings or errors"
@@ -517,10 +524,14 @@ else
     echo "Please review logs before proceeding"
 fi
 
-if command -v proot-distro >/dev/null 2>&1 && [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/alpine" ]; then
+if command -v proot-distro >/dev/null 2>&1 && [ -d "$ALPINE_ROOT" ]; then
     echo "[SYSTEM] Initializing Alpine Linux environment..."
     echo "────────────────────────────────────────"
-    exec proot-distro login alpine -- /bin/sh -l
+    if [ -f "$ALPINE_READY_FLAG" ]; then
+        exec proot-distro login alpine --fix-low-ports -- /usr/local/bin/samsara-login
+    else
+        exec proot-distro login alpine -- /bin/sh -l
+    fi
 else
     echo
     echo "[ERROR] Alpine Linux environment unavailable"
