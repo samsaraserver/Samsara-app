@@ -5,6 +5,20 @@ set -e
 # #SUGGEST_VERIFY: Run `cat /etc/alpine-release` and `id -u` should be 0 before continuing
 
 PORT=222
+SSHD_BIN="${SSHD_BIN:-/usr/sbin/sshd}"
+SSHD_LOG="/var/log/samsara-sshd.log"
+
+SAMSARA_HUB_REPO="https://github.com/samsaraserver/Samsara-hub.git"
+SAMSARA_HUB_BRANCH="${SAMSARA_HUB_BRANCH:-main}"
+SAMSARA_HUB_ROOT="/opt"
+SAMSARA_HUB_DIR="$SAMSARA_HUB_ROOT/Samsara-hub"
+SAMSARA_HUB_SERVICE_BIN="/usr/local/bin/samsara-hub-service"
+SAMSARA_HUB_LOCALD_SCRIPT="/etc/local.d/samsara_hub.start"
+SAMSARA_HUB_LOG="/var/log/samsara-hub.log"
+SAMSARA_HUB_PID="/var/run/samsara-hub.pid"
+
+# #COMPLETION_DRIVE: Assuming /opt persists between Alpine sessions inside proot container
+# #SUGGEST_VERIFY: Run "mkdir -p /opt && touch /opt/.rw-test" before setup; delete the file afterwards to confirm write access
 
 info() { echo "[INFO] $*"; }
 fail() { echo "[!] $*" 1>&2; exit 1; }
@@ -14,8 +28,14 @@ install_packages() {
     # #SUGGEST_VERIFY: Run `sshd -V`, `node -v`, `deno --version`, `rc-service --version || true`
     apk update || true
     apk add --no-cache \
-        openssh nano htop nodejs npm deno curl ca-certificates \
+        openssh nano htop nodejs npm deno curl ca-certificates git bash procps \
         openrc iproute2 net-tools || fail "Package installation failed"
+}
+
+ensure_sshd_binary() {
+    if [ ! -x "$SSHD_BIN" ]; then
+        fail "sshd binary missing at $SSHD_BIN"
+    fi
 }
 
 ensure_shells() {
@@ -135,6 +155,12 @@ EOS
 
 start_sshd() {
     info "Starting SSH server"
+    ensure_sshd_binary
+    if ! "$SSHD_BIN" -t -f /etc/ssh/sshd_config >/dev/null 2>&1; then
+        diagnose_sshd_failure
+        fail "sshd configuration test failed"
+    fi
+
     if is_port_listening "$PORT"; then
         pkill -f "[s]shd.*-p $PORT" 2>/dev/null || pkill -f '[s]shd' 2>/dev/null || true
         sleep 1
@@ -201,11 +227,15 @@ EOS
         info "OpenRC start failed, falling back to direct sshd"
     fi
 
-    if nohup env PROOT_NO_SECCOMP=1 /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes >>/var/log/samsara-sshd.log 2>&1 & then
+    if nohup env PROOT_NO_SECCOMP=1 "$SSHD_BIN" -D -e -f /etc/ssh/sshd_config -p "$PORT" -o StrictModes=no -o PasswordAuthentication=yes >>"$SSHD_LOG" 2>&1 & then
         sleep 1
-        is_port_listening "$PORT" && return 0
+        if is_port_listening "$PORT"; then
+            return 0
+        fi
+        diagnose_sshd_failure
         fail "SSH server not listening on port $PORT"
     else
+        diagnose_sshd_failure
         fail "SSH server start failed"
     fi
 }
@@ -247,6 +277,188 @@ EOS
     chmod 0755 /usr/local/bin/samsara-init || true
 }
 
+diagnose_sshd_failure() {
+    echo "[!] sshd failed to start; diagnostics follow"
+    if [ -s "$SSHD_LOG" ]; then
+        echo "----- tail $SSHD_LOG -----"
+        tail -n 40 "$SSHD_LOG"
+        echo "----- end sshd log -----"
+    else
+        echo "No sshd log output captured at $SSHD_LOG"
+    fi
+    echo "----- sshd config test -----"
+    if ! "$SSHD_BIN" -t -f /etc/ssh/sshd_config 2>&1; then
+        echo "sshd -t reported errors (see above)"
+    else
+        echo "sshd -t returned success"
+    fi
+}
+
+install_bun_runtime() {
+    if command -v bun >/dev/null 2>&1; then
+        info "Bun already installed"
+        return
+    fi
+
+    # #COMPLETION_DRIVE: Assuming Bun installer supports non-interactive execution inside Alpine root shell
+    # #SUGGEST_VERIFY: Run `bun --version` after setup to confirm availability
+
+    if ! command -v curl >/dev/null 2>&1; then
+        fail "curl missing; cannot install Bun"
+    fi
+
+    info "Installing Bun runtime"
+    if curl -fsSL https://bun.com/install | bash; then
+        if [ -x /root/.bun/bin/bun ]; then
+            ln -sf /root/.bun/bin/bun /usr/local/bin/bun 2>/dev/null || true
+        fi
+    else
+        fail "Bun installation failed"
+    fi
+}
+
+install_samsara_hub_service() {
+    info "Installing Samsara Hub service controller"
+    mkdir -p "$SAMSARA_HUB_ROOT" /var/log /var/run || true
+    cat > "$SAMSARA_HUB_SERVICE_BIN" <<'EOS'
+#!/bin/sh
+set -e
+
+REPO_URL="https://github.com/samsaraserver/Samsara-hub.git"
+BRANCH="${SAMSARA_HUB_BRANCH:-main}"
+SERVICE_DIR="/opt/Samsara-hub"
+START_SCRIPT="start.sh"
+LOG_FILE="/var/log/samsara-hub.log"
+PID_FILE="/var/run/samsara-hub.pid"
+
+# #COMPLETION_DRIVE: Assuming procps provides pgrep/pkill binaries inside Alpine base image
+# #SUGGEST_VERIFY: Run `apk add procps` if service stop/start commands fail
+# #COMPLETION_DRIVE: Assuming Samsara Hub start.sh expects Bun runtime on PATH
+# #SUGGEST_VERIFY: Run `bun --version` before invoking this controller
+
+log() {
+    printf "[SamsaraHub] %s\n" "$1"
+}
+
+ensure_git() {
+    command -v git >/dev/null 2>&1 || {
+        log "git missing; install it with apk add git";
+        exit 1;
+    }
+}
+
+sync_repo() {
+    mkdir -p "$SERVICE_DIR"
+    if [ -d "$SERVICE_DIR/.git" ]; then
+        log "Updating Samsara Hub repo (branch $BRANCH)"
+        git -C "$SERVICE_DIR" fetch origin "$BRANCH" --depth=1 --prune
+        git -C "$SERVICE_DIR" reset --hard "origin/$BRANCH"
+        git -C "$SERVICE_DIR" clean -xfd || true
+    else
+        log "Cloning Samsara Hub repo (branch $BRANCH)"
+        rm -rf "$SERVICE_DIR"
+        git clone --depth=1 --branch "$BRANCH" "$REPO_URL" "$SERVICE_DIR"
+    fi
+}
+
+stop_service() {
+    if [ -f "$PID_FILE" ]; then
+        pid=$(cat "$PID_FILE" 2>/dev/null || true)
+        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+            kill "$pid" 2>/dev/null || true
+            sleep 1
+        fi
+        rm -f "$PID_FILE"
+    fi
+    pkill -f "$SERVICE_DIR/$START_SCRIPT" 2>/dev/null || true
+}
+
+start_service() {
+    sync_repo
+    script_path="$SERVICE_DIR/$START_SCRIPT"
+    if [ ! -f "$script_path" ]; then
+        log "start.sh missing in $SERVICE_DIR"
+        exit 1
+    fi
+    if ! command -v bun >/dev/null 2>&1; then
+        log "Bun runtime missing; cannot start service"
+        exit 1
+    fi
+    chmod +x "$script_path" || true
+    mkdir -p /var/log /var/run
+    nohup sh "$script_path" >> "$LOG_FILE" 2>&1 &
+    echo $! > "$PID_FILE"
+    log "Samsara Hub started (PID $(cat "$PID_FILE"))"
+}
+
+status_service() {
+    if [ -f "$PID_FILE" ]; then
+        pid=$(cat "$PID_FILE")
+        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+            log "Running (PID $pid)"
+            exit 0
+        fi
+    fi
+    if pgrep -f "$SERVICE_DIR/$START_SCRIPT" >/dev/null 2>&1; then
+        log "Running (pid via scan)"
+        exit 0
+    fi
+    log "Not running"
+    exit 1
+}
+
+case "$1" in
+    sync)
+        ensure_git
+        sync_repo
+        ;;
+    start|"" )
+        ensure_git
+        stop_service
+        start_service
+        ;;
+    stop)
+        stop_service
+        ;;
+    restart)
+        ensure_git
+        stop_service
+        start_service
+        ;;
+    status)
+        status_service
+        ;;
+    *)
+        echo "Usage: $0 {sync|start|stop|restart|status}" 1>&2
+        exit 1
+        ;;
+esac
+EOS
+    chmod 0755 "$SAMSARA_HUB_SERVICE_BIN" || true
+}
+
+install_samsara_hub_locald() {
+    mkdir -p /etc/local.d || true
+    # #COMPLETION_DRIVE: Using OpenRC local.d hook to auto-start Samsara Hub at boot
+    # #SUGGEST_VERIFY: Execute `rc-service local restart` and confirm /var/log/samsara-hub-boot.log updates
+    cat > "$SAMSARA_HUB_LOCALD_SCRIPT" <<'EOS'
+#!/bin/sh
+if [ -x /usr/local/bin/samsara-hub-service ]; then
+    /usr/local/bin/samsara-hub-service restart >/var/log/samsara-hub-boot.log 2>&1 || true
+fi
+EOS
+    chmod 0755 "$SAMSARA_HUB_LOCALD_SCRIPT" || true
+}
+
+prepare_samsara_hub() {
+    info "Preparing Samsara Hub service"
+    install_bun_runtime
+    install_samsara_hub_service
+    "$SAMSARA_HUB_SERVICE_BIN" sync || fail "Failed to sync Samsara Hub"
+    install_samsara_hub_locald
+    "$SAMSARA_HUB_SERVICE_BIN" restart || fail "Failed to start Samsara Hub"
+}
+
 summary() {
     ip=""
     if command -v ip >/dev/null 2>&1; then
@@ -256,6 +468,8 @@ summary() {
     case "$ip" in 127.*|0.0.0.0|"") ip="<phone-ip>";; esac
     echo "SSH ready on port $PORT"
     echo "Connect: ssh root@${ip} -p ${PORT} (password: server)"
+    echo "Samsara Hub directory: $SAMSARA_HUB_DIR"
+    echo "Service binary: $SAMSARA_HUB_SERVICE_BIN"
 }
 
 main() {
@@ -265,6 +479,7 @@ main() {
     start_sshd
     ensure_config_dir
     install_samsara_init
+    prepare_samsara_hub
     info "Alpine setup complete"
     summary
 }
