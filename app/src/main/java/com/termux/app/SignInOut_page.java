@@ -1,6 +1,7 @@
 package com.termux.app;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -17,10 +18,14 @@ public class SignInOut_page extends AppCompatActivity {
     private static final String NAV_TO_SIGN_IN = "toSignIn";
     private static final String NAV_TO_SIGN_UP = "toSignUp";
 
+    private TextView titleTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signinout_page);
+
+        titleTextView = findViewById(R.id.Title);
 
         getSupportFragmentManager().setFragmentResultListener(REQUEST_KEY_AUTH_NAV, this, (requestKey, bundle) -> {
             String nav = bundle.getString(NAV_KEY);
@@ -35,6 +40,7 @@ public class SignInOut_page extends AppCompatActivity {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.SignFragment_container, new SignInFragment(), "SignIn");
             ft.commit();
+            updateTitle(NAV_TO_SIGN_IN);
         }
     }
 
@@ -45,6 +51,7 @@ public class SignInOut_page extends AppCompatActivity {
         fragmentTransaction.replace(R.id.SignFragment_container, fragment, "SignIn");
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+        updateTitle(NAV_TO_SIGN_IN);
     }
 
     private void navigateToSignUp() {
@@ -54,5 +61,16 @@ public class SignInOut_page extends AppCompatActivity {
         fragmentTransaction.replace(R.id.SignFragment_container, fragment, "SignUp");
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+        updateTitle(NAV_TO_SIGN_UP);
+    }
+
+    private void updateTitle(String fragmentType) {
+        if (titleTextView != null) {
+            if (NAV_TO_SIGN_IN.equals(fragmentType)) {
+                titleTextView.setText(R.string.sign_in);
+            } else if (NAV_TO_SIGN_UP.equals(fragmentType)) {
+                titleTextView.setText(R.string.sign_up);
+            }
+        }
     }
 }

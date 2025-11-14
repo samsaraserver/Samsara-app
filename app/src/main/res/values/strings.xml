@@ -144,6 +144,8 @@
     <!-- Authentication & Account (signin/signup/profile pages) -->
     <string name="login"><u>Login</u></string>
     <string name="sign_in_or_create_an_account">Sign in or create an account</string>
+    <string name="sign_in_to_your_account">Sign in to your account</string>
+    <string name="create_your_account">Create your account</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_in">Sign In</string>
     <string name="username">Username</string>

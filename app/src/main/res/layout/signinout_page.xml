@@ -30,7 +30,7 @@
         android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SignIn / SignUp"
+        android:text="@string/sign_in"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/text_xl"
         app:layout_constraintBottom_toBottomOf="@+id/TopBar"
