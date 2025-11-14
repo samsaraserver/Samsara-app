@@ -132,7 +132,6 @@ public class SignInFragment extends Fragment {
             passwordBox.setHint("Enter password");
             passwordBox.setText("");
             rememberMeCheckBox.setChecked(true);
-            Toast.makeText(requireContext(), "Credentials saved. Enter password or use biometrics.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -208,10 +207,6 @@ public class SignInFragment extends Fragment {
         String emailOrUsername = emailUsernameBox.getText().toString().trim();
         String password = passwordBox.getText().toString();
 
-        if (!validateLoginInput(emailOrUsername, password)) {
-            return;
-        }
-
         if (TextUtils.isEmpty(password) && rememberMeCheckBox.isChecked()) {
             password = retrieveSavedPassword();
             if (TextUtils.isEmpty(password)) {
@@ -219,6 +214,10 @@ public class SignInFragment extends Fragment {
                 passwordBox.requestFocus();
                 return;
             }
+        }
+
+        if (!validateLoginInput(emailOrUsername, password)) {
+            return;
         }
 
         final String finalEmailOrUsername = emailOrUsername;
@@ -413,13 +412,13 @@ public class SignInFragment extends Fragment {
             }
         }
 
-        if (TextUtils.isEmpty(password) && !rememberMeCheckBox.isChecked()) {
+        if (TextUtils.isEmpty(password)) {
             passwordBox.setError("Password is required");
             passwordBox.requestFocus();
             return false;
         }
 
-        if (!TextUtils.isEmpty(password) && password.length() < 8) {
+        if (password.length() < 8) {
             passwordBox.setError("Password must be at least 8 characters");
             passwordBox.requestFocus();
             return false;

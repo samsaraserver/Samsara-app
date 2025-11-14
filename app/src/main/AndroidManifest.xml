@@ -63,7 +63,7 @@
             android:name=".app.WelcomePageActivity"
             android:exported="true"
             android:label="SamsaraServer"
-            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar">
+            android:theme="@style/Theme.SamsaraSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
