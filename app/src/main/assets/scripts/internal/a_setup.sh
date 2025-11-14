@@ -4,7 +4,7 @@ set -e
 # #COMPLETION_DRIVE: Assuming this script runs inside Alpine (proot-distro login alpine) as root
 # #SUGGEST_VERIFY: Run `cat /etc/alpine-release` and `id -u` should be 0 before continuing
 
-DEFAULT_SSH_PORT="${SAMSARA_SSH_PORT:-222}"
+DEFAULT_SSH_PORT="${SAMSARA_SSH_PORT:-2222}"
 FALLBACK_SSH_PORT="${SAMSARA_SSH_FALLBACK_PORT:-8022}"
 PORT="$DEFAULT_SSH_PORT"
 # #COMPLETION_DRIVE: Assuming fallback port >=1024 is always allowed inside proot even if privileged ports are blocked
@@ -335,9 +335,13 @@ if [ "$SAMSARA_INIT_SKIP_SHELL" = "1" ]; then
     exit 0
 fi
 
+if [ -x /usr/local/bin/samsara-banner ]; then
+    /usr/local/bin/samsara-banner || true
+fi
+
 exec /bin/sh -l
 EOS
-    sed -i "s/__PORT_FALLBACK__/$FALLBACK_SSH_PORT/g" /usr/local/bin/samsara-init
+    sed -i "s/__PORT_FALLBACK__/$DEFAULT_SSH_PORT/g" /usr/local/bin/samsara-init
     chmod 0755 /usr/local/bin/samsara-init || true
 }
 
@@ -572,24 +576,50 @@ prepare_samsara_hub() {
     "$SAMSARA_HUB_SERVICE_BIN" restart || fail "Failed to start Samsara Hub"
 }
 
+install_status_banner() {
+    cat > /usr/local/bin/samsara-banner <<'EOS'
+#!/bin/sh
+DEFAULT_PORT="__DEFAULT_PORT__"
+HUB_DIR="__HUB_DIR__"
+HUB_SERVICE="__HUB_SERVICE__"
+
+current_port=$(cat /etc/samsara_port 2>/dev/null)
+[ -n "$current_port" ] || current_port="$DEFAULT_PORT"
+
+ip=""
+if command -v ip >/dev/null 2>&1; then
+    ip=$(ip route get 1.1.1.1 2>/dev/null | sed -n 's/.*src \([0-9.]*\).*/\1/p')
+fi
+[ -n "$ip" ] || ip=$(hostname -i 2>/dev/null | awk '{print $1}')
+case "$ip" in 127.*|0.0.0.0|"") ip="<phone-ip>";; esac
+
+clear >/dev/null 2>&1 || printf '\033c'
+printf "\n╔══════════════════════════════════════╗\n"
+printf "║       SamsaraServer Alpine Ready      ║\n"
+printf "╚══════════════════════════════════════╝\n\n"
+printf "  Host IP      : %s\n" "$ip"
+printf "  SSH Port     : %s (ssh root@%s -p %s)\n" "$current_port" "$ip" "$current_port"
+if [ "$current_port" != "$DEFAULT_PORT" ]; then
+    printf "  SSH Note     : Fallback port engaged (no privileged bind).\n"
+fi
+printf "  Hub Service  : http://%s:3000 (directory: %s)\n" "$ip" "$HUB_DIR"
+printf "  Hub Control  : %s\n" "$HUB_SERVICE"
+printf "  Auto Start   : /etc/profile.d/samsara_autostart.sh\n"
+printf "  Manual Boost : Run 'samsara-init' for on-demand restart\n"
+printf "  Next Login   : proot-distro login alpine --fix-low-ports -- /usr/local/bin/samsara-login\n\n"
+EOS
+    sed -i "s|__DEFAULT_PORT__|$DEFAULT_SSH_PORT|g" /usr/local/bin/samsara-banner
+    sed -i "s|__HUB_DIR__|$SAMSARA_HUB_DIR|g" /usr/local/bin/samsara-banner
+    sed -i "s|__HUB_SERVICE__|$SAMSARA_HUB_SERVICE_BIN|g" /usr/local/bin/samsara-banner
+    chmod 0755 /usr/local/bin/samsara-banner || true
+}
+
 summary() {
-    ip=""
-    if command -v ip >/dev/null 2>&1; then
-        ip=$(ip route get 1.1.1.1 2>/dev/null | sed -n 's/.*src \([0-9.]*\).*/\1/p')
+    if [ -x /usr/local/bin/samsara-banner ]; then
+        /usr/local/bin/samsara-banner || true
+        return
     fi
-    [ -z "$ip" ] && ip=$(hostname -i 2>/dev/null | awk '{print $1}')
-    case "$ip" in 127.*|0.0.0.0|"") ip="<phone-ip>";; esac
-    current_port=$(cat "$SAMSARA_PORT_FILE" 2>/dev/null || echo "$PORT")
-    echo "SSH ready on port $current_port"
-    echo "Connect: ssh root@${ip} -p ${current_port} (password: server)"
-    if [ "$current_port" != "$DEFAULT_SSH_PORT" ]; then
-        echo "Note: Fallback SSH port engaged due to privileged port restrictions."
-    fi
-    echo "Samsara Hub directory: $SAMSARA_HUB_DIR"
-    echo "Service binary: $SAMSARA_HUB_SERVICE_BIN"
-    echo "Auto-start hook: /etc/profile.d/samsara_autostart.sh"
-    echo "Manual refresh: run 'samsara-init' (no need to rerun a_setup)"
-    echo "Future logins: proot-distro login alpine --fix-low-ports -- /usr/local/bin/samsara-login"
+    printf "Alpine setup complete; /usr/local/bin/samsara-banner missing.\n"
 }
 
 main() {
@@ -598,6 +628,7 @@ main() {
     setup_ssh
     start_sshd
     ensure_config_dir
+    install_status_banner
     install_samsara_init
     install_autostart_profile
     install_samsara_login_wrapper

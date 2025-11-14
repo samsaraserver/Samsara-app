@@ -4,7 +4,7 @@ set -e
 # #COMPLETION_DRIVE: Assuming this runs inside Termux with pkg available
 # #SUGGEST_VERIFY: Check `$PREFIX` is set and `pkg --version` works
 
-PORT=333
+PORT=3333
 SV_DIR="$PREFIX/var/service"
 
 info(){ echo "[INFO] $*"; }
