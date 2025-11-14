@@ -389,6 +389,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             "mkdir -p \"$HOME/scripts\" || { echo '[!] Failed to create scripts directory'; exit 1; } ; " +
             extractAssetsScript("scripts/t_start.sh") +
             extractAssetsScript("scripts/t_setup.sh") +
+            extractAssetsScript("scripts/samsara_hub_service.sh") +
             extractAssetsScript("scripts/internal/samsara_dashboard.html") +
             extractAssetsScript("settings/samsara_config.json") +
             "[ -f \"$HOME/scripts/t_start.sh\" ] || { echo '[!] t_start.sh missing'; exit 1; } ; " +
@@ -722,19 +723,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
         builder.setNegativeButton(R.string.action_run_in_background, (dialog, which) -> {
             dialog.dismiss();
-            if (mTermuxService != null) {
-                try {
-                    mTermuxService.setForeground();
-                } catch (Exception e) {
-                    Logger.logStackTraceWithMessage(LOG_TAG, "Failed to ensure service in foreground", e);
-                }
-            } else {
-                try {
-                    Intent startIntent = new Intent(this, TermuxService.class);
-                    startService(startIntent);
-                } catch (Exception e) {
-                    Logger.logStackTraceWithMessage(LOG_TAG, "Failed to start service for background", e);
-                }
+            try {
+                Intent ensureForegroundIntent = new Intent(this, TermuxService.class);
+                startService(ensureForegroundIntent);
+            } catch (Exception e) {
+                Logger.logStackTraceWithMessage(LOG_TAG, "Failed to ensure service runs in foreground", e);
             }
             finishActivityIfNotFinishing();
         });

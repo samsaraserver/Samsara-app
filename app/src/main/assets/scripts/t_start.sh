@@ -10,4 +10,10 @@ if [ -z "$PREFIX" ] || ! command -v sh >/dev/null 2>&1; then
     printf "[ERROR] Not running inside Termux shell.\n" >&2
     exec /bin/sh -l 2>/dev/null || exit 1
 fi
+
+if [ -x "$HOME/scripts/samsara_hub_service.sh" ]; then
+    sh "$HOME/scripts/samsara_hub_service.sh" || printf "[WARN] Failed to start Samsara Hub service.\n"
+else
+    printf "[WARN] samsara_hub_service.sh missing from scripts directory.\n"
+fi
 exec /bin/sh -l
