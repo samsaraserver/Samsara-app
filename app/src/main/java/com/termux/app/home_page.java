@@ -98,13 +98,20 @@ public class home_page extends AppCompatActivity {
         });
 
         ImageButton documentationBtn = findViewById(R.id.documentationBtn);
-
         documentationBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(home_page.this, documents_page.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            finish();
+            final String safeUrl = "https://samsaraserver.space/docs";
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(safeUrl));
+                intent.addCategory(Intent.CATEGORY_BROWSABLE); // ensure browsable
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, R.string.no_app_to_open_link, Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to open documentation URL: " + safeUrl, e);
+                Toast.makeText(this, R.string.unable_to_open_link, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
