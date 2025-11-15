@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Global App Identity & User Label -->
+    <string name="application_name">SamsaraServer</string>
+    <string name="shared_user_label">SamsaraServer gebruiker</string>
+
+    <!-- Permissions & Bootstrap (App Startup) -->
+    <string name="permission_run_command_label">Voer opdragte uit in die SamsaraServer-omgewing</string>
+    <string name="permission_run_command_description">voer willekeurige opdragte binne die SamsaraServer-omgewing uit en kry toegang tot lêers</string>
+    <string name="bootstrap_installer_body">Alpine Linux-omgewing word opgestel…</string>
+    <string name="bootstrap_error_title">Kan nie omgewing opstel nie</string>
+    <string name="bootstrap_error_body">SamsaraServer kon nie die Alpine Linux-omgewing opstel nie.</string>
+    <string name="bootstrap_error_abort">Voortgaan</string>
+    <string name="bootstrap_error_try_again">Probeer weer</string>
+    <string name="bootstrap_error_not_primary_user_message">SamsaraServer kan slegs as die primêre gebruiker uitgevoer word.
+Bootstrap-binaries wat vir SamsaraServer saamgestel is het \'n vasgestelde $PREFIX-pad en kan nie elders geïnstalleer word nie:
+%1$s.</string>
+    <string name="bootstrap_error_installed_on_portable_sd">SamsaraServer kan nie op \'n draagbare/eksterne/verwyderbare SD-kaart geïnstalleer word nie.
+Bootstrap-binaries wat vir SamsaraServer saamgestel is het \'n vasgestelde $PREFIX-pad en kan nie elders geïnstalleer word nie:
+%1$s.</string>
+
+    <!-- Terminal Activity: Sessions, Toolbar, Popups -->
+    <string name="action_new_session">Nuwe Alpine-sessie</string>
+    <string name="action_new_session_failsafe">Fallasafe</string>
+    <string name="title_max_terminals_reached">Maksimum terminals bereik</string>
+    <string name="msg_max_terminals_reached">Sluit bestaande terminals voordat u nuwe een skep.</string>
+    <string name="title_rename_session">Stel sessienaam</string>
+    <string name="action_rename_session_confirm">Stel</string>
+    <string name="title_create_named_session">Nuwe benoemde sessie</string>
+    <string name="action_create_named_session_confirm">Skep</string>
+    <string name="action_toggle_soft_keyboard">Toetsenbord</string>
+    <string name="action_battery_saver">Batterybesparing</string>
+    <string name="msg_enabling_terminal_toolbar">Terminal-balk word aangeskakel</string>
+    <string name="msg_disabling_terminal_toolbar">Terminal-balk word gedeaktiveer</string>
+    <string name="action_select_url">Kies URL</string>
+    <string name="title_select_url_dialog">Klik URL om te kopieer of hou in om te open</string>
+    <string name="title_select_url_none_found">Geen URL in die terminal gevind nie.</string>
+    <string name="msg_select_url_copied_to_clipboard">URL na knipbord gekopieer</string>
+    <string name="action_share_transcript">Deel transkrip</string>
+    <string name="title_share_transcript">Terminal-transkrip</string>
+    <string name="title_share_transcript_with">Stuur transkrip na:</string>
+    <string name="action_share_selected_text">Deel geselekteerde teks</string>
+    <string name="title_share_selected_text">Terminal-tekst</string>
+    <string name="title_share_selected_text_with">Stuur geselekteerde teks na:</string>
+    <string name="action_autofill_username">Vul gebruikersnaam outomaties in</string>
+    <string name="action_autofill_password">Vul wagwoord outomaties in</string>
+    <string name="action_reset_terminal">Herstel</string>
+    <string name="msg_terminal_reset">Terminal herstel</string>
+    <string name="action_kill_process">Doodmaak proses (%d)</string>
+    <string name="title_confirm_kill_process">Besig om hierdie sessie te beëindig?</string>
+    <string name="action_toggle_keep_screen_on">Hou skerm aan</string>
+    <string name="action_open_settings">Instellings</string>
+    <string name="action_request_root">Stel wortel versoek</string>
+    <string name="action_report_issue">Rapporteer probleem</string>
+    <string name="msg_generating_report">Verslag word gegenereer</string>
+    <string name="msg_add_termux_debug_info">Voeg Termux-foutopsporing-inligting by by die verslag?</string>
+
+    <!-- Notifications & Exit Dialog -->
+    <string name="notification_action_exit">Verlaat</string>
+    <string name="notification_action_wake_lock">Verkry wakelock</string>
+    <string name="notification_action_wake_unlock">Vrylaat wakelock</string>
+    <string name="exit_prompt_title">Verlaat terminal?</string>
+    <string name="exit_prompt_message">Wil u die terminal in die agtergrond laat loop of volledig verlaat?</string>
+    <string name="action_run_in_background">Hardloop in agtergrond</string>
+    <string name="action_exit_fully">Volledig verlaat</string>
+
+    <!-- Services & Errors (TermuxService, RunCommandService, File RX) -->
+    <string name="error_display_over_other_apps_permission_not_granted_to_start_terminal">SamsaraServer benodig die toestemming "Vertoon oor ander apps" om terminal-sessies uit die agtergrond te begin op Android >= 10. Gee dit by Instellings -> Apps -> SamsaraServer -> Gevorderd</string>
+    <string name="error_termux_service_invalid_execution_command_runner">Ongeldige uitvoering-opdrag-runner vir TermuxService: `%1$s`</string>
+    <string name="error_termux_service_unsupported_execution_command_runner">Ongeondersteunde uitvoering-opdrag-runner vir TermuxService: `%1$s`</string>
+    <string name="error_termux_service_unsupported_execution_command_shell_create_mode">Ongeondersteunde shell-skeppingswyse vir TermuxService: `%1$s`</string>
+    <string name="error_termux_service_execution_command_shell_name_unset">Shellnaam nie gestel nie maar `%1$s` shell-skeppingsmodus oorgedra</string>
+    <string name="error_run_command_service_invalid_intent_action">Ongeldige intent-aksie vir RunCommandService: `%1$s`</string>
+    <string name="error_run_command_service_invalid_execution_command_runner">Ongeldige uitvoering-opdrag-runner vir RunCommandService: `%1$s`</string>
+    <string name="error_run_command_service_mandatory_extra_missing">Verpligte extra ontbreek vir RunCommandService: "%1$s"</string>
+    <string name="error_run_command_service_api_help">Besoek %1$s vir meer inligting oor RUN_COMMAND Intent gebruik.</string>
+    <string name="title_file_received">Stoor lêer in ~/downloads/</string>
+    <string name="action_file_received_edit">Wysig</string>
+    <string name="action_file_received_open_directory">Open gids</string>
+    <string name="error_termux_service_start_failed_general">Kon nie TermuxService begin nie. Kontroleer logcat vir die uitsonderingsboodskap.</string>
+    <string name="error_termux_service_start_failed_bg">Kon TermuxService nie begin terwyl die app in die agtergrond is nie weens Android agtergrondbeperkings.</string>
+
+    <!-- Settings Activity (activity_settings.xml) -->
+    <string name="title_activity_termux_settings">SamsaraServer Instellings</string>
+    <string name="termux_preferences_title">SamsaraServer</string>
+    <string name="termux_preferences_summary">Voorkeure vir die SamsaraServer-app</string>
+    <string name="termux_debugging_preferences_title">Foutopsporing</string>
+    <string name="termux_debugging_preferences_summary">Voorkeure vir foutopsporing</string>
+    <string name="termux_logging_header">Logboeking</string>
+    <string name="termux_log_level_title">Logvlak</string>
+    <string name="termux_terminal_view_key_logging_enabled_title">Terminal View Sleutel-Logboeking</string>
+    <string name="termux_terminal_view_key_logging_enabled_off">Logs sal geen inskrywings hê oor terminal-sleutels nie. (Standaard)</string>
+    <string name="termux_terminal_view_key_logging_enabled_on">Logcat logs sal inskrywings vir terminal-sleutels hê. Dit is baie uitvoerig en moet normaalweg gedeaktiveer word of dit kan prestasieprobleme veroorsaak.</string>
+    <string name="termux_plugin_error_notifications_enabled_title">Inprop foutkennisgewings</string>
+    <string name="termux_plugin_error_notifications_enabled_off">Skakel flitse en kennisgewings vir inpropfoute af.</string>
+    <string name="termux_plugin_error_notifications_enabled_on">Wys flitse en kennisgewings vir inpropfoute. (Standaard)</string>
+    <string name="termux_crash_report_notifications_enabled_title">Krasverslag kennisgewings</string>
+    <string name="termux_crash_report_notifications_enabled_off">Skakel kennisgewings vir krasverslae af.</string>
+    <string name="termux_crash_report_notifications_enabled_on">Wys kennisgewings vir krasverslae. (Standaard)</string>
+    <string name="termux_terminal_io_preferences_title">Terminal I/O</string>
+    <string name="termux_terminal_io_preferences_summary">Voorkeure vir terminal I/O</string>
+    <string name="termux_keyboard_header">Toetsenbord</string>
+    <string name="termux_soft_keyboard_enabled_title">Sagtoetsenbord aangeskakel</string>
+    <string name="termux_soft_keyboard_enabled_off">Sagtoetsenbord sal gedeaktiveer wees.</string>
+    <string name="termux_soft_keyboard_enabled_on">Sagtoetsenbord sal aangeskakel wees. (Standaard)</string>
+    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_title">Sagtoetsenbord slegs as geen hardeware</string>
+    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_off">Sagtoetsenbord sal aangeskakel wees selfs as \'n hardeware-toetsenbord gekoppel is. (Standaard)</string>
+    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_on">Sagtoetsenbord sal slegs aangeskakel wees indien geen hardeware-toetsenbord gekoppel is.</string>
+    <string name="termux_terminal_view_preferences_title">Terminal View</string>
+    <string name="termux_terminal_view_preferences_summary">Voorkeure vir terminal-kyk</string>
+    <string name="termux_terminal_view_view_header">Uitsig</string>
+    <string name="termux_terminal_view_terminal_margin_adjustment_title">Terminal-marge aanpassing</string>
+    <string name="termux_terminal_view_terminal_margin_adjustment_off">Terminal-marge aanpassing sal gedeaktiveer wees.</string>
+    <string name="termux_terminal_view_terminal_margin_adjustment_on">Terminal-marge aanpassing sal aangeskakel wees. Dit moet aangeskakel wees om te probeer om die probleem reg te stel waar die sagte sleutelbord \'n deel van ekstra sleutels/terminal-kyk dek. As dit skermflikker veroorsaak op u toestelle, skakel dit dan af. (Standaard)</string>
+    <string name="termux_api_preferences_title">Termux:API</string>
+    <string name="termux_api_preferences_summary">Voorkeure vir Termux:API-app</string>
+    <string name="termux_float_preferences_title">Termux:Float</string>
+    <string name="termux_float_preferences_summary">Voorkeure vir Termux:Float-app</string>
+    <string name="termux_tasker_preferences_title">Termux:Tasker</string>
+    <string name="termux_tasker_preferences_summary">Voorkeure vir Termux:Tasker-app</string>
+    <string name="termux_widget_preferences_title">Termux:Widget</string>
+    <string name="termux_widget_preferences_summary">Voorkeure vir Termux:Widget-app</string>
+    <string name="about_preference_title">Oor</string>
+    <string name="hello_blank_fragment">Hallo leë fragment</string>
+
+    <!-- Navigation Bar & Accessibility (navbar_layout.xml) -->
+    <string name="home">Tuis</string>
+    <string name="config">Konfig</string>
+    <string name="docs">Dokumente</string>
+    <string name="profile">Profiel</string>
+    <string name="home_description">Navigeer na tuis</string>
+    <string name="config_description">Navigeer na konfigurasie</string>
+    <string name="center_description">Hoof navigasie knoppie</string>
+    <string name="docs_description">Navigeer na dokumentasie</string>
+    <string name="profile_description">Navigeer na profiel</string>
+    <string name="samsara_server_logo">Samsara Server-logo</string>
+
+    <!-- Branding & Welcome (welcome_page.xml) -->
+    <string name="samsaraserver">SamsaraServer</string>
+    <string name="samsara_server">Samsara Server</string>
+    <string name="transform_your_android_device_into_a_powerful_linux_server">Verander jou Android-toestel in \'n kragtige Linux-bediener</string>
+    <string name="welcome_to_samsara_server">Welkom by Samsara Server</string>
+
+    <!-- Authentication & Account (signin/signup/profile pages) -->
+    <string name="login"><![CDATA[<u>Aanmeld</u>]]></string>
+    <string name="sign_in_or_create_an_account">Meld aan of skep \'n rekening</string>
+    <string name="sign_in_to_your_account">Meld by jou rekening aan</string>
+    <string name="create_your_account">Skep jou rekening</string>
+    <string name="sign_up">Teken aan</string>
+    <string name="sign_in">Meld aan</string>
+    <string name="username">Gebruikersnaam</string>
+    <string name="password">Wagwoord</string>
+    <string name="login_with_biometrics">Meld aan met biometrie</string>
+    <string name="login_with_github">Meld aan met GitHub</string>
+    <string name="remember_me">Onthou my</string>
+    <string name="lt_u_lt_b_forgot_password_lt_b_lt_u"><![CDATA[<u><b>Wagwoord vergeet</b></u>]]></string>
+    <string name="dont_have_an_account">Het jy nie \'n rekening nie?</string>
+    <string name="lt_u_lt_b_sign_up_lt_b_lt_u"><![CDATA[<u><b>Teken aan</b></u>]]></string>
+    <string name="continue_without_an_account">Gaan voort sonder \'n rekening</string>
+    <string name="register">Registreer</string>
+    <string name="register_under"><![CDATA[<u>Registreer</u>]]></string>
+    <string name="email_or_phone_number">E-pos of telefoonnommer</string>
+    <string name="confirm_password">Bevestig wagwoord</string>
+    <string name="i_agree_to_the_terms_and_conditions">Ek stem in met die bepalings en voorwaardes</string>
+    <string name="create_account">SKEP REKENING</string>
+    <string name="sign_up_with_github">Teken aan met GitHub</string>
+    <string name="lt_u_lt_b_sign_in_lt_b_lt_u"><![CDATA[<u><b>Meld aan</b></u>]]></string>
+    <string name="already_have_an_account">Het jy reeds \'n rekening?</string>
+    <string name="email">E-pos</string>
+    <string name="login_or_create_an_account">Meld aan of skep \'n rekening</string>
+    <string name="email_or_username">E-pos of gebruikersnaam</string>
+    <string name="email_address">E-pos adres</string>
+    <string name="forgot_password"><![CDATA[<u>Wagwoord vergeet?</u>]]></string>
+    <string name="setup_biometrics">Stel biometrie op</string>
+    <string name="edit_information">Wysig inligting</string>
+    <string name="save">Stoor</string>
+
+    <!-- Dashboard / Home (home_page.xml) -->
+    <string name="manage_your_server_through_the_web_interface_once_the_terminal_is_running">Bestuur jou bediener deur die web-koppelvlak sodra die terminal hardloop.</string>
+    <string name="the_ip_address_is">Die IP-adres is</string>
+    <string name="access_web_dashboard">Toegang tot web-kontroleskerm</string>
+    <string name="system_monitor">Stelselmonitering</string>
+    <string name="cpu_memory_network_and_temperature_stats">CPU, geheue, netwerk en temperatuurstatistieke</string>
+    <string name="view_and_manage_your_server_settings">Sien en bestuur jou bedienerinstellings</string>
+    <string name="environment_ready">Omgewing gereed</string>
+    <string name="tap_terminal_to_initialize">Tik op terminal om te inisialiseer</string>
+    <string name="show_ip">Wys IP</string>
+    <string name="press_the_show_ip_button">Druk die Wys IP-knoppie</string>
+    <string name="lt_u_lt_b_textview_lt_b_lt_u"><![CDATA[<u><b>TextView</b></u>]]></string>
+
+    <!-- Community & Marketplace (projects_page.xml) -->
+    <string name="community_packages">Gemeenskappakkette</string>
+    <string name="test_package">Toetspakket</string>
+    <string name="last_updated_25_08_2025">Laas opgedateer: 25/08/2025</string>
+    <string name="installs_1k">Installasies: 1K</string>
+    <string name="lorem_para_1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="by_jane_doe">Deur: Jane Doe</string>
+    <string name="install">Installeer</string>
+    <string name="projects">Projekte</string>
+    <string name="install_or_manage_community_server_packages">Installeer of bestuur gemeenskaps-bedienerpakkette</string>
+
+    <!-- Configuration Page (configuration_page.xml) -->
+    <string name="general">Algemeen</string>
+    <string name="auto_start_on_boot">Begin outomaties by opstart</string>
+    <string name="dashboard_password">Kontroleskermwagwoord</string>
+    <string name="network">Netwerk</string>
+    <string name="web_dashboard_port">Web-kontroleskerm-poort</string>
+    <string name="port_http_default">8080</string>
+    <string name="ssh_port">SSH-poort</string>
+    <string name="port_ssh_default">2222</string>
+    <string name="linux_environment">Linux-omgewing</string>
+    <string name="monitoring">Monitering</string>
+    <string name="monitoring_interval">Moniteringsinterval</string>
+    <string name="temperature_alert">Temperatuuralarm</string>
+    <string name="community_projects">Gemeenskapprojekte</string>
+    <string name="auto_update_project">Outomatiese projekopdatering</string>
+    <string name="installation_directory">Installeergids</string>
+    <string name="data">/data</string>
+    <string name="advanced">Gevorderd</string>
+    <string name="low_storage_warning">Lae stoor waarskuwing</string>
+    <string name="export_configuration">Voer konfigurasie uit</string>
+    <string name="import_configuration">Voer konfigurasie in</string>
+    <string name="reset_to_defaults">Herstel na verstekwaardes</string>
+    <string name="save_changes">Stoor veranderinge</string>
+
+    <!-- About & Diagnostics (about section / configuration) -->
+    <string name="about">Oor</string>
+    <string name="app_version">App-weergawemummer:</string>
+    <string name="textview">TextView</string>
+    <string name="busybox">BusyBox:</string>
+    <string name="press_to_view_system_files">Druk om stelsel-lêers te sien</string>
+    <string name="browse">Blader</string>
+
+    <!-- Monitoring & Stats (monitor_page.xml) -->
+    <string name="disk_io">Skyf I/O:</string>
+    <string name="read_write_speed">Lees/Skryf spoed:</string>
+    <string name="disk_utilization">Skyfbenutting:</string>
+    <string name="process_monitoring">Prosesmonitering</string>
+    <string name="cpu_usage">CPU gebruik:</string>
+    <string name="cpu_temperature">CPU temperatuur:</string>
+    <string name="memory_usage">Geheue gebruik:</string>
+    <string name="thread_count">Draad telling:</string>
+    <string name="handles">Hanteerings:</string>
+    <string name="network_activity">Netwerkaktiwiteit</string>
+    <string name="bandwidth_usage">Bandwydtegebruik:</string>
+    <string name="packet_loss">Pakketverlies:</string>
+    <string name="network_latency">Netwerkvertraging:</string>
+    <string name="active_connections">Aktiewe verbindings:</string>
+    <string name="temp_60c">60°C</string>
+    <string name="mem_8gb">8GB</string>
+
+    <!-- Documentation & Guides (overview/setup/alpine fragments) -->
+    <string name="documentation">Dokumentasie</string>
+    <string name="access_guides_and_forms">Toegang tot gidse en vorms</string>
+    <string name="get_started">Begin</string>
+    <string name="overview">Oorsig</string>
+    <string name="setup">Installasie</string>
+    <string name="alpine">Alpine</string>
+    <string name="installation_guide">Installasiegids</string>
+    <string name="minimum_requirements">Minimum vereistes</string>
+    <string name="lorem_para_2">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="installation_steps">Installasie stappe</string>
+    <string name="lorem_para_3">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores.</string>
+    <string name="cmd_npm_install">npm install -g samsara-server</string>
+    <string name="lorem_para_4">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam.</string>
+    <string name="lorem_para_5">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti.</string>
+    <string name="contents">Inhoud</string>
+    <string name="system_requirements">Sisteemvereistes</string>
+    <string name="samsara_setup">Samsara-opstelling</string>
+    <string name="alpine_guide">Alpine gids</string>
+    <string name="heading_4">Kop 4</string>
+    <string name="heading_3">Kop 3</string>
+    <string name="heading_2">Kop 2</string>
+    <string name="heading_1">Kop 1</string>
+    <string name="no_app_to_open_link">Geen toepassing beskikbaar om skakel te open nie</string>
+    <string name="unable_to_open_link">Nie in staat om skakel te open nie</string>
+    <string name="show_password">Wys wagwoord</string>
+    <string name="show_confirm_password">Wys bevestig wagwoord</string>
+
+</resources>

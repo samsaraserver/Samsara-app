@@ -277,4 +277,6 @@
     <string name="unable_to_open_link">Unable to open link</string>
     <string name="show_password">Show password</string>
     <string name="show_confirm_password">Show confirm password</string>
+    <string name="sign_in_with_biometrics">Sign in with Biometrics</string>
+    <string name="sign_in_with_github">Sign in with GitHub</string>
 </resources>
