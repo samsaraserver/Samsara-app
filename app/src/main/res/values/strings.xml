@@ -275,4 +275,6 @@
     <string name="heading_1">Heading 1</string>
     <string name="no_app_to_open_link">No application available to open link</string>
     <string name="unable_to_open_link">Unable to open link</string>
+    <string name="show_password">Show password</string>
+    <string name="show_confirm_password">Show confirm password</string>
 </resources>

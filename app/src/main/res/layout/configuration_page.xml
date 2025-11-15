@@ -106,18 +106,18 @@
                 />
 
             <TextView
-            android:id="@+id/tvGeneral"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_sm"
-            android:layout_marginTop="@dimen/padding_md"
-            android:text="@string/general"
-            android:textColor="#C44F4F"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@id/guideline_start"
-            app:layout_constraintTop_toBottomOf="@+id/SamsaraLogo" />
+                android:id="@+id/tvGeneral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/general"
+                android:textColor="#C44F4F"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/SamsaraLogo" />
 
-        <TextView
+            <TextView
             android:id="@+id/tvAutoStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -242,19 +242,19 @@
             tools:ignore="Autofill,TextFields" />
 
 
-        <TextView
-            android:id="@+id/tvLinuxEnvironemnt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_sm"
-            android:layout_marginTop="@dimen/padding_md"
-            android:text="@string/linux_environment"
-            android:textColor="#C44F4F"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/guideline_start"
-            app:layout_constraintTop_toBottomOf="@+id/SSHPortBox" />
+            <TextView
+                android:id="@+id/tvLinuxEnvironemnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/linux_environment"
+                android:textColor="#C44F4F"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/SSHPortBox" />
 
-        <TextView
+            <TextView
             android:id="@+id/tvMonitoring"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -301,35 +301,36 @@
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/tvMonitoringInterval" />
 
-        <EditText
-            android:id="@+id/TempBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_md"
-            android:hint="@string/temp_60c"
-            android:textSize="20sp"
-            android:textColorHint="#a2a2a2"
-            android:paddingStart="20dp"
-            android:paddingBottom="10dp"
-            android:background="@drawable/configuration_6"
-            app:layout_constraintEnd_toEndOf="@+id/spinnerMonitoringInterval"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerMonitoringInterval"
-            app:layout_constraintStart_toStartOf="@+id/spinnerMonitoringInterval"
-            tools:ignore="Autofill,TextFields" />
+            <EditText
+                android:id="@+id/TempBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/configuration_6"
+                android:hint="@string/temp_60c"
+                android:paddingStart="20dp"
+                android:paddingBottom="10dp"
+                android:textColorHint="#a2a2a2"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/spinnerMonitoringInterval"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/spinnerMonitoringInterval"
+                app:layout_constraintTop_toBottomOf="@+id/spinnerMonitoringInterval"
+                tools:ignore="Autofill,TextFields" />
 
-        <TextView
-            android:id="@+id/tvCommunityProjects"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_sm"
-            android:layout_marginTop="@dimen/padding_md"
-            android:text="@string/community_projects"
-            android:textColor="#C44F4F"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@id/guideline_start"
-            app:layout_constraintTop_toBottomOf="@+id/tvTempAlert" />
+            <TextView
+                android:id="@+id/tvCommunityProjects"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="@dimen/padding_md"
+                android:text="@string/community_projects"
+                android:textColor="#C44F4F"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/tvTempAlert" />
 
-        <TextView
+            <TextView
             android:id="@+id/tvAutoUpdate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

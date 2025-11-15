@@ -5,6 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background">
+5
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/home_scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navbar_include">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
@@ -106,12 +120,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="@dimen/padding_na"
         android:scaleType="fitXY"
         android:src="@drawable/home_3"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/TopBar"
         tools:ignore="ContentDescription" />
@@ -207,12 +221,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#00FFFFFF"
         android:scaleType="fitXY"
         android:src="@drawable/home_4"
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/redImage"
         tools:ignore="ContentDescription" />
@@ -248,7 +262,7 @@
         android:id="@+id/configurationBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#00FFFFFF"
         android:scaleType="fitXY"
         android:src="@drawable/home_5"
@@ -289,12 +303,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#00FFFFFF"
         android:scaleType="fitXY"
         android:src="@drawable/home_6"
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/monitorBtn"
         tools:ignore="ContentDescription" />
@@ -325,21 +339,21 @@
         app:layout_constraintStart_toStartOf="@+id/ProjectBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvProject" />
 
+
     <ImageButton
         android:id="@+id/documentationBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_na"
-        android:layout_marginTop="12dp"
-        android:scaleType="fitXY"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#00FFFFFF"
+        android:scaleType="fitXY"
         android:src="@drawable/home_7"
         app:layout_constraintEnd_toEndOf="@+id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@+id/configurationBtn"
         tools:ignore="ContentDescription" />
-
 
     <TextView
         android:id="@+id/tvDocs"
@@ -366,6 +380,9 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/documentationBtn"
         app:layout_constraintTop_toBottomOf="@+id/tvDocs" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/navbar_include"

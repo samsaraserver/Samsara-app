@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.03" />
+                app:layout_constraintGuide_begin="12dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_end"
@@ -95,10 +95,11 @@
                 android:id="@+id/DiskMonitoringPanel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginTop="45dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/monitor_1"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/TopBar"
                 tools:ignore="ContentDescription" />
@@ -174,7 +175,7 @@
                 android:id="@+id/ProcessMonitoringPanel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginTop="50dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/monitor_3"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -318,14 +319,13 @@
                 android:id="@+id/NetworkActivityPanel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
-                android:layout_marginBottom="@dimen/spacing_lg"
+                android:layout_marginTop="50dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/monitor_4"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/ProcessMonitoringPanel"
-                app:layout_constraintVertical_bias="0.0"
                 tools:ignore="ContentDescription" />
 
             <TextView
