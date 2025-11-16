@@ -44,14 +44,16 @@ public class WelcomePageActivity extends AppCompatActivity {
             Log.e(TAG, "Failed to initialize Supabase: " + e.getMessage(), e);
         }
 
+
         if (checkAutoLogin()) {
             return;
         }
 
+        // Only show the welcome page if auto-login is not active
         setContentView(R.layout.welcome_page);
 
         ImageButton getStartedButton = findViewById(R.id.WelcomeBtn);
-        
+
         getStartedButton.setOnClickListener(view -> {
             NavbarHelper.navigateToActivity(WelcomePageActivity.this, SignInOut_page.class);
         });

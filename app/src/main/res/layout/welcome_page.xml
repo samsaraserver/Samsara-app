@@ -135,5 +135,4 @@
         app:layout_constraintStart_toStartOf="@+id/WelcomeBtn"
         app:layout_constraintTop_toTopOf="@+id/WelcomeBtn" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

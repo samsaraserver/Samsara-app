@@ -17,7 +17,7 @@
     <permission
         android:name="${TERMUX_PACKAGE_NAME}.permission.RUN_COMMAND"
         android:description="@string/permission_run_command_description"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/welcome_1"
         android:label="@string/permission_run_command_label"
         android:protectionLevel="dangerous" />
 
@@ -53,10 +53,10 @@
         android:allowBackup="false"
         android:banner="@drawable/banner"
         android:extractNativeLibs="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/welcome_1"
         android:label="@string/application_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/welcome_1"
         android:supportsRtl="false"
         android:theme="@style/Theme.TermuxApp.DayNight.DarkActionBar"
         tools:targetApi="m">

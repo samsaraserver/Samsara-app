@@ -5,7 +5,9 @@
     <item android:drawable="@color/app_background" />
 
     <item
-        android:drawable="@drawable/samsara_logo_1"
-        android:gravity="center" />
+        android:drawable="@drawable/welcome_1"
+        android:gravity="center"
+        android:width="200dp"
+        android:height="200dp" />
 
 </layer-list>
