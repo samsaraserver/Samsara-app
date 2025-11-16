@@ -97,14 +97,30 @@ public class NavbarHelper {
         if (documentsButton != null) {
             documentsButton.setOnClickListener(view -> {
                 if (!isClickAllowed()) return;
-                if (!(activity instanceof documents_page)) {
-                    Intent intent = new Intent(activity, documents_page.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    activity.startActivity(intent);
-                    activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    activity.finish();
-                }
-            });
+
+                final String safeUrl = "https://samsaraserver.space/docs";
+
+                // Confirm with the user before leaving the app to open a web browser
+                new AlertDialog.Builder(activity)
+                    .setTitle("Open Documentation")
+                    .setMessage("You are about to open the documentation in a web browser and leave the app. Continue?")
+                    .setPositiveButton("Continue", (dialog, which) -> {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(safeUrl));
+                            intent.addCategory(Intent.CATEGORY_BROWSABLE); // ensure browsable
+                            if (intent.resolveActivity(activity.getPackageManager()) != null) {
+                                activity.startActivity(intent);
+                            } else {
+                                Toast.makeText(activity, R.string.no_app_to_open_link, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Failed to open documentation URL: " + safeUrl, e);
+                            Toast.makeText(activity, R.string.unable_to_open_link, Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+                    });
         }
 
         if (accountButton != null) {

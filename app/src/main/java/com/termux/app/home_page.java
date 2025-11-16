@@ -100,18 +100,27 @@ public class home_page extends AppCompatActivity {
         ImageButton documentationBtn = findViewById(R.id.documentationBtn);
         documentationBtn.setOnClickListener(view -> {
             final String safeUrl = "https://samsaraserver.space/docs";
-            try {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(safeUrl));
-                intent.addCategory(Intent.CATEGORY_BROWSABLE); // ensure browsable
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, R.string.no_app_to_open_link, Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to open documentation URL: " + safeUrl, e);
-                Toast.makeText(this, R.string.unable_to_open_link, Toast.LENGTH_SHORT).show();
-            }
+
+            // Confirm with the user before leaving the app to open a web browser
+            new AlertDialog.Builder(home_page.this)
+                .setTitle("Open Documentation")
+                .setMessage("You are about to open the documentation in a web browser and leave the app. Continue?")
+                .setPositiveButton("Continue", (dialog, which) -> {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(safeUrl));
+                        intent.addCategory(Intent.CATEGORY_BROWSABLE); // ensure browsable
+                        if (intent.resolveActivity(getPackageManager()) != null) {
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(home_page.this, R.string.no_app_to_open_link, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to open documentation URL: " + safeUrl, e);
+                        Toast.makeText(home_page.this, R.string.unable_to_open_link, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
         });
     }
 
