@@ -1,24 +1,27 @@
 package com.termux.app.database.repository;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import com.termux.app.database.SupabaseConfig;
 import com.termux.app.database.models.SamsaraUser;
 import com.termux.app.database.utils.JsonUtils;
+
 import okhttp3.*;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.IOException;
+
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import android.content.Context;
+import android.util.Base64;
 
+@SuppressLint("NewApi")
 public class UserRepository {
     private static final String TAG = "UserRepository";
     private static final String TABLE_NAME = "samsara_user";
@@ -28,7 +31,8 @@ public class UserRepository {
     private final ExecutorService executorService;
     private final String baseUrl;
     private final String apiKey;
-    
+    private static volatile UserRepository instance;
+
     public UserRepository() {
         this.httpClient = SupabaseConfig.getHttpClient();
         this.executorService = Executors.newCachedThreadPool();
@@ -36,6 +40,14 @@ public class UserRepository {
         this.apiKey = SupabaseConfig.getApiKey();
     }
     
+    public static synchronized UserRepository getInstance(Context context) {
+        if (instance == null) {
+            // Ensure SupabaseConfig is initialized by caller; keep lightweight here
+            instance = new UserRepository();
+        }
+        return instance;
+    }
+
     public CompletableFuture<Boolean> createUser(String username, String email, String password) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -207,8 +219,9 @@ public class UserRepository {
             System.arraycopy(salt, 0, combined, 0, salt.length);
             System.arraycopy(hashedPassword, 0, combined, salt.length, hashedPassword.length);
             
-            return Base64.getEncoder().encodeToString(combined);
-            
+            // Use android.util.Base64 for Android compatibility
+            return Base64.encodeToString(combined, Base64.NO_WRAP);
+
         } catch (NoSuchAlgorithmException e) {
             Log.e(TAG, "Error hashing password: " + e.getMessage(), e);
             throw new RuntimeException("Password hashing failed", e);
@@ -217,8 +230,8 @@ public class UserRepository {
     
     private boolean verifyPassword(String password, String storedHash) {
         try {
-            byte[] combined = Base64.getDecoder().decode(storedHash);
-            
+            byte[] combined = Base64.decode(storedHash, Base64.DEFAULT);
+
             byte[] salt = new byte[16];
             System.arraycopy(combined, 0, salt, 0, 16);
             
@@ -367,6 +380,142 @@ public class UserRepository {
         }, executorService);
     }
 
+    public CompletableFuture<SamsaraUser> findByGithubId(String githubId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String url = baseUrl + TABLE_NAME + "?github_id=eq." + URLEncoder.encode(githubId, StandardCharsets.UTF_8.name()) + "&select=*";
+
+                Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .get()
+                    .build();
+
+                try (Response response = httpClient.newCall(request).execute()) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        JSONArray jsonArray = new JSONArray(responseBody);
+                        if (jsonArray.length() > 0) {
+                            JSONObject userJson = jsonArray.getJSONObject(0);
+                            return JsonUtils.jsonToUser(userJson);
+                        }
+                    } else {
+                        Log.e(TAG, "Failed to find user by GitHub ID. Status: " + response.code());
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error finding user by GitHub ID: " + e.getMessage(), e);
+            }
+            return null;
+        }, executorService);
+    }
+
+    public CompletableFuture<SamsaraUser> findById(Long id) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String url = baseUrl + TABLE_NAME + "?id=eq." + id + "&select=*";
+
+                Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .get()
+                    .build();
+
+                try (Response response = httpClient.newCall(request).execute()) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        JSONArray jsonArray = new JSONArray(responseBody);
+                        if (jsonArray.length() > 0) {
+                            JSONObject userJson = jsonArray.getJSONObject(0);
+                            return JsonUtils.jsonToUser(userJson);
+                        }
+                    } else {
+                        Log.e(TAG, "Failed to find user by ID. Status: " + response.code());
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error finding user by ID: " + e.getMessage(), e);
+            }
+            return null;
+        }, executorService);
+    }
+
+    public CompletableFuture<Boolean> isUsernameAvailable(String username) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                SamsaraUser user = getUserByUsername(username).get();
+                return user == null;
+            } catch (Exception e) {
+                Log.e(TAG, "Error checking username availability: " + e.getMessage(), e);
+                return false;
+            }
+        }, executorService);
+    }
+
+    public CompletableFuture<Boolean> isEmailAvailable(String email) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                SamsaraUser user = getUserByEmail(email).get();
+                return user == null;
+            } catch (Exception e) {
+                Log.e(TAG, "Error checking email availability: " + e.getMessage(), e);
+                return false;
+            }
+        }, executorService);
+    }
+
+    public CompletableFuture<SamsaraUser> findByEmail(String email) {
+        return getUserByEmail(email);
+    }
+
+    // Create a user with full SamsaraUser object for oauth users
+    public CompletableFuture<SamsaraUser> createUser(SamsaraUser user) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                JSONObject payload = new JSONObject();
+                payload.put("username", user.getUsername());
+                payload.put("email", user.getEmail());
+                if (user.getPasswordHash() != null) payload.put("password_hash", user.getPasswordHash());
+                if (user.getGithubId() != null) payload.put("github_id", user.getGithubId());
+                if (user.getAuthProvider() != null) payload.put("auth_provider", user.getAuthProvider());
+                if (user.getOauthToken() != null) payload.put("oauth_token", user.getOauthToken());
+                if (user.getProfilePictureUrl() != null) payload.put("profile_picture_url", user.getProfilePictureUrl());
+                payload.put("is_active", user.getIsActive());
+
+                RequestBody body = RequestBody.create(payload.toString(), JSON);
+                Request request = new Request.Builder()
+                    .url(baseUrl + TABLE_NAME)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Prefer", "return=representation")
+                    .post(body)
+                    .build();
+
+                try (Response response = httpClient.newCall(request).execute()) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        JSONArray arr = new JSONArray(responseBody);
+                        if (arr.length() > 0) {
+                            JSONObject created = arr.getJSONObject(0);
+                            return JsonUtils.jsonToUser(created);
+                        }
+                        return null;
+                    } else {
+                        String errorBody = response.body() != null ? response.body().string() : "Unknown error";
+                        Log.e(TAG, "Failed to create user (object). Status: " + response.code() + ", Error: " + errorBody);
+                        return null;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error creating user (object): " + e.getMessage(), e);
+                return null;
+            }
+        }, executorService);
+    }
+
     public void shutdown() {
         if (executorService != null && !executorService.isShutdown()) {
             executorService.shutdown();
@@ -497,3 +646,4 @@ public class UserRepository {
         return true;
     }
 }
+

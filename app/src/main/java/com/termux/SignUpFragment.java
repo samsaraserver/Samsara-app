@@ -1,6 +1,7 @@
 package com.termux;
 
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -21,12 +22,14 @@ import androidx.fragment.app.Fragment;
 import com.termux.app.NavbarHelper;
 import com.termux.app.home_page;
 import com.termux.app.database.SupabaseConfig;
-import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.managers.AuthManager;
 import com.termux.app.BiometricHelper;
+import com.termux.app.database.repository.UserRepository;
 
 import java.util.concurrent.CompletableFuture;
+import com.termux.app.oauth.GitHubOAuthManager;
 
+@SuppressLint("NewApi")
 public class SignUpFragment extends Fragment {
     private static final String TAG = "SignUpFragment";
 
@@ -46,7 +49,7 @@ public class SignUpFragment extends Fragment {
 
         try {
             SupabaseConfig.initialize(requireContext());
-            userRepository = new UserRepository();
+            userRepository = UserRepository.getInstance(requireContext());
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize Supabase: " + e.getMessage(), e);
             Toast.makeText(requireContext(), "Database connection error. Please try again later.", Toast.LENGTH_LONG).show();
@@ -112,7 +115,14 @@ public class SignUpFragment extends Fragment {
         ImageButton githubButton = view.findViewById(R.id.SignInGithubBtn);
         if (githubButton != null) {
             githubButton.setOnClickListener(v -> {
-                Toast.makeText(requireContext(), "GitHub signup not implemented yet", Toast.LENGTH_SHORT).show();
+                try {
+                    GitHubOAuthManager oauthManager = GitHubOAuthManager.getInstance(requireContext());
+                    oauthManager.startOAuthFlow(requireContext());
+                    Toast.makeText(requireContext(), "Redirecting to GitHub...", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to start GitHub OAuth", e);
+                    Toast.makeText(requireContext(), "GitHub signup error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             });
         }
     }

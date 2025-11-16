@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import com.termux.R;
 import com.termux.app.database.managers.AuthManager;
 import com.termux.app.database.models.SamsaraUser;
+
 import java.util.concurrent.Executor;
 import android.app.AlertDialog;
 
@@ -205,7 +206,18 @@ public class biometrics_page extends FragmentActivity {
     private void handleSuccessfulAuthentication() {
         try {
             if (biometricHelper != null && currentUser != null) {
-                showPasswordDialog();
+                // If the logged-in user used GitHub OAuth, store OAuth-style marker credentials
+                if ("github".equalsIgnoreCase(currentUser.getAuthProvider())) {
+                    String username = currentUser.getUsername();
+                    String email = currentUser.getEmail();
+                    String userId = String.valueOf(currentUser.getId());
+
+                    biometricHelper.storeOAuthUserCredentials(username, email, userId, currentUser.getAuthProvider());
+                    showToast("Biometric login setup complete!");
+                    finish();
+                } else {
+                    showPasswordDialog();
+                }
             } else {
                 Log.e(TAG, "BiometricHelper or currentUser is null");
                 showToast("Setup error - please try again");
@@ -241,6 +253,14 @@ public class biometrics_page extends FragmentActivity {
     private void completeBiometricSetup(String password) {
         try {
             if (biometricHelper != null && currentUser != null) {
+                // Verify the password matches the user's actual password
+                AuthManager authManager = AuthManager.getInstance(this);
+                if (!authManager.validatePassword(password)) {
+                    showToast("Incorrect password. Please try again.");
+                    Log.w(TAG, "Password verification failed during biometric setup");
+                    return;
+                }
+
                 String username = currentUser.getUsername();
                 String email = currentUser.getEmail();
                 String userId = String.valueOf(currentUser.getId());

@@ -1,9 +1,10 @@
 package com.termux.app.database.utils;
 
+import com.termux.app.database.models.SamsaraUser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.termux.app.database.models.SamsaraUser;
+
 import java.sql.Timestamp;
 
 public class JsonUtils {
@@ -32,14 +33,19 @@ public class JsonUtils {
     
     public static SamsaraUser jsonToUser(JSONObject json) throws JSONException {
         SamsaraUser user = new SamsaraUser();
-        
+
         user.setId(safeGetLong(json, "id", 0L));
         user.setUsername(safeGetString(json, "username", null));
         user.setEmail(safeGetString(json, "email", null));
         user.setPasswordHash(safeGetString(json, "password_hash", null));
         user.setProfilePictureUrl(safeGetString(json, "profile_picture_url", null));
         user.setIsActive(safeGetBoolean(json, "is_active", true));
-        
+
+        // OAuth/GitHub fields
+        user.setGithubId(safeGetString(json, "github_id", null));
+        user.setAuthProvider(safeGetString(json, "auth_provider", null));
+        user.setOauthToken(safeGetString(json, "oauth_token", null));
+
         String createdAtStr = safeGetString(json, "created_at", null);
         if (createdAtStr != null && !createdAtStr.isEmpty()) {
             try {
@@ -55,7 +61,7 @@ public class JsonUtils {
                 user.setCreatedAt(null);
             }
         }
-        
+
         String updatedAtStr = safeGetString(json, "updated_at", null);
         if (updatedAtStr != null && !updatedAtStr.isEmpty()) {
             try {
@@ -71,7 +77,7 @@ public class JsonUtils {
                 user.setUpdatedAt(null);
             }
         }
-        
+
         return user;
     }
     

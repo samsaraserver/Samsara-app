@@ -20,6 +20,8 @@ public class BiometricHelper {
     private static final String KEY_EMAIL = "biometric_email";
     private static final String KEY_PASSWORD = "biometric_password";
     private static final String KEY_USER_ID = "biometric_user_id";
+    private static final String KEY_AUTH_PROVIDER = "biometric_auth_provider";
+    private static final String OAUTH_PASSWORD_MARKER = "__OAUTH_USER__";
 
     private final WeakReference<FragmentActivity> activityRef;
     private final WeakReference<AuthenticationCallback> callbackRef;
@@ -189,10 +191,45 @@ public class BiometricHelper {
             editor.putString(KEY_EMAIL, email);
             editor.putString(KEY_PASSWORD, password);
             editor.putString(KEY_USER_ID, userId);
-            editor.apply();
+            // Do not overwrite auth provider for regular password storage
+            boolean success = editor.commit(); // synchronous commit to ensure data is available immediately
+            if (success) {
+                Log.d(TAG, "Successfully stored biometric credentials for user: " + username);
+                String storedUsername = prefs.getString(KEY_USERNAME, null);
+                String storedPassword = prefs.getString(KEY_PASSWORD, null);
+                Log.d(TAG, "Verification - Username stored: " + (storedUsername != null) + ", Password stored: " + (storedPassword != null));
+            } else {
+                Log.e(TAG, "Failed to commit biometric credentials to SharedPreferences!");
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error storing credentials for biometric signup", e);
         }
+    }
+
+    public void storeOAuthUserCredentials(String username, String email, String userId, String authProvider) {
+        try {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(KEY_USERNAME, username);
+            editor.putString(KEY_EMAIL, email);
+            editor.putString(KEY_PASSWORD, OAUTH_PASSWORD_MARKER);
+            editor.putString(KEY_USER_ID, userId);
+            if (authProvider != null) {
+                editor.putString(KEY_AUTH_PROVIDER, authProvider);
+            }
+            boolean success = editor.commit();
+            if (success) {
+                Log.d(TAG, "Successfully stored OAuth biometric credentials for user: " + username + " (provider: " + authProvider + ")");
+            } else {
+                Log.e(TAG, "Failed to commit OAuth biometric credentials to SharedPreferences!");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error storing OAuth credentials for biometric signup", e);
+        }
+    }
+
+    public boolean isOAuthUser() {
+        String authProvider = prefs.getString(KEY_AUTH_PROVIDER, null);
+        return authProvider != null && !authProvider.isEmpty();
     }
 
     private void retrieveCredentials() {

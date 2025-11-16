@@ -45,6 +45,9 @@
     <uses-permission android:name="android.permission.READ_DEVICE_STATS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- Biometric authentication permission -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
     <application
         android:name=".app.TermuxApplication"
         android:allowBackup="false"
@@ -291,6 +294,21 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <activity
+            android:name=".app.OAuthCallbackActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="samsaraserver"
+                    android:host="github-callback" />
+            </intent-filter>
+        </activity>
 
     </application>
 

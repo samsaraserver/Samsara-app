@@ -27,7 +27,6 @@ import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.utils.ImageUtils;
 import com.termux.app.utils.ImagePickerHelper;
 import com.termux.app.utils.CircleTransform;
-import androidx.core.content.ContextCompat;
 
 public class profile_page extends AppCompatActivity implements ImagePickerHelper.ImagePickerCallback {
     private static final String TAG = "ProfilePage";
@@ -51,18 +50,18 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
 
         try {
             SupabaseConfig.initialize(this);
-            userRepository = new UserRepository();
+            userRepository = UserRepository.getInstance(this);
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize Supabase: " + e.getMessage(), e);
         }
 
         authManager = AuthManager.getInstance(this);
-        
+
         initializeViews();
         setupClickListeners();
         loadUserData();
         updateSignInOutButton();
-        
+
         NavbarHelper.setupNavbar(this);
     }
 
@@ -82,7 +81,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
             profilePictureView.setScaleX(0.75f);
             profilePictureView.setScaleY(0.75f);
         } catch (Exception ignored) { }
-        
+
         imagePickerHelper = new ImagePickerHelper(this, this);
         setFieldsEnabled(false);
     }
@@ -92,8 +91,6 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
         setupBiometricsButton.setOnClickListener(v -> {
             Intent intent = new Intent(profile_page.this, biometrics_page.class);
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            finish();
         });
 
         ImageButton editButton = findViewById(R.id.EditInformationBtn);
@@ -112,7 +109,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
             }
         });
     }
-    
+
     private void loadDefaultProfilePicture() {
         profilePictureView.setImageResource(R.drawable.account_2);
     }
@@ -172,7 +169,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
         if (authManager.isLoggedIn()) {
             authManager.logoutUser();
             Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-            
+
             clearFields();
             updateSignInOutButton();
             setFieldsEnabled(false);
@@ -180,8 +177,6 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
         } else {
             Intent intent = new Intent(this, SignInOut_page.class);
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            finish();
         }
     }
 
@@ -193,7 +188,7 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
 
         isEditMode = !isEditMode;
         setFieldsEnabled(isEditMode);
-        
+
         if (isEditMode) {
             passwordBox.setText("");
             passwordBox.setHint("Enter new password");
@@ -298,10 +293,10 @@ public class profile_page extends AppCompatActivity implements ImagePickerHelper
     private void showPasswordPopup(String password) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("New Password")
-               .setMessage("Your new password is:\n\n" + password +
-                          "\n\nPlease save this password in a secure location. This popup will only appear once.")
-               .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-               .setCancelable(false);
+            .setMessage("Your new password is:\n\n" + password +
+                "\n\nPlease save this password in a secure location. This popup will only appear once.")
+            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+            .setCancelable(false);
 
         AlertDialog dialog = builder.create();
         dialog.show();

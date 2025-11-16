@@ -11,11 +11,16 @@ public class SamsaraUser {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Boolean isActive;
-    
+
+    // OAuth/GitHub fields
+    private String githubId;
+    private String authProvider;
+    private String oauthToken;
+
     public SamsaraUser() {
         this.isActive = true;
     }
-    
+
     public SamsaraUser(String username, String email, String passwordHash) {
         this();
         this.username = username;
@@ -23,83 +28,108 @@ public class SamsaraUser {
         this.passwordHash = passwordHash;
         this.profilePictureUrl = null;
     }
-    
+
     public Long getId() {
         return id;
     }
-    
+
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public String getUsername() {
         return username;
     }
-    
+
     public void setUsername(String username) {
         this.username = username;
     }
-    
+
     public String getEmail() {
         return email;
     }
-    
+
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     public String getPasswordHash() {
         return passwordHash;
     }
-    
+
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
-    
+
     public String getProfilePictureUrl() {
         return profilePictureUrl;
     }
-    
+
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
     }
-    
+
     public Timestamp getCreatedAt() {
         return createdAt;
     }
-    
+
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
-    
+
     public Timestamp getUpdatedAt() {
         return updatedAt;
     }
-    
+
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
-    
+
     public Boolean getIsActive() {
         return isActive;
     }
-    
+
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
-    
+
+    // OAuth/GitHub getters/setters
+    public String getGithubId() {
+        return githubId;
+    }
+
+    public void setGithubId(String githubId) {
+        this.githubId = githubId;
+    }
+
+    public String getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(String authProvider) {
+        this.authProvider = authProvider;
+    }
+
+    public String getOauthToken() {
+        return oauthToken;
+    }
+
+    public void setOauthToken(String oauthToken) {
+        this.oauthToken = oauthToken;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        
+
         SamsaraUser that = (SamsaraUser) obj;
-        
+
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
         return email != null ? email.equals(that.email) : that.email == null;
     }
-    
+
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
@@ -107,7 +137,7 @@ public class SamsaraUser {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "SamsaraUser{" +

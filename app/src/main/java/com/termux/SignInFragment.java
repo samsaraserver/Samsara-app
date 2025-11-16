@@ -7,6 +7,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,17 +27,17 @@ import com.termux.app.BiometricHelper;
 import com.termux.app.NavbarHelper;
 import com.termux.app.home_page;
 import com.termux.app.database.SupabaseConfig;
-import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.managers.AuthManager;
+import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.models.SamsaraUser;
 
-import java.util.Base64;
 import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import com.termux.app.oauth.GitHubOAuthManager;
 
 public class SignInFragment extends Fragment {
     private static final String TAG = "SignInFragment";
@@ -183,7 +184,14 @@ public class SignInFragment extends Fragment {
         ImageButton githubButton = view.findViewById(R.id.LoginGithubGtn);
         if (githubButton != null) {
             githubButton.setOnClickListener(v -> {
-                Toast.makeText(requireContext(), "GitHub login not implemented yet", Toast.LENGTH_SHORT).show();
+                try {
+                    GitHubOAuthManager oauthManager = GitHubOAuthManager.getInstance(requireContext());
+                    oauthManager.startOAuthFlow(requireContext());
+                    Toast.makeText(requireContext(), "Redirecting to GitHub...", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to start GitHub OAuth", e);
+                    Toast.makeText(requireContext(), "GitHub login error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             });
         }
     }
@@ -329,43 +337,72 @@ public class SignInFragment extends Fragment {
             return;
         }
 
+        // Check if this is an OAuth user (password will be the OAuth marker)
+        final boolean isOAuthUser = "__OAUTH_USER__".equals(password);
+
         new Thread(() -> {
             try {
-                userRepository.authenticateUser(loginIdentifier, password)
-                    .handle((success, throwable) -> {
-                        if (throwable != null) {
-                            requireActivity().runOnUiThread(() -> {
-                                setFormEnabled(true);
-                                Log.e(TAG, "Error during biometric login", throwable);
-                                Toast.makeText(requireContext(), "Biometric login error: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
-                            });
-                            return null;
-                        }
-
-                        if (success != null && success) {
-                            new Thread(() -> {
-                                try {
-                                    SamsaraUser user = null;
-                                    if (loginIdentifier.contains("@")) {
-                                        user = userRepository.getUserByEmail(loginIdentifier).get();
-                                    } else {
-                                        user = userRepository.getUserByUsername(loginIdentifier).get();
-                                    }
-
-                                    final SamsaraUser finalUser = user;
-                                    requireActivity().runOnUiThread(() -> handleBiometricUserResult(finalUser, null, password));
-                                } catch (Exception e) {
-                                    requireActivity().runOnUiThread(() -> handleBiometricUserResult(null, e, null));
-                                }
-                            }).start();
+                if (isOAuthUser) {
+                    // For OAuth users, skip password authentication and fetch user directly
+                    Log.d(TAG, "Biometric login for OAuth user");
+                    try {
+                        SamsaraUser user = null;
+                        if (loginIdentifier.contains("@")) {
+                            user = userRepository.getUserByEmail(loginIdentifier).get();
                         } else {
-                            requireActivity().runOnUiThread(() -> {
-                                setFormEnabled(true);
-                                Toast.makeText(requireContext(), "Biometric login failed. Your stored credentials may no longer be valid.", Toast.LENGTH_LONG).show();
-                            });
+                            user = userRepository.getUserByUsername(loginIdentifier).get();
                         }
-                        return null;
-                    });
+
+                        final SamsaraUser finalUser = user;
+                        requireActivity().runOnUiThread(() -> {
+                            if (finalUser != null) {
+                                handleBiometricUserResult(finalUser, null, null);
+                            } else {
+                                setFormEnabled(true);
+                                Toast.makeText(requireContext(), "User not found. Please log in again.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } catch (Exception e) {
+                        requireActivity().runOnUiThread(() -> handleBiometricUserResult(null, e, null));
+                    }
+                } else {
+                    // For regular users, authenticate with password
+                    userRepository.authenticateUser(loginIdentifier, password)
+                        .handle((success, throwable) -> {
+                            if (throwable != null) {
+                                requireActivity().runOnUiThread(() -> {
+                                    setFormEnabled(true);
+                                    Log.e(TAG, "Error during biometric login", throwable);
+                                    Toast.makeText(requireContext(), "Biometric login error: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                                });
+                                return null;
+                            }
+
+                            if (success != null && success) {
+                                new Thread(() -> {
+                                    try {
+                                        SamsaraUser user = null;
+                                        if (loginIdentifier.contains("@")) {
+                                            user = userRepository.getUserByEmail(loginIdentifier).get();
+                                        } else {
+                                            user = userRepository.getUserByUsername(loginIdentifier).get();
+                                        }
+
+                                        final SamsaraUser finalUser = user;
+                                        requireActivity().runOnUiThread(() -> handleBiometricUserResult(finalUser, null, password));
+                                    } catch (Exception e) {
+                                        requireActivity().runOnUiThread(() -> handleBiometricUserResult(null, e, null));
+                                    }
+                                }).start();
+                            } else {
+                                requireActivity().runOnUiThread(() -> {
+                                    setFormEnabled(true);
+                                    Toast.makeText(requireContext(), "Biometric login failed. Your stored credentials may no longer be valid.", Toast.LENGTH_LONG).show();
+                                });
+                            }
+                            return null;
+                        });
+                }
             } catch (Exception e) {
                 Log.e(TAG, "Error during biometric login", e);
                 requireActivity().runOnUiThread(() -> {
@@ -457,7 +494,7 @@ public class SignInFragment extends Fragment {
     private SecretKey getOrCreateEncryptionKey() throws Exception {
         String encodedKey = loginPrefs.getString(KEY_ENCRYPTION_KEY, null);
         if (encodedKey != null) {
-            byte[] keyBytes = Base64.getDecoder().decode(encodedKey);
+            byte[] keyBytes = Base64.decode(encodedKey, Base64.DEFAULT);
             return new SecretKeySpec(keyBytes, "AES");
         }
 
@@ -465,7 +502,7 @@ public class SignInFragment extends Fragment {
         keyGen.init(256);
         SecretKey key = keyGen.generateKey();
 
-        String encodedNewKey = Base64.getEncoder().encodeToString(key.getEncoded());
+        String encodedNewKey = Base64.encodeToString(key.getEncoded(), Base64.DEFAULT);
         loginPrefs.edit().putString(KEY_ENCRYPTION_KEY, encodedNewKey).apply();
 
         return key;
@@ -475,13 +512,13 @@ public class SignInFragment extends Fragment {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encryptedBytes = cipher.doFinal(password.getBytes());
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        return Base64.encodeToString(encryptedBytes, Base64.DEFAULT);
     }
 
     private String decryptPassword(String encryptedPassword, SecretKey key) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, key);
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedPassword));
+        byte[] decryptedBytes = cipher.doFinal(Base64.decode(encryptedPassword, Base64.DEFAULT));
         return new String(decryptedBytes);
     }
 

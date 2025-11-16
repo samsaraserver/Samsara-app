@@ -3,6 +3,7 @@ package com.termux.app.database.managers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
 import com.termux.app.database.models.SamsaraUser;
 
 public class AuthManager {
@@ -129,11 +130,7 @@ public class AuthManager {
             }
             editor.apply();
 
-            SharedPreferences biometricPrefsSignup = appContext.getSharedPreferences("BiometricSignupPrefs", Context.MODE_PRIVATE);
-            biometricPrefsSignup.edit().clear().apply();
-
-            SharedPreferences biometricPrefs = appContext.getSharedPreferences("BiometricLoginPrefs", Context.MODE_PRIVATE);
-            biometricPrefs.edit().clear().apply();
+            //Biometric credentials are intentionally NOT cleared on logout
         } catch (Exception e) {
             Log.e(TAG, "Failed to clear stored credentials on logout", e);
         }

@@ -6,15 +6,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.termux.R;
 import com.termux.app.database.SupabaseConfig;
-import com.termux.app.database.repository.UserRepository;
 import com.termux.app.database.managers.AuthManager;
 import com.termux.app.database.models.SamsaraUser;
+import com.termux.app.database.repository.UserRepository;
 
 import java.util.Base64;
 
