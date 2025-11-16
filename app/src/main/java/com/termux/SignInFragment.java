@@ -127,12 +127,67 @@ public class SignInFragment extends Fragment {
 
     private void loadSavedCredentials() {
         boolean rememberMe = loginPrefs.getBoolean(KEY_REMEMBER_ME, false);
-        if (rememberMe) {
+        Log.d(TAG, "loadSavedCredentials() - rememberMe: " + rememberMe);
+
+        if (rememberMe && userRepository != null) {
             String savedUsername = loginPrefs.getString(KEY_EMAIL_USERNAME, "");
-            emailUsernameBox.setText(savedUsername);
-            passwordBox.setHint("Enter password");
-            passwordBox.setText("");
-            rememberMeCheckBox.setChecked(true);
+            String savedPassword = retrieveSavedPassword();
+
+            Log.d(TAG, "Saved credentials - username: " + (TextUtils.isEmpty(savedUsername) ? "empty" : "present") +
+                       ", password: " + (TextUtils.isEmpty(savedPassword) ? "empty" : "present"));
+
+            if (!TextUtils.isEmpty(savedUsername) && !TextUtils.isEmpty(savedPassword)) {
+                Log.d(TAG, "Starting auto-login for user: " + savedUsername);
+                performAutoLogin(savedUsername, savedPassword);
+            }
+        }
+    }
+
+    private void performAutoLogin(String emailOrUsername, String password) {
+        if (TextUtils.isEmpty(emailOrUsername) || TextUtils.isEmpty(password)) {
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                userRepository.authenticateUser(emailOrUsername, password)
+                    .handle((success, throwable) -> {
+                        if (throwable != null) {
+                            requireActivity().runOnUiThread(() -> Log.e(TAG, "Auto-login failed", throwable));
+                            return null;
+                        }
+
+                        if (success != null && success) {
+                            new Thread(() -> {
+                                try {
+                                    SamsaraUser user = null;
+                                    if (emailOrUsername.contains("@")) {
+                                        user = userRepository.getUserByEmail(emailOrUsername).get();
+                                    } else {
+                                        user = userRepository.getUserByUsername(emailOrUsername).get();
+                                    }
+
+                                    final SamsaraUser finalUser = user;
+                                    requireActivity().runOnUiThread(() -> handleAutoLoginSuccess(finalUser, password));
+                                } catch (Exception e) {
+                                    requireActivity().runOnUiThread(() -> Log.e(TAG, "Error fetching user data", e));
+                                }
+                            }).start();
+                        }
+                        return null;
+                    });
+            } catch (Exception e) {
+                Log.e(TAG, "Error during auto-login", e);
+            }
+        }).start();
+    }
+
+    private void handleAutoLoginSuccess(SamsaraUser user, String password) {
+        if (user != null) {
+            // Credentials already saved, just update biometric if available
+            storeCredentialsForBiometric(user, user.getEmail(), password);
+            AuthManager.getInstance(requireContext()).loginUser(user, password);
+            NavbarHelper.navigateToActivity(requireActivity(), home_page.class);
         }
     }
 
@@ -474,8 +529,8 @@ public class SignInFragment extends Fragment {
             String encryptedPassword = encryptPassword(password, encryptionKey);
             editor.putString(KEY_ENCRYPTED_PASSWORD, encryptedPassword);
 
-            editor.apply();
-            Log.d(TAG, "Credentials saved securely with encryption");
+            boolean success = editor.commit();  // Use commit() instead of apply() to ensure immediate write
+            Log.d(TAG, "Credentials saved securely with encryption - success: " + success);
         } catch (Exception e) {
             Log.e(TAG, "Error saving encrypted credentials", e);
             Toast.makeText(requireContext(), "Error saving credentials securely", Toast.LENGTH_SHORT).show();
@@ -503,7 +558,8 @@ public class SignInFragment extends Fragment {
         SecretKey key = keyGen.generateKey();
 
         String encodedNewKey = Base64.encodeToString(key.getEncoded(), Base64.DEFAULT);
-        loginPrefs.edit().putString(KEY_ENCRYPTION_KEY, encodedNewKey).apply();
+        boolean success = loginPrefs.edit().putString(KEY_ENCRYPTION_KEY, encodedNewKey).commit();  // Use commit() for immediate write
+        Log.d(TAG, "Encryption key saved - success: " + success);
 
         return key;
     }
@@ -525,9 +581,17 @@ public class SignInFragment extends Fragment {
     private String retrieveSavedPassword() {
         try {
             String encryptedPassword = loginPrefs.getString(KEY_ENCRYPTED_PASSWORD, null);
+            Log.d(TAG, "retrieveSavedPassword() - encrypted password: " + (encryptedPassword == null ? "null" : "present"));
+
             if (encryptedPassword != null) {
                 SecretKey encryptionKey = getOrCreateEncryptionKey();
-                return decryptPassword(encryptedPassword, encryptionKey);
+                Log.d(TAG, "retrieveSavedPassword() - encryption key: " + (encryptionKey == null ? "null" : "present"));
+
+                String decryptedPassword = decryptPassword(encryptedPassword, encryptionKey);
+                Log.d(TAG, "retrieveSavedPassword() - decrypted password: " + (decryptedPassword == null ? "null" : "present"));
+                return decryptedPassword;
+            } else {
+                Log.d(TAG, "retrieveSavedPassword() - no encrypted password stored");
             }
         } catch (Exception e) {
             Log.e(TAG, "Error retrieving saved password", e);

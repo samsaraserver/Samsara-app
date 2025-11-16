@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageButton;
 
@@ -14,8 +15,6 @@ import com.termux.app.database.SupabaseConfig;
 import com.termux.app.database.managers.AuthManager;
 import com.termux.app.database.models.SamsaraUser;
 import com.termux.app.database.repository.UserRepository;
-
-import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -60,11 +59,17 @@ public class WelcomePageActivity extends AppCompatActivity {
 
     private boolean checkAutoLogin() {
         boolean rememberMe = loginPrefs.getBoolean(KEY_REMEMBER_ME, false);
+        Log.d(TAG, "checkAutoLogin() - rememberMe: " + rememberMe);
+
         if (rememberMe && userRepository != null) {
             String savedUsername = loginPrefs.getString(KEY_EMAIL_USERNAME, "");
             String savedPassword = retrieveSavedPassword();
-            
+
+            Log.d(TAG, "Saved credentials - username: " + (TextUtils.isEmpty(savedUsername) ? "empty" : "present") +
+                       ", password: " + (TextUtils.isEmpty(savedPassword) ? "empty" : "present"));
+
             if (!TextUtils.isEmpty(savedUsername) && !TextUtils.isEmpty(savedPassword)) {
+                Log.d(TAG, "Starting auto-login for user: " + savedUsername);
                 performAutoLogin(savedUsername, savedPassword);
                 return true;
             }
@@ -75,11 +80,19 @@ public class WelcomePageActivity extends AppCompatActivity {
     private String retrieveSavedPassword() {
         try {
             String encryptedPassword = loginPrefs.getString(KEY_ENCRYPTED_PASSWORD, null);
+            Log.d(TAG, "retrieveSavedPassword() - encrypted password: " + (encryptedPassword == null ? "null" : "present"));
+
             if (encryptedPassword != null) {
                 SecretKey encryptionKey = getEncryptionKey();
+                Log.d(TAG, "retrieveSavedPassword() - encryption key: " + (encryptionKey == null ? "null" : "present"));
+
                 if (encryptionKey != null) {
-                    return decryptPassword(encryptedPassword, encryptionKey);
+                    String decryptedPassword = decryptPassword(encryptedPassword, encryptionKey);
+                    Log.d(TAG, "retrieveSavedPassword() - decrypted password: " + (decryptedPassword == null ? "null" : "present"));
+                    return decryptedPassword;
                 }
+            } else {
+                Log.d(TAG, "retrieveSavedPassword() - no encrypted password stored");
             }
         } catch (Exception e) {
             Log.e(TAG, "Error retrieving saved password", e);
@@ -91,7 +104,7 @@ public class WelcomePageActivity extends AppCompatActivity {
         try {
             String encodedKey = loginPrefs.getString(KEY_ENCRYPTION_KEY, null);
             if (encodedKey != null) {
-                byte[] keyBytes = Base64.getDecoder().decode(encodedKey);
+                byte[] keyBytes = Base64.decode(encodedKey, Base64.DEFAULT);
                 return new SecretKeySpec(keyBytes, "AES");
             }
         } catch (Exception e) {
@@ -103,7 +116,7 @@ public class WelcomePageActivity extends AppCompatActivity {
     private String decryptPassword(String encryptedPassword, SecretKey key) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, key);
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedPassword));
+        byte[] decryptedBytes = cipher.doFinal(Base64.decode(encryptedPassword, Base64.DEFAULT));
         return new String(decryptedBytes);
     }
 
