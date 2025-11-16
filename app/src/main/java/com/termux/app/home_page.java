@@ -102,7 +102,7 @@ public class home_page extends AppCompatActivity {
             final String safeUrl = "https://samsaraserver.space/docs";
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(safeUrl));
-                intent.addCategory(Intent.CATEGORY_BROWSABLE); // ensure browsable
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
                 } else {

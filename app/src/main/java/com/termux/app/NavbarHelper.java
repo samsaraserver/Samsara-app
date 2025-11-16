@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageButton;
@@ -96,13 +97,18 @@ public class NavbarHelper {
 
         if (documentsButton != null) {
             documentsButton.setOnClickListener(view -> {
-                if (!isClickAllowed()) return;
-                if (!(activity instanceof documents_page)) {
-                    Intent intent = new Intent(activity, documents_page.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    activity.startActivity(intent);
-                    activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    activity.finish();
+                final String safeUrl = "https://samsaraserver.space/docs";
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(safeUrl));
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    if (intent.resolveActivity(activity.getPackageManager()) != null) {
+                        activity.startActivity(intent);
+                    } else {
+                        Toast.makeText(activity, R.string.no_app_to_open_link, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to open documentation URL: " + safeUrl, e);
+                    Toast.makeText(activity, R.string.unable_to_open_link, Toast.LENGTH_SHORT).show();
                 }
             });
         }
