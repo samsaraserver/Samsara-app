@@ -23,6 +23,10 @@ import java.util.Locale;
 import java.nio.charset.StandardCharsets;
 
 import android.net.Uri;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
+import android.os.Environment;
+import android.os.StatFs;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -35,6 +39,11 @@ import androidx.core.content.FileProvider;
 
 import com.termux.R;
 import com.termux.app.config.SamsaraConfigManager;
+
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class configuration_page extends AppCompatActivity {
     private static final String TAG = "ConfigPage";
@@ -56,6 +65,18 @@ public class configuration_page extends AppCompatActivity {
     private ImageButton systemFilesBtn;
     private SamsaraConfigManager configManager;
     private String[] monitoringIntervalOptions = {"15s", "30s", "1m", "5m", "10m", "30m", "1h"};
+
+
+    private final ScheduledExecutorService monitorExecutor = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> monitorFuture;
+    private long monitorPeriodMs = 30000;
+    private int tempThresholdC = 60;
+    private int lowStorageThresholdGB = 8;
+
+
+    private static final long ALERT_THROTTLE_MS = 60 * 1000;
+    private long lastTempAlertMs = 0;
+    private long lastStorageAlertMs = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +109,7 @@ public class configuration_page extends AppCompatActivity {
                                 runOnUiThread(() -> {
                                     if (ok) {
                                         loadSettings();
+                                        restartMonitoring();
                                         Toast.makeText(configuration_page.this, "Configuration imported", Toast.LENGTH_SHORT).show();
                                     } else {
                                         Toast.makeText(configuration_page.this, "Failed to import configuration", Toast.LENGTH_LONG).show();
@@ -126,6 +148,8 @@ public class configuration_page extends AppCompatActivity {
 
         setupButtonListeners();
         displayVersionInfo();
+
+        startMonitoring();
     }
 
     private void initializeUIElements() {
@@ -451,6 +475,7 @@ public class configuration_page extends AppCompatActivity {
 
             if (saved) {
                 Toast.makeText(this, "Settings saved successfully", Toast.LENGTH_SHORT).show();
+                restartMonitoring();
             } else {
                 Toast.makeText(this, "Failed to save settings", Toast.LENGTH_LONG).show();
             }
@@ -468,8 +493,106 @@ public class configuration_page extends AppCompatActivity {
         }
 
         loadSettings();
+        restartMonitoring();
 
         Toast.makeText(this, "Settings reset to defaults", Toast.LENGTH_SHORT).show();
+    }
+
+    private void startMonitoring() {
+        stopMonitoring();
+
+        monitorPeriodMs = Math.max(1000, configManager.getMonitoringIntervalInMillis());
+        try {
+            tempThresholdC = Integer.parseInt(configManager.getTemperatureAlert().replaceAll("[^0-9-]", ""));
+        } catch (NumberFormatException e) {
+            tempThresholdC = 60;
+        }
+        try {
+            lowStorageThresholdGB = Integer.parseInt(configManager.getLowStorageWarningThreshold().replaceAll("[^0-9-]", ""));
+        } catch (NumberFormatException e) {
+            lowStorageThresholdGB = 8;
+        }
+
+        monitorFuture = monitorExecutor.scheduleAtFixedRate(() -> {
+            try {
+                checkTemperatureAndStorage();
+            } catch (Throwable t) {
+                Log.e(TAG, "Monitoring task error", t);
+            }
+        }, 0, Math.max(1000, monitorPeriodMs), TimeUnit.MILLISECONDS);
+
+        Log.d(TAG, "Monitoring started: periodMs=" + monitorPeriodMs + ", tempThreshold=" + tempThresholdC + ", lowStorageGB=" + lowStorageThresholdGB);
+    }
+
+    private void restartMonitoring() {
+        runOnUiThread(() -> {
+            stopMonitoring();
+            startMonitoring();
+        });
+    }
+
+    private void stopMonitoring() {
+        if (monitorFuture != null && !monitorFuture.isCancelled()) {
+            monitorFuture.cancel(true);
+            monitorFuture = null;
+        }
+    }
+
+    private void checkTemperatureAndStorage() {
+        float tempC = readBatteryTemperatureC();
+        long freeBytes = getAvailableInternalStorageBytes();
+        long freeGB = freeBytes / (1024L * 1024L * 1024L);
+
+        if (tempC >= 0 && tempC >= tempThresholdC) {
+            final String msg = String.format(Locale.US, "Temperature alert: %.1f°C >= %d°C", tempC, tempThresholdC);
+            Log.w(TAG, msg);
+            runOnUiThread(() -> new AlertDialog.Builder(configuration_page.this)
+                .setTitle("Temperature Alert")
+                .setMessage(msg)
+                .setPositiveButton("OK", null)
+                .show());
+        }
+
+        if (freeGB >= 0 && freeGB < lowStorageThresholdGB) {
+            final String msg = String.format(Locale.US, "Low storage: %d GB available < %d GB threshold", freeGB, lowStorageThresholdGB);
+            Log.w(TAG, msg);
+            runOnUiThread(() -> new AlertDialog.Builder(configuration_page.this)
+                .setTitle("Low Storage Warning")
+                .setMessage(msg)
+                .setPositiveButton("OK", null)
+                .show());
+        }
+    }
+
+    private float readBatteryTemperatureC() {
+        try {
+            Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            if (intent == null) return -1f;
+            int tempTenths = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
+            if (tempTenths <= 0) return -1f;
+            return tempTenths / 10f;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to read battery temperature", e);
+            return -1f;
+        }
+    }
+
+    private long getAvailableInternalStorageBytes() {
+        try {
+            StatFs stat = new StatFs(Environment.getDataDirectory().getPath());
+            long avail = stat.getAvailableBlocksLong() * stat.getBlockSizeLong();
+            return avail;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to read internal storage stats", e);
+            return -1L;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopMonitoring();
+        monitorExecutor.shutdownNow();
     }
 
     private void displayVersionInfo() {
