@@ -191,8 +191,9 @@ public class BiometricHelper {
             editor.putString(KEY_EMAIL, email);
             editor.putString(KEY_PASSWORD, password);
             editor.putString(KEY_USER_ID, userId);
+
             // Do not overwrite auth provider for regular password storage
-            boolean success = editor.commit(); // synchronous commit to ensure data is available immediately
+            boolean success = editor.commit();
             if (success) {
                 Log.d(TAG, "Successfully stored biometric credentials for user: " + username);
                 String storedUsername = prefs.getString(KEY_USERNAME, null);
