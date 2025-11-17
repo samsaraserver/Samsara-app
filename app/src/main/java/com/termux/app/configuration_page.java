@@ -20,9 +20,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.nio.charset.StandardCharsets;
 
 import android.net.Uri;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
@@ -33,7 +38,8 @@ import com.termux.app.config.SamsaraConfigManager;
 
 public class configuration_page extends AppCompatActivity {
     private static final String TAG = "ConfigPage";
-    private static final int IMPORT_REQUEST_CODE = 0x1234;
+
+    private ActivityResultLauncher<Intent> importLauncher;
 
     private SwitchCompat autoStartOnBoot;
     private EditText webPortBox;
@@ -56,14 +62,56 @@ public class configuration_page extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.configuration_page);
 
+        importLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        final Uri uri = result.getData().getData();
+                        if (uri == null) {
+                            Toast.makeText(configuration_page.this, "No file selected", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        new Thread(() -> {
+                            try (InputStream is = getContentResolver().openInputStream(uri)) {
+                                if (is == null) throw new IOException("Unable to open selected file");
+                                StringBuilder sb = new StringBuilder();
+                                byte[] tmp = new byte[4096];
+                                int read;
+                                while ((read = is.read(tmp)) != -1) {
+                                    sb.append(new String(tmp, 0, read, StandardCharsets.UTF_8));
+                                }
+                                final String json = sb.toString();
+                                final boolean ok = configManager.importConfiguration(json);
+                                runOnUiThread(() -> {
+                                    if (ok) {
+                                        loadSettings();
+                                        Toast.makeText(configuration_page.this, "Configuration imported", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(configuration_page.this, "Failed to import configuration", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            } catch (final Exception e) {
+                                Log.e(TAG, "Import failed", e);
+                                runOnUiThread(() -> Toast.makeText(configuration_page.this, "Import failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                            }
+                        }).start();
+                    } else {
+                        Toast.makeText(configuration_page.this, "Import cancelled", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        );
+
         NavbarHelper.setupNavbar(this);
 
         try {
             configManager = new SamsaraConfigManager(this);
             Log.d(TAG, "Config file path: " + configManager.getConfigFilePath());
         } catch (Exception e) {
-            Toast.makeText(this, "Failed to load config: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            e.printStackTrace();
+            Log.e(TAG, "Failed to load config", e);
             return;
         }
 
@@ -73,8 +121,7 @@ public class configuration_page extends AppCompatActivity {
         try {
             loadSettings();
         } catch (Exception e) {
-            Toast.makeText(this, "Failed to load settings: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+            Log.e(TAG, "Failed to load settings", e);
         }
 
         setupButtonListeners();
@@ -149,7 +196,6 @@ public class configuration_page extends AppCompatActivity {
         if (tempBox != null) tempBox.setText(tempAlert);
         if (lowStorageBox != null) lowStorageBox.setText(lowStorage);
 
-        // Set spinner selection safely
         if (spinnerMonitoringInterval != null && savedInterval != null) {
             int sel = -1;
             for (int i = 0; i < monitoringIntervalOptions.length; i++) {
@@ -264,12 +310,67 @@ public class configuration_page extends AppCompatActivity {
             ImportBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("application/json");
-                    // allow any file as fallback
-                    Intent chooser = Intent.createChooser(intent, "Select configuration JSON to import");
-                    startActivityForResult(chooser, IMPORT_REQUEST_CODE);
+                    File exportsDir = getExternalFilesDir("exports");
+                    if (exportsDir == null || !exportsDir.exists()) {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("application/json");
+                        Intent chooser = Intent.createChooser(intent, "Select configuration JSON to import");
+                        importLauncher.launch(chooser);
+                        return;
+                    }
+
+                    final File[] files = exportsDir.listFiles();
+                    if (files == null || files.length == 0) {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("application/json");
+                        Intent chooser = Intent.createChooser(intent, "Select configuration JSON to import");
+                        importLauncher.launch(chooser);
+                        return;
+                    }
+
+                    String[] names = new String[files.length + 1];
+                    for (int i = 0; i < files.length; i++) names[i] = files[i].getName();
+                    names[files.length] = "Choose from device...";
+
+                    new AlertDialog.Builder(configuration_page.this)
+                        .setTitle("Import configuration")
+                        .setItems(names, (dialog, which) -> {
+                            if (which == files.length) {
+                                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                                intent.setType("application/json");
+                                Intent chooser = Intent.createChooser(intent, "Select configuration JSON to import");
+                                importLauncher.launch(chooser);
+                                return;
+                            }
+
+                            final File chosen = files[which];
+                            new Thread(() -> {
+                                try (java.io.FileInputStream fis = new java.io.FileInputStream(chosen)) {
+                                    byte[] buffer = new byte[(int) chosen.length()];
+                                    int offset = 0;
+                                    int read;
+                                    while (offset < buffer.length && (read = fis.read(buffer, offset, buffer.length - offset)) >= 0) offset += read;
+                                    String json = new String(buffer, StandardCharsets.UTF_8);
+                                    final boolean ok = configManager.importConfiguration(json);
+                                    runOnUiThread(() -> {
+                                        if (ok) {
+                                            loadSettings();
+                                            Toast.makeText(configuration_page.this, "Configuration imported from " + chosen.getName(), Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(configuration_page.this, "Failed to import configuration", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                } catch (final Exception e) {
+                                    Log.e(TAG, "Import from exports failed", e);
+                                    runOnUiThread(() -> Toast.makeText(configuration_page.this, "Import failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                                }
+                            }).start();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
                 }
             });
         }
@@ -316,60 +417,6 @@ public class configuration_page extends AppCompatActivity {
                     }).start();
                 }
             });
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMPORT_REQUEST_CODE) {
-            if (resultCode == RESULT_OK && data != null) {
-                final Uri uri = data.getData();
-                if (uri == null) {
-                    Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try (InputStream is = getContentResolver().openInputStream(uri)) {
-                            if (is == null) throw new IOException("Unable to open selected file");
-                            byte[] buf = new byte[is.available() > 0 ? is.available() : 4096];
-                            int read;
-                            StringBuilder sb = new StringBuilder();
-                            byte[] tmp = new byte[4096];
-                            while ((read = is.read(tmp)) != -1) {
-                                sb.append(new String(tmp, 0, read, "UTF-8"));
-                            }
-                            final String json = sb.toString();
-
-                            final boolean ok = configManager.importConfiguration(json);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (ok) {
-                                        loadSettings();
-                                        Toast.makeText(configuration_page.this, "Configuration imported", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(configuration_page.this, "Failed to import configuration", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                        } catch (final Exception e) {
-                            Log.e(TAG, "Import failed", e);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(configuration_page.this, "Import failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
-                    }
-                }).start();
-            } else {
-                Toast.makeText(this, "Import cancelled", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 
