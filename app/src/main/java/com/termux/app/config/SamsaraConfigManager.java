@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,27 +22,45 @@ public class SamsaraConfigManager {
     
     private Context context;
     private JSONObject configData;
-    
+    private File configFile;
+
     public SamsaraConfigManager(Context context) {
         this.context = context;
+        this.configFile = new File(context.getFilesDir(), CONFIG_FILE_NAME);
         loadConfiguration();
     }
     
     private void loadConfiguration() {
         try {
-            File configFile = new File(context.getFilesDir(), CONFIG_FILE_NAME);
-            String jsonString;
-            
-            if (configFile.exists()) {
-                jsonString = readFromFile(configFile);
-            } else {
-                jsonString = readFromAssets();
-                saveConfiguration();
-            }
-            
+            ensureConfigFileExists();
+
+            String jsonString = readFromFile(configFile);
             configData = new JSONObject(jsonString);
         } catch (JSONException | IOException e) {
+            Log.w(TAG, "Failed to load configuration from file, loading defaults: " + e.getMessage(), e);
             loadDefaultConfiguration();
+            saveConfiguration();
+        }
+    }
+
+    private void ensureConfigFileExists() throws IOException {
+        if (configFile.exists()) return;
+
+        InputStream inputStream = null;
+        FileOutputStream outputStream = null;
+        try {
+            inputStream = context.getAssets().open(CONFIG_ASSETS_PATH);
+            outputStream = new FileOutputStream(configFile);
+
+            byte[] buffer = new byte[4096];
+            int read;
+            while ((read = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, read);
+            }
+            outputStream.getFD().sync();
+        } finally {
+            if (inputStream != null) try { inputStream.close(); } catch (IOException ignored) {}
+            if (outputStream != null) try { outputStream.close(); } catch (IOException ignored) {}
         }
     }
     
@@ -55,10 +74,15 @@ public class SamsaraConfigManager {
     }
     
     private String readFromFile(File file) throws IOException {
-        InputStream inputStream = context.openFileInput(CONFIG_FILE_NAME);
+        FileInputStream inputStream = new FileInputStream(file);
         int size = inputStream.available();
         byte[] buffer = new byte[size];
-        inputStream.read(buffer);
+        int read = 0;
+        int offset = 0;
+        while ((read = inputStream.read(buffer, offset, size - offset)) > 0) {
+            offset += read;
+            if (offset >= size) break;
+        }
         inputStream.close();
         return new String(buffer, StandardCharsets.UTF_8);
     }
@@ -68,6 +92,7 @@ public class SamsaraConfigManager {
             String defaultConfig = readFromAssets();
             configData = new JSONObject(defaultConfig);
         } catch (IOException | JSONException e) {
+            Log.w(TAG, "Failed to load default configuration from assets: " + e.getMessage(), e);
             createEmptyConfiguration();
         }
     }
@@ -120,10 +145,25 @@ public class SamsaraConfigManager {
     public boolean saveConfiguration() {
         try {
             updateLastModified();
-            
-            FileOutputStream outputStream = context.openFileOutput(CONFIG_FILE_NAME, Context.MODE_PRIVATE);
-            outputStream.write(configData.toString(4).getBytes(StandardCharsets.UTF_8));
-            outputStream.close();
+
+
+            if (!configFile.exists()) {
+                File parent = configFile.getParentFile();
+                if (parent != null && !parent.exists()) parent.mkdirs();
+                configFile.createNewFile();
+            }
+
+            FileOutputStream outputStream = new FileOutputStream(configFile, false);
+            try {
+                byte[] data = configData.toString(4).getBytes(StandardCharsets.UTF_8);
+                outputStream.write(data);
+                outputStream.flush();
+                outputStream.getFD().sync();
+            } finally {
+                outputStream.close();
+            }
+
+            Log.d(TAG, "Configuration saved to: " + configFile.getAbsolutePath());
             return true;
         } catch (IOException | JSONException e) {
             Log.e(TAG, "Failed to save configuration: " + e.getMessage(), e);
@@ -136,6 +176,10 @@ public class SamsaraConfigManager {
         configData.put("lastModified", dateFormat.format(new Date()));
     }
     
+    public String getConfigFilePath() {
+        return configFile.getAbsolutePath();
+    }
+
     public boolean getBoolean(String section, String key, boolean defaultValue) {
         try {
             return configData.getJSONObject(section).getBoolean(key);
@@ -205,6 +249,7 @@ public class SamsaraConfigManager {
             configData = new JSONObject(defaultConfig);
             return saveConfiguration();
         } catch (IOException | JSONException e) {
+            Log.e(TAG, "Failed to reset to defaults: " + e.getMessage(), e);
             return false;
         }
     }
@@ -223,6 +268,7 @@ public class SamsaraConfigManager {
             configData = newConfig;
             return saveConfiguration();
         } catch (JSONException e) {
+            Log.e(TAG, "Failed to import configuration: " + e.getMessage(), e);
             return false;
         }
     }
@@ -266,7 +312,49 @@ public class SamsaraConfigManager {
     public boolean setMonitoringInterval(String interval) {
         return setString("monitoring", "monitoringInterval", interval);
     }
-    
+
+    public long getMonitoringIntervalInMillis() {
+        String interval = getMonitoringInterval();
+        return parseIntervalToMillis(interval);
+    }
+
+    private long parseIntervalToMillis(String interval) {
+        if (interval == null || interval.isEmpty()) {
+            return 30000;
+        }
+
+        try {
+            String numberPart = interval.replaceAll("[^0-9]", "");
+            String unitPart = interval.replaceAll("[0-9]", "").trim();
+
+            if (numberPart.isEmpty()) return 30000;
+
+            long value = Long.parseLong(numberPart);
+
+            switch (unitPart.toLowerCase()) {
+                case "s":
+                case "sec":
+                case "secs":
+                    return value * 1000;
+                case "m":
+                case "min":
+                case "mins":
+                    return value * 60 * 1000;
+                case "h":
+                case "hr":
+                case "hrs":
+                    return value * 60 * 60 * 1000;
+                default:
+                    if (unitPart.isEmpty()) return value * 1000;
+                    Log.w(TAG, "Unknown time unit: " + unitPart + ", defaulting to seconds");
+                    return value * 1000;
+            }
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Failed to parse interval: " + interval, e);
+            return 30000;
+        }
+    }
+
     public String getTemperatureAlert() {
         return getString("monitoring", "temperatureAlert", "60");
     }
