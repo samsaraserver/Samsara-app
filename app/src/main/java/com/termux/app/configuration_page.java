@@ -13,15 +13,27 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import android.net.Uri;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.FileProvider;
 
 import com.termux.R;
 import com.termux.app.config.SamsaraConfigManager;
 
 public class configuration_page extends AppCompatActivity {
     private static final String TAG = "ConfigPage";
+    private static final int IMPORT_REQUEST_CODE = 0x1234;
 
     private SwitchCompat autoStartOnBoot;
     private EditText webPortBox;
@@ -29,6 +41,8 @@ public class configuration_page extends AppCompatActivity {
     private Spinner spinnerMonitoringInterval;
     private EditText tempBox;
     private EditText lowStorageBox;
+    private ImageButton ExportBtn;
+    private ImageButton ImportBtn;
     private ImageButton resetBtn;
     private ImageButton saveBtn;
     private TextView tvAppVersion2;
@@ -74,6 +88,8 @@ public class configuration_page extends AppCompatActivity {
         spinnerMonitoringInterval = findViewById(R.id.spinnerMonitoringInterval);
         tempBox = findViewById(R.id.TempBox);
         lowStorageBox = findViewById(R.id.LowStorageBox);
+        ExportBtn = findViewById(R.id.ExportBtn);
+        ImportBtn = findViewById(R.id.ImportBtn);
         resetBtn = findViewById(R.id.ResetBtn);
         saveBtn = findViewById(R.id.SaveBtn);
         tvAppVersion2 = findViewById(R.id.tvAppVersion2);
@@ -146,7 +162,6 @@ public class configuration_page extends AppCompatActivity {
                 spinnerMonitoringInterval.setSelection(sel);
                 Log.d(TAG, "Set interval spinner to position " + sel + ": " + savedInterval);
             } else {
-                // try tolerant match (number only)
                 String numberPart = savedInterval.replaceAll("[^0-9]", "");
                 if (!numberPart.isEmpty()) {
                     String tolerant = numberPart + (savedInterval.toLowerCase().contains("m") ? "m" : "s");
@@ -159,7 +174,7 @@ public class configuration_page extends AppCompatActivity {
                     }
                 }
                 if (sel < 0) {
-                    spinnerMonitoringInterval.setSelection(1); // default 30s
+                    spinnerMonitoringInterval.setSelection(1);
                     Log.d(TAG, "Saved interval not found, defaulting spinner to 30s");
                 }
             }
@@ -185,13 +200,176 @@ public class configuration_page extends AppCompatActivity {
             });
         }
 
+        if (ExportBtn != null) {
+            ExportBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String exportJson = configManager.exportConfiguration();
+                    if (exportJson == null) {
+                        Toast.makeText(configuration_page.this, "Failed to generate export data", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                File exportsDir = getExternalFilesDir("exports");
+                                if (exportsDir == null) exportsDir = getFilesDir();
+                                if (!exportsDir.exists()) exportsDir.mkdirs();
+
+                                String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+                                String filename = "samsara_config_export_" + timestamp + ".json";
+                                final File outFile = new File(exportsDir, filename);
+
+                                FileOutputStream fos = new FileOutputStream(outFile);
+                                try {
+                                    fos.write(exportJson.getBytes("UTF-8"));
+                                    fos.flush();
+                                    fos.getFD().sync();
+                                } finally {
+                                    try { fos.close(); } catch (IOException ignored) {}
+                                }
+
+                                final Uri uri = FileProvider.getUriForFile(configuration_page.this, "com.termux.fileprovider", outFile);
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(configuration_page.this, "Exported to: " + outFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+                                        Intent share = new Intent(Intent.ACTION_SEND);
+                                        share.setType("application/json");
+                                        share.putExtra(Intent.EXTRA_STREAM, uri);
+                                        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                        startActivity(Intent.createChooser(share, "Share exported config"));
+                                    }
+                                });
+                            } catch (final Exception e) {
+                                Log.e(TAG, "Export failed", e);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(configuration_page.this, "Export failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                    }).start();
+                }
+            });
+        }
+
+        if (ImportBtn != null) {
+            ImportBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("application/json");
+                    // allow any file as fallback
+                    Intent chooser = Intent.createChooser(intent, "Select configuration JSON to import");
+                    startActivityForResult(chooser, IMPORT_REQUEST_CODE);
+                }
+            });
+        }
+
         if (systemFilesBtn != null) {
             systemFilesBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(configuration_page.this, "System files configuration coming soon", Toast.LENGTH_SHORT).show();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            File dataDir = new File("/data");
+                            final StringBuilder sb = new StringBuilder();
+
+                            if (!dataDir.exists()) {
+                                sb.append("/data does not exist or is not accessible on this device.");
+                            } else {
+                                File[] files = dataDir.listFiles();
+                                if (files == null) {
+                                    sb.append("Unable to list /data.");
+                                } else if (files.length == 0) {
+                                    sb.append("/data is empty");
+                                } else {
+                                    for (File f : files) {
+                                        if (f.isDirectory()) sb.append("[D] "); else sb.append("[F] ");
+                                        sb.append(f.getName()).append('\n');
+                                    }
+                                }
+                            }
+
+                            final String message = sb.toString();
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    new AlertDialog.Builder(configuration_page.this)
+                                        .setTitle("/data filesystem")
+                                        .setMessage(message)
+                                        .setPositiveButton("OK", null)
+                                        .show();
+                                }
+                            });
+                        }
+                    }).start();
                 }
             });
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMPORT_REQUEST_CODE) {
+            if (resultCode == RESULT_OK && data != null) {
+                final Uri uri = data.getData();
+                if (uri == null) {
+                    Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try (InputStream is = getContentResolver().openInputStream(uri)) {
+                            if (is == null) throw new IOException("Unable to open selected file");
+                            byte[] buf = new byte[is.available() > 0 ? is.available() : 4096];
+                            int read;
+                            StringBuilder sb = new StringBuilder();
+                            byte[] tmp = new byte[4096];
+                            while ((read = is.read(tmp)) != -1) {
+                                sb.append(new String(tmp, 0, read, "UTF-8"));
+                            }
+                            final String json = sb.toString();
+
+                            final boolean ok = configManager.importConfiguration(json);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (ok) {
+                                        loadSettings();
+                                        Toast.makeText(configuration_page.this, "Configuration imported", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(configuration_page.this, "Failed to import configuration", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        } catch (final Exception e) {
+                            Log.e(TAG, "Import failed", e);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(configuration_page.this, "Import failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                }).start();
+            } else {
+                Toast.makeText(this, "Import cancelled", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -209,7 +387,6 @@ public class configuration_page extends AppCompatActivity {
 
             Log.d(TAG, "Saving: autoStart=" + autoStart + ", webPort=" + webPort + ", sshPort=" + sshPort + ", interval=" + monitoringInterval);
 
-            // Use defaults if fields are empty
             if (webPort.isEmpty()) webPort = "8080";
             if (sshPort.isEmpty()) sshPort = "2222";
             if (tempAlert.isEmpty()) tempAlert = "60";
