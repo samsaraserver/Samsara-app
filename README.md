@@ -24,6 +24,50 @@
 
 <br>
 
+## Contributors
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Max0xDay">
+        <img src="https://github.com/Max0xDay.png" width="100px" alt="Max Day"/><br/>
+        <b>Max Day</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/JMosselson">
+        <img src="https://github.com/JMosselson.png" width="100px" alt="Jordan Mosselson"/><br/>
+        <b>Jordan Mosselson</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/MatthewHubbard123">
+        <img src="https://github.com/MatthewHubbard123.png" width="100px" alt="Matthew Hubbard"/><br/>
+        <b>Matthew Hubbard</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Tashil10">
+        <img src="https://github.com/Tashil10.png" width="100px" alt="Tashil Koseelan"/><br/>
+        <b>Tashil Koseelan</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/SharDai">
+        <img src="https://github.com/ShortJai.png" width="100px" alt="Jaiyesh Pillay"/><br/>
+        <b>Jaiyesh Pillay</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/ST10313742">
+        <img src="https://samsaraserver.space/assets/pfp/Thomas.jpeg?v=20251007" width="100px" alt="Thomas Raaths"/><br/>
+        <b>Thomas Raaths</b>
+      </a>
+    </td>
+  </tr>
+</table>
+
+
 # Samsara Server
 
 Repurpose your old Android devices into powerful Linux servers with a sleek interface and zero command-line complexity.
