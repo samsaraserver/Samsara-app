@@ -100,7 +100,6 @@ public class GitHubOAuthManager {
     public CompletableFuture<GitHubUserInfo> getUserInfo(OAuth2AccessToken accessToken) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                // Get user profile
                 OAuthRequest request = new OAuthRequest(Verb.GET, GITHUB_USER_API);
                 service.signRequest(accessToken, request);
                 Response response = service.execute(request);
@@ -127,7 +126,6 @@ public class GitHubOAuthManager {
                     }
                 }
 
-                // If no primary email found, use the first available email or null
                 if (primaryEmail == null && !emailResponse.getBody().isEmpty()) {
                     org.json.JSONArray emails = new org.json.JSONArray(emailResponse.getBody());
                     if (emails.length() > 0) {

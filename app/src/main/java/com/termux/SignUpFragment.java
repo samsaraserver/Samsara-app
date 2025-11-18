@@ -1,5 +1,6 @@
 package com.termux;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
@@ -177,17 +178,20 @@ public class SignUpFragment extends Fragment {
                     setFormEnabled(true);
                     if (user != null) {
                         AuthManager.getInstance(requireContext()).loginUser(user, password);
-                        // Store credentials for biometric login right after successful signup/login
                         try {
                             if (biometricHelper != null) {
-                                // Store regardless of current availability; harmless and enables future biometric login
                                 biometricHelper.storeCredentials(user.getUsername(), user.getEmail(), password, String.valueOf(user.getId()));
                             }
                         } catch (Exception ex) {
                             Log.e(TAG, "Error storing biometric credentials after signup", ex);
                         }
                         Toast.makeText(requireContext(), "Account created successfully!", Toast.LENGTH_LONG).show();
-                        NavbarHelper.navigateToActivity(requireActivity(), home_page.class);
+
+                        Intent intent = new Intent(requireActivity(), home_page.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        requireActivity().finish();
                     } else {
                         Toast.makeText(requireContext(), "Account may have been created, but login failed. Please try signing in manually.", Toast.LENGTH_LONG).show();
                     }
