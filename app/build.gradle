@@ -126,6 +126,8 @@ android {
         disable 'ProtectedPermissions'
         abortOnError false
         checkReleaseBuilds false
+        htmlReport false
+        textReport true
     }
 
     testOptions {

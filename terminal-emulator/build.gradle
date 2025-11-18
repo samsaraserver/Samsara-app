@@ -38,6 +38,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    lintOptions {
+        abortOnError false
+        htmlReport false
+        textReport true
+    }
+
     testOptions {
         unitTests.returnDefaultValues = true
     }

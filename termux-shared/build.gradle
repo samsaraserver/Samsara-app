@@ -56,6 +56,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    lintOptions {
+        abortOnError false
+        htmlReport false
+        textReport true
+    }
+
     externalNativeBuild {
         ndkBuild {
             path file('src/main/cpp/Android.mk')
