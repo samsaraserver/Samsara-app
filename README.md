@@ -78,6 +78,12 @@ Samsara Server aims to breathe new life into unused Android phones and tablets b
 
 The project combines the power of Alpine Linux with Android's hardware capabilities, creating an ecosystem where community-driven projects can flourish on repurposed devices. Whether you're running a home automation system, hosting a personal cloud, or experimenting with distributed computing, Samsara Server makes it simple.
 
+
+## Video Demonstation link:
+
+https://drive.google.com/file/d/1NC4OvCwg1LJ13fd0tHL3dkO8U1tJwzBU/view?usp=sharing
+
+
 ## Features
 
 Transform your forgotten Android device into a powerful server with just a few taps. Samsara Server eliminates the complexity traditionally associated with Linux server deployment by providing an intelligent setup system that automatically configures Alpine Linux environments. No more wrestling with terminal commands or complex configuration files - the app handles everything from initial installation to ongoing package management.
