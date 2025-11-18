@@ -161,30 +161,193 @@ The Apache License 2.0 provides the freedom to use, modify, and distribute this 
 ## Community & Support
 
 **Documentation**
-Comprehensive guides and tutorials are available through the in-app documentation viewer, covering everything from basic setup to advanced server configurations. Complete documentation is also available at [wiki.samsaraserver.space](https://wiki.samsaraserver.space).
+Comprehensive guides and tutorials are available through the in-app documentation viewer, covering everything from basic setup to advanced server configurations. Complete documentation is also available at [samsaraserver.space/docs](https://samsaraserver.space/docs).
 
 **Forums**
-Join our community forums at [forums.samsaraserver.space](https://forums.samsaraserver.space) to share projects, ask questions, and collaborate with other users. The same account system works across the mobile app and web platform.
+Join our community forums at [samsaraserver.space/forums](https://samsaraserver.space/forums) to share projects, ask questions, and collaborate with other users. The same account system works across the mobile app and web platform.
 
 **Contributing**
 We welcome contributions from developers, documentation writers, and community members. Whether you're fixing bugs, adding features, or helping other users, every contribution makes the project better.
 
-## Building from Source
+## Building and Running
 
-**Prerequisites**
-- JDK 17.0.16.8-hotspot (compile)
-- JDK 11 (Gradle)
-- Android NDK 22.1.7171670
-- Gradle build system
+### Prerequisites
 
-**Build Process**
-```bash
-# Quick development build
-./quick-build.bat
+Building Samsara Server requires specific JDK versions due to the Termux foundation components. The project uses older JDK versions to maintain compatibility with the core Termux libraries that remain unmodified.
 
-# Full production build
-./build.bat
+**Required Software**
+- JDK 17.0.16.8-hotspot (required for compilation)
+- JDK 11 (required for Gradle daemon execution)
+- Android NDK 22.1.7171670 (native code compilation)
+- Android SDK with API level 30
+- Gradle build system (wrapper included)
+
+**JDK Version Requirements**
+
+The Termux modules (`termux-shared`, `terminal-emulator`, `terminal-view`) were built with JDK 11 and require this version for proper compatibility. However, the main app module and Android Gradle Plugin 4.2.2 require JDK 17 for compilation. This dual-JDK setup ensures both the legacy Termux components and modern Android build tools work correctly.
+
+**NDK Integration**
+
+The project uses Android NDK 22.1.7171670 for compiling native terminal emulation components. The NDK version is specified in `gradle.properties` and should not be changed as it affects terminal rendering and native library compatibility. The NDK compiles C11 code with optimization flags for the terminal emulator's performance-critical sections.
+
+### Build Scripts
+
+The project includes several build scripts for different scenarios. All scripts are designed for Windows environments using batch files.
+
+**build.bat**
 ```
+set JAVA_HOME=C:\Program Files\Microsoft\jdk-17.0.16.8-hotspot
+./gradlew.bat build -x lint
+```
+Standard production build that compiles all modules and generates release APKs. This script:
+- Sets JAVA_HOME to JDK 17 for compilation
+- Runs a complete build including all modules
+- Skips lint checks for faster builds
+- Outputs APKs to `app/build/outputs/apk/`
+
+**build-with-jdk17.bat**
+```
+Accepts optional JAVA_HOME path as first argument
+Falls back to detecting JDK 17 in standard locations
+Calls build.bat with proper JDK configuration
+```
+Flexible build script that automatically detects JDK 17 installations or accepts a custom path. Use this when:
+- JDK 17 is installed in a non-standard location
+- Building on different machines with varying JDK paths
+- Automating builds in CI/CD environments
+
+Usage:
+```bash
+# Auto-detect JDK 17
+./build-with-jdk17.bat
+
+# Specify custom JDK path
+./build-with-jdk17.bat "C:\custom\path\to\jdk-17"
+```
+
+**quick-build.bat**
+```
+set JAVA_HOME=C:\Program Files\Microsoft\jdk-17.0.16.8-hotspot
+./gradlew.bat installDebug -x lint -x sonarqube --daemon
+```
+Rapid development build that installs directly to a connected Android device. This script:
+- Uses Gradle daemon for faster subsequent builds
+- Skips lint and SonarQube analysis
+- Installs debug APK immediately after building
+- Ideal for iterative development and testing
+
+**run build to phone.bat**
+```
+./gradlew.bat -Dorg.gradle.java.home="C:\Program Files\Java\jdk-11" clean installDebug
+```
+Development build using JDK 11 explicitly for Gradle execution. This demonstrates the dual-JDK requirement:
+- Forces Gradle daemon to use JDK 11
+- Performs clean build to avoid cache issues
+- Installs debug build to connected device
+- Useful when JDK version conflicts occur
+
+### Build Configuration
+
+**gradle.properties**
+Contains project-wide configuration including:
+- `compileSdkVersion=30` - Target Android API level
+- `ndkVersion=22.1.7171670` - Native development kit version
+- `minSdkVersion=21` - Minimum Android 5.0 Lollipop
+- `targetSdkVersion=28` - Target Android 9.0 Pie
+- JVM arguments for Gradle daemon memory and module access
+
+**Module Structure**
+The build system compiles four modules in sequence:
+1. `termux-shared` - Core Termux utilities and constants
+2. `terminal-emulator` - Native terminal emulation engine
+3. `terminal-view` - Terminal UI rendering components
+4. `app` - Samsara Server interface and functionality
+
+Only the `app` module should be modified during development. The three Termux modules remain unchanged to maintain compatibility with the upstream Termux project.
+
+### Building Step by Step
+
+1. **Environment Setup**
+   ```bash
+   # Verify JDK 17 installation
+   "C:\Program Files\Microsoft\jdk-17.0.16.8-hotspot\bin\java" -version
+   
+   # Verify JDK 11 installation
+   "C:\Program Files\Java\jdk-11\bin\java" -version
+   
+   # Verify NDK installation (if not auto-downloaded by Android Studio)
+   echo %ANDROID_SDK_ROOT%\ndk\22.1.7171670
+   ```
+
+2. **First Build**
+   ```bash
+   # Clean build recommended for first compile
+   ./gradlew.bat clean build -x lint
+   ```
+
+3. **Development Builds**
+   ```bash
+   # Connect Android device via ADB
+   adb devices
+   
+   # Quick install to device
+   ./quick-build.bat
+   ```
+
+4. **Production Builds**
+   ```bash
+   # Full build with all checks
+   ./build.bat
+   
+   # Outputs located in:
+   # app/build/outputs/apk/debug/
+   # app/build/outputs/apk/release/
+   ```
+
+### Running the Application
+
+**Installing on Device**
+- Use `quick-build.bat` to install debug builds automatically
+- Enable USB debugging on Android device (Settings > Developer Options)
+- Accept USB debugging authorization prompt on device
+- APK installs as "Termux" (package: com.termux)
+
+**Testing Changes**
+- App module changes compile quickly (30-60 seconds)
+- Gradle daemon caches dependencies for faster rebuilds
+- Use `--daemon` flag in gradlew commands for persistent daemon
+- Clean builds take 2-5 minutes depending on hardware
+
+**Troubleshooting Builds**
+
+Common build issues and solutions:
+
+**JDK Version Mismatch**
+```
+Error: Android Gradle plugin requires Java 11 to run
+```
+Solution: Ensure Gradle uses JDK 11 by setting org.gradle.java.home or using `run build to phone.bat`
+
+**NDK Not Found**
+```
+Error: NDK is not installed
+```
+Solution: Install NDK 22.1.7171670 via Android Studio SDK Manager or set `ANDROID_NDK_HOME` environment variable
+
+**Out of Memory**
+```
+Error: GC overhead limit exceeded
+```
+Solution: Increase Gradle JVM memory in `gradle.properties`:
+```
+org.gradle.jvmargs=-Xmx4096M
+```
+
+**ADB Device Not Found**
+```
+Error: No connected devices
+```
+Solution: Enable USB debugging, reconnect device, run `adb devices` to verify connection
 
 ## Acknowledgments
 
